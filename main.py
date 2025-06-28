@@ -208,7 +208,7 @@ class DatabaseManager:
                     stored_ids.append(existing_card.id)
                 else:
                     # Create new card
-                    print(f"creating new card: {card_data} {card_data}")
+                    print(f"creating new card: {card_data['fields']['Front']['value']}")
                     try:
                         new_card = AnkiCard(
                             anki_note_id=card_data["noteId"],
