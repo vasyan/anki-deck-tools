@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 from contextlib import contextmanager
+import random
 
 import httpx
 import sqlite3
@@ -208,7 +209,7 @@ class DatabaseManager:
                     stored_ids.append(existing_card.id)
                 else:
                     # Create new card
-                    print(f"creating new card: {card_data['fields']['Front']['value']}")
+                    print(f"creating new card: {self._extract_field_text(card_data["fields"], "Front")}")
                     try:
                         new_card = AnkiCard(
                             anki_note_id=card_data["noteId"],
@@ -393,7 +394,6 @@ class AnkiVectorApp:
     
     def _generate_mock_embeddings(self, card: AnkiCard) -> Dict[str, List[float]]:
         """Generate mock embeddings for a card (replace with actual model)"""
-        import random
         
         # Mock embeddings with fixed dimension
         dimension = settings.embedding_dimension
