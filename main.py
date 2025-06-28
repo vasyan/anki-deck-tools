@@ -255,19 +255,27 @@ class DatabaseManager:
                 vector_dimension=len(embedding)
             )
             session.add(vector_embedding)
-            session.flush()
+            session.commit()  # Commit first to avoid locks
             
-            # Also store in sqlite-vec table for efficient search
+            # Store in sqlite-vec table after main commit (sequential, not concurrent)
             if "sqlite" in self.database_url:
-                self._store_in_sqlite_vec(card_id, embedding, embedding_type)
+                try:
+                    self._store_in_sqlite_vec(card_id, embedding, embedding_type)
+                except Exception as e:
+                    # Log but don't fail the main operation
+                    logger.warning(f"Failed to store in sqlite-vec for card {card_id}: {e}")
             
-            session.commit()
             return vector_embedding.id
     
     def _store_in_sqlite_vec(self, card_id: int, embedding: List[float], embedding_type: str):
         """Store embedding in sqlite-vec format"""
+        # Use a timeout and WAL mode to reduce lock contention
+        db_path = self.database_url.replace("sqlite:///", "")
+        conn = sqlite3.connect(db_path, timeout=30.0)
         try:
-            conn = sqlite3.connect(self.database_url.replace("sqlite:///", ""))
+            # Enable WAL mode for better concurrency
+            conn.execute("PRAGMA journal_mode=WAL")
+            
             conn.enable_load_extension(True)
             sqlite_vec.load(conn)
             conn.enable_load_extension(False)
@@ -281,9 +289,8 @@ class DatabaseManager:
             """, (card_id, embedding_type, vector_blob))
             
             conn.commit()
+        finally:
             conn.close()
-        except Exception as e:
-            logger.error(f"Failed to store in sqlite-vec: {e}")
 
 # Main Application Class
 class AnkiVectorApp:
@@ -291,7 +298,22 @@ class AnkiVectorApp:
     
     def __init__(self):
         self.db_manager = DatabaseManager()
+        self._embedding_manager = None  # Lazy initialization
         logger.info("AnkiVectorApp initialized")
+    
+    async def _get_embedding_manager(self):
+        """Get embedding manager with lazy initialization"""
+        if self._embedding_manager is None:
+            # Import here to avoid circular imports
+            from embedding_processor import EmbeddingManager, EmbeddingConfig
+            
+            config = EmbeddingConfig()
+            self._embedding_manager = EmbeddingManager(config)
+            
+            if not await self._embedding_manager.initialize():
+                raise Exception("Failed to initialize embedding manager")
+                
+        return self._embedding_manager
     
     async def sync_deck(self, deck_name: str) -> Dict[str, Any]:
         print(f"calling sync_deck: {deck_name}")
@@ -349,10 +371,21 @@ class AnkiVectorApp:
             logger.error(f"Error syncing all decks: {e}")
             raise
     
-    async def generate_embeddings(self, card_ids: Optional[List[int]] = None) -> Dict[str, Any]:
-        """Generate embeddings for cards (mock implementation)"""
+    async def generate_embeddings(self, 
+                                card_ids: Optional[List[int]] = None,
+                                deck_name: Optional[str] = None,
+                                force_regenerate: bool = False) -> Dict[str, Any]:
+        """Generate embeddings for cards using the embedding processor"""
         try:
-            # If no card_ids provided, get all cards without embeddings
+            embedding_manager = await self._get_embedding_manager()
+            
+            # If deck_name is specified, generate for entire deck
+            if deck_name:
+                return await embedding_manager.generate_embeddings_for_deck(
+                    deck_name, force_regenerate=force_regenerate
+                )
+            
+            # If no card_ids provided, process all cards without embeddings
             if not card_ids:
                 with self.db_manager.get_session() as session:
                     cards_without_embeddings = session.query(AnkiCard).filter(
@@ -363,91 +396,101 @@ class AnkiVectorApp:
             if not card_ids:
                 return {"message": "No cards found for embedding generation", "generated": 0}
             
+            # Process specific cards
             generated_count = 0
+            failed_count = 0
             
             with self.db_manager.get_session() as session:
-                for card_id in card_ids:
-                    card = session.query(AnkiCard).filter_by(id=card_id).first()
-                    if not card:
-                        continue
-                    
-                    # Mock embedding generation (replace with actual embedding model)
-                    embeddings = self._generate_mock_embeddings(card)
-                    
-                    # Store embeddings
-                    for embedding_type, embedding in embeddings.items():
-                        await self.db_manager.store_vector_embedding(
-                            card_id, embedding, embedding_type
-                        )
-                    
-                    generated_count += 1
+                cards = session.query(AnkiCard).filter(AnkiCard.id.in_(card_ids)).all()
+                
+                for card in cards:
+                    try:
+                        # Generate embeddings for each type
+                        for embedding_type in embedding_manager.config.embedding_types:
+                            # Check if embedding already exists
+                            if not force_regenerate:
+                                existing = embedding_manager._get_existing_embedding(card.id, embedding_type)
+                                if existing:
+                                    continue
+                            
+                            # Generate embedding
+                            result = await embedding_manager.generator.process_card(card, embedding_type)
+                            
+                            if result.success:
+                                try:
+                                    # Store in database (sequential to avoid lock issues)
+                                    await self.db_manager.store_vector_embedding(
+                                        card_id=result.card_id,
+                                        embedding=result.embedding,
+                                        embedding_type=result.embedding_type
+                                    )
+                                except Exception as e:
+                                    logger.error(f"Failed to store embedding for card {card.id}: {e}")
+                                    failed_count += 1
+                            else:
+                                logger.error(f"Failed to generate embedding for card {card.id}: {result.error_message}")
+                                failed_count += 1
+                        
+                        generated_count += 1
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing card {card.id}: {e}")
+                        failed_count += 1
             
-            logger.info(f"Generated embeddings for {generated_count} cards")
+            logger.info(f"Generated embeddings for {generated_count} cards, {failed_count} failed")
             return {
                 "message": f"Generated embeddings for {generated_count} cards",
-                "generated": generated_count
+                "generated": generated_count,
+                "failed": failed_count,
+                "card_ids": card_ids
             }
         
         except Exception as e:
             logger.error(f"Error generating embeddings: {e}")
             raise
     
-    def _generate_mock_embeddings(self, card: AnkiCard) -> Dict[str, List[float]]:
-        """Generate mock embeddings for a card (replace with actual model)"""
+    async def generate_embeddings_for_all_decks(self, force_regenerate: bool = False) -> Dict[str, Any]:
+        """Generate embeddings for all decks"""
+        try:
+            embedding_manager = await self._get_embedding_manager()
+            return await embedding_manager.generate_embeddings_for_all_decks(force_regenerate=force_regenerate)
         
-        # Mock embeddings with fixed dimension
-        dimension = settings.embedding_dimension
-        
-        embeddings = {}
-        
-        if card.front_text:
-            # Mock embedding for front text
-            embeddings["front"] = [random.random() for _ in range(dimension)]
-        
-        if card.back_text:
-            # Mock embedding for back text
-            embeddings["back"] = [random.random() for _ in range(dimension)]
-        
-        if card.front_text and card.back_text:
-            # Mock combined embedding
-            embeddings["combined"] = [random.random() for _ in range(dimension)]
-        
-        return embeddings
+        except Exception as e:
+            logger.error(f"Error generating embeddings for all decks: {e}")
+            raise
     
     async def search_similar_cards(self, request: VectorSearchRequest) -> List[Dict[str, Any]]:
-        """Search for similar cards using vector similarity (mock implementation)"""
+        """Search for similar cards using vector similarity"""
         try:
-            # Mock implementation - in real implementation, use sqlite-vec functions
-            if request.query_embedding is None:
-                # Generate mock query embedding from text
-                request.query_embedding = [random.random() for _ in range(settings.embedding_dimension)]
+            embedding_manager = await self._get_embedding_manager()
             
-            # Mock results
-            mock_results = []
+            # Use the embedding processor's search functionality
+            results = await embedding_manager.search_similar_cards(
+                query_text=request.query_text,
+                embedding_type=request.embedding_type,
+                top_k=request.top_k,
+                deck_name=request.deck_name,
+                similarity_threshold=0.5  # Default threshold
+            )
             
-            with self.db_manager.get_session() as session:
-                # Get some cards (mock search)
-                query = session.query(AnkiCard)
-                if request.deck_name:
-                    query = query.filter_by(deck_name=request.deck_name)
-                
-                cards = query.limit(request.top_k).all()
-                
-                for i, card in enumerate(cards):
-                    mock_results.append({
-                        "card_id": card.id,
-                        "anki_note_id": card.anki_note_id,
-                        "deck_name": card.deck_name,
-                        "front_text": card.front_text,
-                        "back_text": card.back_text,
-                        "similarity_score": 1.0 - (i * 0.1),  # Mock decreasing similarity
-                        "distance": i * 0.1  # Mock increasing distance
-                    })
+            # Add distance field for compatibility
+            for result in results:
+                result["distance"] = 1.0 - result["similarity_score"]
             
-            return mock_results
+            return results
         
         except Exception as e:
             logger.error(f"Error searching similar cards: {e}")
+            raise
+    
+    async def get_embedding_statistics(self) -> Dict[str, Any]:
+        """Get embedding statistics"""
+        try:
+            embedding_manager = await self._get_embedding_manager()
+            return await embedding_manager.get_embedding_statistics()
+        
+        except Exception as e:
+            logger.error(f"Error getting embedding statistics: {e}")
             raise
 
 # CLI functions (basic implementation)

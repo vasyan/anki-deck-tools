@@ -23,9 +23,13 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = Field(default="INFO", env="LOG_LEVEL")
     
-    # Embedding Configuration
-    embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2", env="EMBEDDING_MODEL")
+    # Embedding Configuration - aligned with embedding processor
+    embedding_model: str = Field(default="all-MiniLM-L6-v2", env="EMBEDDING_MODEL")
     embedding_dimension: int = Field(default=384, env="EMBEDDING_DIMENSION")
+    embedding_batch_size: int = Field(default=32, env="EMBEDDING_BATCH_SIZE")
+    embedding_max_seq_length: int = Field(default=256, env="EMBEDDING_MAX_SEQ_LENGTH")
+    embedding_device: str = Field(default="auto", env="EMBEDDING_DEVICE")
+    embedding_cache_dir: str = Field(default="./models", env="EMBEDDING_CACHE_DIR")
     
     # External APIs (optional)
     openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
