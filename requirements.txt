@@ -1,0 +1,25 @@
+# Core dependencies
+sqlalchemy>=2.0.0
+httpx>=0.25.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+numpy>=1.24.0
+python-dotenv>=1.0.0
+
+# Database drivers - SQLite with vector support
+sqlite-vec>=0.1.0
+
+# FastAPI for HTTP API
+fastapi>=0.100.0
+uvicorn>=0.23.0
+
+# Development dependencies
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+
+# Optional: AI/ML libraries for embeddings (commented out for MVP)
+# openai>=1.0.0
+# sentence-transformers>=2.2.0
+# transformers>=4.30.0 
