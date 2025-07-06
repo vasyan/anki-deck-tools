@@ -7,7 +7,10 @@ from unittest.mock import AsyncMock, patch
 import tempfile
 import os
 
-from main import AnkiConnectClient, DatabaseManager, AnkiVectorApp, AnkiCard
+from anki.client import AnkiConnectClient
+from database.manager import DatabaseManager
+from core.app import AnkiVectorApp
+from models.database import AnkiCard
 from config import settings
 
 @pytest.mark.asyncio
@@ -44,23 +47,15 @@ async def test_anki_vector_app_initialization():
     assert app.db_manager is not None
 
 @pytest.mark.asyncio
-async def test_mock_embedding_generation():
-    """Test mock embedding generation"""
+async def test_embedding_service_initialization():
+    """Test embedding service initialization"""
     app = AnkiVectorApp()
     
-    # Create a mock card
-    class MockCard:
-        def __init__(self):
-            self.front_text = "Hello"
-            self.back_text = "World"
-    
-    mock_card = MockCard()
-    embeddings = app._generate_mock_embeddings(mock_card)
-    
-    assert "front" in embeddings
-    assert "back" in embeddings
-    assert "combined" in embeddings
-    assert len(embeddings["front"]) == settings.embedding_dimension
+    # Test that services are properly initialized
+    assert app.card_service is not None
+    assert app.embedding_service is not None
+    assert app.card_service.db_manager is not None
+    assert app.embedding_service.db_manager is not None
 
 def test_settings_loading():
     """Test that settings load correctly"""
@@ -73,6 +68,6 @@ if __name__ == "__main__":
     asyncio.run(test_anki_connect_client())
     asyncio.run(test_database_manager())
     asyncio.run(test_anki_vector_app_initialization())
-    asyncio.run(test_mock_embedding_generation())
+    asyncio.run(test_embedding_service_initialization())
     test_settings_loading()
     print("All basic tests passed!") 

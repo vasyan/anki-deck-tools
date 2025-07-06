@@ -31,7 +31,8 @@ from sqlalchemy.orm import Session
 from tqdm import tqdm
 
 # Import from current project structure
-from main import DatabaseManager, AnkiCard, VectorEmbedding
+from database.manager import DatabaseManager
+from models.database import AnkiCard, VectorEmbedding
 from config import settings
 
 logger = logging.getLogger(__name__)

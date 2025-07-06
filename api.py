@@ -10,14 +10,10 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from main import (
-    AnkiVectorApp, 
-    DatabaseManager, 
-    AnkiCardResponse, 
-    VectorSearchRequest, 
-    SyncCardRequest,
-    AnkiCard
-)
+from core.app import AnkiVectorApp
+from database.manager import DatabaseManager
+from models.schemas import AnkiCardResponse, VectorSearchRequest, SyncCardRequest
+from models.database import AnkiCard
 from config import settings
 
 # Configure logging
