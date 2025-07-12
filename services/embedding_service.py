@@ -130,7 +130,7 @@ class EmbeddingService:
                 embedding_type=request.embedding_type,
                 top_k=request.top_k,
                 deck_name=request.deck_name,
-                similarity_threshold=0.5  # Default threshold
+                # similarity_threshold=0.5  # Default threshold
             )
             
             # Add distance field for compatibility

@@ -35,6 +35,11 @@ from database.manager import DatabaseManager
 from models.database import AnkiCard, VectorEmbedding
 from config import settings
 
+logging.basicConfig(
+    level=logging.INFO,  # or logging.DEBUG for more verbosity
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s'
+)
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -463,7 +468,7 @@ class EmbeddingManager:
                                  deck_name: Optional[str] = None,
                                  similarity_threshold: float = 0.5) -> List[Dict[str, Any]]:
         """Search for similar cards using semantic similarity"""
-        logger.info(f"Searching for similar cards: '{query_text}' (top_k={top_k})")
+        logger.info(f"Searching for similar cards: '{query_text}' (top_k={top_k}, similarity_threshold={similarity_threshold})")
         
         try:
             # Generate embedding for query
@@ -485,7 +490,7 @@ class EmbeddingManager:
             
             # Calculate similarities
             similarities = []
-            
+
             for embedding_obj, card in embeddings_data:
                 try:
                     # Handle both string and list formats for backward compatibility
@@ -496,6 +501,7 @@ class EmbeddingManager:
                     
                     # Calculate cosine similarity
                     similarity = util.cos_sim(query_embedding, stored_embedding).item()
+
                     
                     if similarity >= similarity_threshold:
                         similarities.append({
@@ -523,6 +529,7 @@ class EmbeddingManager:
         except Exception as e:
             error_msg = f"Failed to search similar cards for query '{query_text}': {e}"
             logger.error(error_msg)
+            print(f"Error: {e}")
             raise Exception(error_msg) from e
     
     async def get_embedding_statistics(self) -> Dict[str, Any]:
@@ -592,9 +599,9 @@ async def main():
     parser.add_argument("--force", action="store_true", help="Force regenerate existing embeddings")
     parser.add_argument("--model", type=str, default=settings.embedding_model, help="Sentence transformer model")
     parser.add_argument("--batch-size", type=int, default=settings.embedding_batch_size, help="Batch size for processing")
+    parser.add_argument("--similarity-threshold", type=float, default=0.5, help="Similarity threshold for search")
     
     args = parser.parse_args()
-    
     # Create configuration
     config = EmbeddingConfig(
         model_name=args.model,
@@ -621,7 +628,8 @@ async def main():
             results = await manager.search_similar_cards(
                 query_text=args.search,
                 embedding_type=args.embedding_type,
-                top_k=args.top_k
+                top_k=args.top_k,
+                similarity_threshold=args.similarity_threshold
             )
             
             if results:
@@ -629,9 +637,9 @@ async def main():
                 for i, result in enumerate(results, 1):
                     print(f"\n{i}. Card {result['card_id']} (Similarity: {result['similarity_score']:.3f})")
                     print(f"   Deck: {result['deck_name']}")
-                    print(f"   Front: {result['front_text'][:100]}...")
+                    print(f"   Front: {result['front_text'][:100]}{len(result['front_text']) > 100 and '...' or ''}")
                     if result['back_text']:
-                        print(f"   Back: {result['back_text'][:100]}...")
+                        print(f"   Back: {result['back_text'][:100]}{len(result['back_text']) > 100 and '...' or ''}")
             else:
                 print("No similar cards found")
         
