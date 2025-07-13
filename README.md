@@ -106,6 +106,37 @@ python tts_cli.py --deck "My Deck Name" --model tts-1 --format mp3 --voice alloy
 
 This CLI will generate audio for each card (if not already present), store it in the `audio` field, and record the TTS model used in the `tts_model` field.
 
+### Generate Examples (LLM-powered)
+
+**Using the standalone CLI:**
+```bash
+# Generate examples for all cards in a deck (using front_text and back_text as input)
+python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt
+
+# Limit the number of processed cards
+python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --limit 10
+
+# Dry run (simulate, do not write example)
+python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --dry-run
+
+# Process in parallel
+python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --parallel
+
+# Save every generated example to a file for debugging
+python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --debug-output
+```
+
+**Arguments:**
+- `--deck`: Filter by deck name (optional)
+- `--columns`: Comma-separated list of columns to use as input for the prompt (e.g., `front_text,back_text`)
+- `--instructions`: Path to Jinja2 template file for prompt
+- `--limit`: Limit number of cards to process (like SQL LIMIT)
+- `--dry-run`: Do not write example to DB, just simulate
+- `--parallel`: Process cards in parallel (default: sequential)
+- `--debug-output`: Save every generated example to a timestamped txt file in the project root
+
+This CLI will generate an example for each card (if not already present), using the specified columns and template, and store it in the `example` field.
+
 ### Configuration Options
 
 The embedding system supports various configuration options via environment variables:
