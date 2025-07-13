@@ -2,7 +2,7 @@
 SQLAlchemy database models for Anki Vector application
 """
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -13,14 +13,18 @@ class AnkiCard(Base):
     __tablename__ = "anki_cards"
     
     id = Column(Integer, primary_key=True)
-    anki_note_id = Column(Integer, unique=True, nullable=False)
+    anki_note_id = Column(Integer, unique=True, nullable=True)
     deck_name = Column(String(255), nullable=False)
-    model_name = Column(String(255), nullable=False)
+    model_name = Column(String(255), nullable=True)
     front_text = Column(Text)
     back_text = Column(Text)
     tags = Column(JSON)  # Store as JSON array
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    transcription = Column(Text)
+    audio = Column(LargeBinary)  # If you want to use BLOB, use LargeBinary
+    example = Column(Text)
+    is_draft = Column(Integer, default=1, nullable=False)
     
     # Relationship to embeddings
     embeddings = relationship("VectorEmbedding", back_populates="card")

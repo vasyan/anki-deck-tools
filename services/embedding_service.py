@@ -41,6 +41,8 @@ class EmbeddingService:
             
             # If deck_name is specified, generate for entire deck
             if deck_name:
+                # Optionally, filter out drafts if you don't want to generate embeddings for them
+                # return await embedding_manager.generate_embeddings_for_deck(deck_name, force_regenerate=force_regenerate, exclude_drafts=True)
                 return await embedding_manager.generate_embeddings_for_deck(
                     deck_name, force_regenerate=force_regenerate
                 )
@@ -50,6 +52,7 @@ class EmbeddingService:
                 with self.db_manager.get_session() as session:
                     cards_without_embeddings = session.query(AnkiCard).filter(
                         ~AnkiCard.embeddings.any()
+                        # Optionally add: , AnkiCard.is_draft == 0
                     ).all()
                     card_ids = [card.id for card in cards_without_embeddings]
             
@@ -62,6 +65,8 @@ class EmbeddingService:
             
             with self.db_manager.get_session() as session:
                 cards = session.query(AnkiCard).filter(AnkiCard.id.in_(card_ids)).all()
+                # Optionally, filter out drafts here if needed
+                # cards = [card for card in cards if card.is_draft == 0]
                 
                 for card in cards:
                     try:

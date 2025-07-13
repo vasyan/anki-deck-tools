@@ -101,7 +101,9 @@ async def get_cards_by_deck(deck_name: str) -> List[AnkiCardResponse]:
                 back_text=card.back_text,
                 tags=card.tags if card.tags else [],
                 created_at=card.created_at,
-                updated_at=card.updated_at
+                updated_at=card.updated_at,
+                is_draft=getattr(card, 'is_draft', 1),
+                example=getattr(card, 'example', None)
             )
             for card in cards
         ]
@@ -125,7 +127,9 @@ async def get_all_cards(limit: int = 100, offset: int = 0) -> List[AnkiCardRespo
                     back_text=card.back_text,
                     tags=card.tags if card.tags else [],
                     created_at=card.created_at,
-                    updated_at=card.updated_at
+                    updated_at=card.updated_at,
+                    is_draft=getattr(card, 'is_draft', 1),
+                    example=getattr(card, 'example', None)
                 )
                 for card in cards
             ]

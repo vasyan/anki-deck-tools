@@ -8,14 +8,16 @@ from pydantic import BaseModel, Field
 class AnkiCardResponse(BaseModel):
     """Response model for Anki cards"""
     id: int
-    anki_note_id: int
+    anki_note_id: Optional[int] = None
     deck_name: str
-    model_name: str
+    model_name: Optional[str] = None
     front_text: Optional[str] = None
     back_text: Optional[str] = None
     tags: List[str] = []
     created_at: datetime
     updated_at: datetime
+    is_draft: int = 1
+    example: Optional[str] = None
 
 class VectorSearchRequest(BaseModel):
     """Request model for vector search"""

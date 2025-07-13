@@ -73,32 +73,43 @@ class DatabaseManager:
         
         with self.get_session() as session:
             for card_data in cards_data:
-                # Check if card already exists
-                existing_card = session.query(AnkiCard).filter_by(
-                    anki_note_id=card_data["noteId"]
-                ).first()
+                anki_note_id = card_data.get("noteId")
+                is_draft = 0 if anki_note_id is not None else 1
+                # Check if card already exists (by anki_note_id if present, else by front/back text)
+                if anki_note_id is not None:
+                    existing_card = session.query(AnkiCard).filter_by(
+                        anki_note_id=anki_note_id
+                    ).first()
+                else:
+                    existing_card = session.query(AnkiCard).filter_by(
+                        front_text=self._extract_field_text(card_data["fields"], "Front"),
+                        back_text=self._extract_field_text(card_data["fields"], "Back"),
+                        deck_name=deck_name
+                    ).first()
                 print(f"existing_card: {existing_card}")
                 
                 if existing_card:
                     # Update existing card
                     existing_card.deck_name = card_data["deckName"]
-                    existing_card.model_name = card_data["modelName"]
+                    existing_card.model_name = card_data.get("modelName")
                     existing_card.front_text = self._extract_field_text(card_data["fields"], "Front")
                     existing_card.back_text = self._extract_field_text(card_data["fields"], "Back")
                     existing_card.tags = card_data.get("tags", [])
                     existing_card.updated_at = datetime.utcnow()
+                    existing_card.is_draft = is_draft
                     stored_ids.append(existing_card.id)
                 else:
                     # Create new card
                     print(f"creating new card: {self._extract_field_text(card_data["fields"], "Front")}")
                     try:
                         new_card = AnkiCard(
-                            anki_note_id=card_data["noteId"],
-                            model_name=card_data["modelName"],
+                            anki_note_id=anki_note_id,
+                            model_name=card_data.get("modelName"),
                             front_text=self._extract_field_text(card_data["fields"], "Front"),
                             back_text=self._extract_field_text(card_data["fields"], "Back"),
                             tags=card_data.get("tags", []),
-                            deck_name=deck_name
+                            deck_name=deck_name,
+                            is_draft=is_draft
                         )
                     except Exception as e:
                         print(f"error creating new card: {e}")
