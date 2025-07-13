@@ -252,3 +252,44 @@ anki-vector-app/
 ## License
 
 MIT License 
+
+## Publish Draft Cards to Anki
+
+You can upload local draft cards (cards with `is_draft=1`) to Anki, ensuring all cards in a deck use a consistent note type (model) with a superset of fields. This includes fields like `Front`, `Back`, `Audio`, `Example`, and `Transcription`.
+
+- The system will automatically:
+  - Determine all fields present in the deck (superset across all cards)
+  - Create or update the note type (model) in Anki to match these fields
+  - Migrate existing notes in the deck to the new model if new fields are added (old fields are preserved, new fields are set empty)
+  - Upload all draft cards to Anki using the new model
+  - Mark successful uploads as synced in the local DB (`is_draft=0`, set `anki_note_id`)
+  - Tag failed uploads with `sync::failed` in the DB
+
+**Example usage in Python:**
+```python
+from services.card_service import CardService
+import asyncio
+
+service = CardService()
+result = asyncio.run(service.publish_draft_cards(deck_name="My Deck Name", model_name=None, limit=10))
+print(result)
+```
+- `deck_name`: The deck to publish to
+- `model_name`: (Optional) Use a specific model name; if not provided, a new model is generated based on the fields
+- `limit`: (Optional) Limit the number of draft cards to upload
+
+**CLI usage:**
+You can also run this feature from the command line:
+```bash
+python publish_cli.py --deck "My Deck Name" --limit 10
+```
+- `--deck`: Target deck name (required)
+- `--model`: Model name to use (optional)
+- `--limit`: Limit number of draft cards to upload (optional)
+
+**Behavior:**
+- All cards in the deck will use the same note type (model) with all required fields
+- Existing notes in the deck are migrated to the new model if needed
+- Audio is attached as an mp3 if present
+- Tags are preserved from the DB
+- Failed uploads are logged and tagged as `sync::failed` 

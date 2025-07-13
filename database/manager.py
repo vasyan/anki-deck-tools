@@ -5,7 +5,7 @@ import json
 import logging
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Optional
 
 import sqlite_vec
@@ -95,7 +95,7 @@ class DatabaseManager:
                     existing_card.front_text = self._extract_field_text(card_data["fields"], "Front")
                     existing_card.back_text = self._extract_field_text(card_data["fields"], "Back")
                     existing_card.tags = card_data.get("tags", [])
-                    existing_card.updated_at = datetime.utcnow()
+                    existing_card.updated_at = datetime.now(timezone.utc)
                     existing_card.is_draft = is_draft
                     stored_ids.append(existing_card.id)
                 else:
@@ -183,3 +183,27 @@ class DatabaseManager:
             conn.commit()
         finally:
             conn.close() 
+
+    def mark_card_synced(self, card_id: int, anki_note_id: int, model_name: str = None):
+        """Mark a card as synced (is_draft=0, set anki_note_id, optionally update model_name)."""
+        with self.get_session() as session:
+            card = session.query(AnkiCard).get(card_id)
+            if card:
+                card.is_draft = 0
+                card.anki_note_id = anki_note_id
+                if model_name:
+                    card.model_name = model_name
+                card.updated_at = datetime.now(timezone.utc)
+                session.commit()
+
+    def add_tag_to_card(self, card_id: int, tag: str):
+        """Add a tag to a card's tags list if not already present."""
+        with self.get_session() as session:
+            card = session.query(AnkiCard).get(card_id)
+            if card:
+                tags = card.tags or []
+                if tag not in tags:
+                    tags.append(tag)
+                    card.tags = tags
+                    card.updated_at = datetime.now(timezone.utc)
+                    session.commit() 
