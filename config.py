@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
     huggingface_api_key: Optional[str] = Field(default=None, env="HUGGINGFACE_API_KEY")
     
+    # TTS Configuration
+    openai_tts_model: str = Field(default="tts-1", env="OPENAI_TTS_MODEL")
+    openai_tts_format: str = Field(default="mp3", env="OPENAI_TTS_FORMAT")
+    openai_tts_rate_limit: int = Field(default=60, env="OPENAI_TTS_RATE_LIMIT")
+    openai_tts_voice: str = Field(default="alloy", env="OPENAI_TTS_VOICE")
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

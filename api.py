@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from core.app import AnkiVectorApp
@@ -136,6 +137,16 @@ async def get_all_cards(limit: int = 100, offset: int = 0) -> List[AnkiCardRespo
     except Exception as e:
         logger.error(f"Error getting all cards: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/cards/{card_id}/audio")
+async def get_card_audio(card_id: int):
+	"""Return the audio for a card as an audio file (e.g., mp3)"""
+	with db_manager.get_session() as session:
+		card = session.get(AnkiCard, card_id)
+		if not card or not card.audio:
+			raise HTTPException(status_code=404, detail="Card or audio not found")
+		# Default to mp3, could be made dynamic if needed
+		return Response(card.audio, media_type="audio/mpeg")
 
 # Embedding endpoints
 @app.post("/embeddings/generate")

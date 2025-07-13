@@ -28,11 +28,17 @@ A Python application for managing Anki flashcard data with vector embeddings and
    - Install AnkiConnect addon in Anki
    - Keep Anki running during sync operations
 
+4. **Start the API Server**:
+   ```bash
+   uvicorn api:app --reload
+   ```
+
 ## Quick Start
 
 ### Sync Cards from Anki
 ```bash
-python main.py  # Starts the API server
+# Start the API server (required for all API and web operations)
+uvicorn api:app --reload
 # Use API endpoints or sync via the web interface
 ```
 
@@ -64,6 +70,41 @@ python embedding_processor.py --deck "My Deck Name"
 # Search similar cards
 python embedding_processor.py --search "your query" --top-k 10
 ```
+
+### Generate Audio (Text-to-Speech)
+
+**Using the standalone CLI:**
+```bash
+# Generate audio for all cards in a deck (default: front column, only cards without audio)
+python tts_cli.py --deck "My Deck Name"
+
+# Specify a different column (e.g., back)
+python tts_cli.py --deck "My Deck Name" --column back
+
+# Limit the number of processed cards
+python tts_cli.py --deck "My Deck Name" --limit 10
+
+# Dry run (simulate, do not write audio)
+python tts_cli.py --deck "My Deck Name" --dry-run
+
+# Process in parallel
+python tts_cli.py --deck "My Deck Name" --parallel
+
+# Specify TTS model, format, or voice
+python tts_cli.py --deck "My Deck Name" --model tts-1 --format mp3 --voice alloy
+```
+
+**Arguments:**
+- `--deck`: Filter by deck name (required for most runs)
+- `--column`: Which card column to use as text input (default: front)
+- `--dry-run`: Do not write audio to DB, just simulate
+- `--parallel`: Process cards in parallel (default: sequential)
+- `--model`: TTS model to use (default from config)
+- `--format`: Audio format (mp3, wav, etc.; default from config)
+- `--voice`: Voice to use (default from config)
+- `--limit`: Limit number of cards to process (like SQL LIMIT)
+
+This CLI will generate audio for each card (if not already present), store it in the `audio` field, and record the TTS model used in the `tts_model` field.
 
 ### Configuration Options
 

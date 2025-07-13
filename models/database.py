@@ -25,6 +25,7 @@ class AnkiCard(Base):
     audio = Column(LargeBinary)  # If you want to use BLOB, use LargeBinary
     example = Column(Text)
     is_draft = Column(Integer, default=1, nullable=False)
+    tts_model = Column(Text, nullable=True)  # Store the TTS model used for audio
     
     # Relationship to embeddings
     embeddings = relationship("VectorEmbedding", back_populates="card")
