@@ -282,12 +282,30 @@ async def list_instruction_files():
         logger.error(f"Error listing instruction files: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/admin/example/decks")
+async def list_available_decks():
+    """List available decks for selection"""
+    try:
+        with db_manager.get_session() as session:
+            # Get distinct deck names from the database
+            decks = session.query(AnkiCard.deck_name).distinct().all()
+            deck_names = [deck[0] for deck in decks if deck[0]]  # Filter out None values
+            
+            return {
+                "decks": sorted(deck_names),
+                "total_count": len(deck_names)
+            }
+    except Exception as e:
+        logger.error(f"Error listing available decks: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/admin/example/preview")
 async def preview_example_generation(
     deck: str = Form(None),
     columns: str = Form(...),
     instructions_file: str = Form(...),
-    limit: int = Form(5)  # Preview limit
+    limit: int = Form(5),  # Preview limit
+    card_id: int = Form(None)  # Specific card ID for testing
 ):
     """Preview example generation with sample cards"""
     try:
@@ -306,12 +324,19 @@ async def preview_example_generation(
         # Get sample cards
         with db_manager.get_session() as session:
             query = session.query(AnkiCard)
-            if deck:
-                query = query.filter(AnkiCard.deck_name == deck)
             
-            # Get cards without examples for preview
-            query = query.filter((AnkiCard.example == None) | (AnkiCard.example == ''))
-            sample_cards = query.limit(limit).all()
+            # If card_id is specified, only get that specific card
+            if card_id:
+                query = query.filter(AnkiCard.id == card_id)
+                sample_cards = query.all()
+            else:
+                # Otherwise use deck filter and limit
+                if deck:
+                    query = query.filter(AnkiCard.deck_name == deck)
+                
+                # Get cards without examples for preview
+                query = query.filter((AnkiCard.example == None) | (AnkiCard.example == ''))
+                sample_cards = query.limit(limit).all()
         
         if not sample_cards:
             return {"preview_results": [], "message": "No cards available for preview"}
@@ -368,7 +393,8 @@ async def start_example_generation(
     instructions_file: str = Form(...),
     limit: int = Form(None),
     parallel: bool = Form(False),
-    dry_run: bool = Form(False)
+    dry_run: bool = Form(False),
+    card_id: int = Form(None)  # Specific card ID for testing
 ):
     """Start example generation process"""
     try:
@@ -390,6 +416,7 @@ async def start_example_generation(
             "limit": limit,
             "parallel": parallel,
             "dry_run": dry_run,
+            "card_id": card_id,
             "result": None
         }
         
@@ -453,16 +480,23 @@ async def run_example_generation_task(task_id: str):
         # Get cards to process
         with db_manager.get_session() as session:
             query = session.query(AnkiCard)
-            if task["deck"]:
-                query = query.filter(AnkiCard.deck_name == task["deck"])
             
-            # Only process cards where example is empty
-            query = query.filter((AnkiCard.example == None) | (AnkiCard.example == ''))
-            
-            if task["limit"]:
-                query = query.limit(task["limit"])
-            
-            cards = query.all()
+            # If card_id is specified, only process that specific card
+            if task["card_id"]:
+                query = query.filter(AnkiCard.id == task["card_id"])
+                cards = query.all()
+            else:
+                # Otherwise use deck filter and limit
+                if task["deck"]:
+                    query = query.filter(AnkiCard.deck_name == task["deck"])
+                
+                # Only process cards where example is empty
+                query = query.filter((AnkiCard.example == None) | (AnkiCard.example == ''))
+                
+                if task["limit"]:
+                    query = query.limit(task["limit"])
+                
+                cards = query.all()
         
         if not cards:
             task["status"] = "completed"
@@ -479,7 +513,10 @@ async def run_example_generation_task(task_id: str):
         
         # Update progress
         task["progress"] = 20
-        task["message"] = f"🔄 Processing {len(cards)} cards..."
+        if task["card_id"]:
+            task["message"] = f"🔄 Processing card ID {task['card_id']}..."
+        else:
+            task["message"] = f"🔄 Processing {len(cards)} cards..."
         
         # Initialize example service
         example_service = ExampleGeneratorService()

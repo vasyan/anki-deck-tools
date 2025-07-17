@@ -7,6 +7,7 @@
 - **Example Generation Form**: `/admin/example` - Full-featured form with all CLI options
 - **API Endpoints**:
   - `GET /admin/example/instructions` - List available instruction templates
+  - `GET /admin/example/decks` - List available decks for selection
   - `POST /admin/example/preview` - Preview functionality with sample cards
   - `POST /admin/example/start` - Start background processing task
   - `GET /admin/example/status/{task_id}` - Real-time status polling
@@ -14,7 +15,8 @@
 
 ### 2. **Web Interface Features**
 - **Form Configuration**:
-  - Deck selection (specific deck or all decks)
+  - Deck selection (dropdown with available decks or "All decks")
+  - Card ID input (optional, for testing specific cards)
   - Card columns specification (comma-separated)
   - Instruction template selection (dropdown from files)
   - Processing limit (optional)
@@ -50,6 +52,7 @@
 ### 4. **User Experience Features**
 - **Smart UI Logic**:
   - Preview mode automatically disables parallel processing
+  - Card ID input automatically disables deck selection and limit
   - Form validation with helpful error messages
   - Loading states with spinners and disabled buttons
   - Responsive design for mobile/desktop
@@ -72,6 +75,8 @@
 
 ### **Additional Features Added**
 - ✅ **Instruction file management**: Auto-discovery and dropdown selection
+- ✅ **Smart deck selection**: Dropdown with available decks for easy selection
+- ✅ **Card ID testing**: Process specific cards by ID for precise testing
 - ✅ **Modal-based preview**: Rich preview interface with accordion
 - ✅ **Background task system**: Non-blocking processing with task IDs
 - ✅ **Real-time polling**: Live updates without page refresh
@@ -156,9 +161,11 @@ curl -X POST ... /admin/example/start
 - `IMPLEMENTATION_SUMMARY.md` - This file
 
 ### **Modified Files**
-- `api.py` - Added admin routes and background task system
+- `api.py` - Added admin routes, background task system, and deck listing endpoint
 - `requirements.txt` - Added python-multipart dependency
 - `README.md` - Updated with web interface information
+- `templates/admin/example_form.html` - Updated deck selection to use dropdown
+- `docs/web-interface-guide.md` - Updated to reflect dropdown deck selection
 
 ## 🎉 Success Metrics
 

@@ -21,8 +21,14 @@ The Anki Vector web interface provides a user-friendly way to generate AI-powere
 ### Configuration Options
 
 - **Deck Name**: 
-  - Leave empty to process all decks
-  - Enter a specific deck name to process only that deck
+  - Select "All decks" to process all decks
+  - Select a specific deck name to process only that deck
+
+- **Card ID** (optional):
+  - Enter a specific card ID to process only that card
+  - Useful for testing and debugging specific cards
+  - When specified, overrides deck selection and limit settings
+  - If the card ID doesn't exist, the task will complete with "No cards found"
 
 - **Card Columns**: 
   - Comma-separated list of card columns to use in the template
@@ -107,8 +113,14 @@ Create an example sentence...
 - Use "With Preview" to test new templates
 - Use "Dry Run" for debugging without saving
 - Process specific decks first to test on smaller datasets
+- Use Card ID for testing specific problematic cards
 - Monitor failed cards to identify template issues
 - Keep instruction templates simple and clear
+
+### Finding Card IDs
+- Card IDs are displayed in API responses and database queries
+- Use the stats endpoint (`/stats`) to see card counts
+- Check the cards endpoint (`/cards`) to browse available cards
 
 ## Troubleshooting
 

@@ -94,6 +94,8 @@ The system follows a layered architecture:
 - ✅ **Template Preview**: Preview generated examples before processing
 - ✅ **Dry Run Mode**: Test templates without saving to database
 - ✅ **Parallel Processing Control**: User-configurable parallel vs sequential processing
+- ✅ **Smart Deck Selection**: Dropdown with available decks for easy selection
+- ✅ **Card ID Testing**: Process specific cards by ID for precise testing
 - ✅ **Error Handling**: Detailed error reporting and recovery options
 
 ### Previous Updates
