@@ -6,14 +6,12 @@ import asyncio
 import sys
 from pathlib import Path
 import logging
-import time
 
 sys.path.append(str(Path(__file__).parent))
 
 from database.manager import DatabaseManager
 from models.database import AnkiCard
 from services.example_generator import ExampleGeneratorService
-from config import settings
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s: %(message)s')
 logger = logging.getLogger(__name__)
@@ -36,7 +34,6 @@ async def main():
 	parser.add_argument('--limit', type=int, default=None, help='Limit number of cards to process')
 	parser.add_argument('--dry-run', action='store_true', help='Do not write example to DB, just simulate')
 	parser.add_argument('--parallel', action='store_true', help='Process cards in parallel (default: sequential)')
-	parser.add_argument('--debug-output', action='store_true', help='Save every generated example to a timestamped txt file in the project root')
 	args = parser.parse_args()
 
 	example_service = ExampleGeneratorService()
@@ -67,12 +64,6 @@ async def main():
 		card_data = get_card_data(card, columns)
 		try:
 			result = example_service.generate_example(card_data, template_str)
-			if args.debug_output and result:
-				ts = int(time.time() * 1000)
-				filename = f"example_{card.id}_{ts}.txt"
-				with open(filename, 'w', encoding='utf-8') as f:
-					f.write(result)
-				logger.info(f"Debug example output saved to {filename}")
 			if not args.dry_run:
 				card.example = result
 				with db_manager.get_session() as s2:

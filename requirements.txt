@@ -12,6 +12,10 @@ sqlite-vec>=0.1.0
 # FastAPI for HTTP API
 fastapi>=0.100.0
 uvicorn>=0.23.0
+python-multipart>=0.0.6
+
+# Web interface dependencies
+jinja2>=3.1.0
 
 # AI/ML libraries for embeddings
 sentence-transformers>=2.2.0
@@ -31,4 +35,3 @@ flake8>=6.0.0
 # transformers>=4.30.0 
 
 litellm
-jinja2

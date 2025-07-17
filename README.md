@@ -1,295 +1,116 @@
-# Anki Vector Database
+# Anki Vector Database Project
 
-A Python application for managing Anki flashcard data with vector embeddings and semantic search capabilities.
+A Python-based system for managing Anki flashcards with vector embeddings and AI-powered enhancements.
 
 ## Features
 
-- **Anki Integration**: Sync cards from Anki via AnkiConnect
-- **Vector Embeddings**: Generate semantic embeddings for card content using sentence transformers
-- **Semantic Search**: Find similar cards using vector similarity
-- **SQLite Storage**: Efficient storage with sqlite-vec extension for vector operations
-- **REST API**: FastAPI-based HTTP interface
-- **CLI Tools**: Command-line interface for batch operations
+- **Vector Embeddings**: Generate and search card embeddings using sentence transformers
+- **AI Example Generation**: Create examples for cards using language models
+- **Text-to-Speech**: Generate audio for cards using OpenAI's TTS
+- **Card Management**: Sync cards from Anki, manage drafts, and publish to Anki
+- **Web Interface**: User-friendly admin panel for managing all operations
+- **REST API**: Full HTTP API for programmatic access
 
-## Setup
+## Quick Start
 
-1. **Install Dependencies**:
+1. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Configure Environment** (optional):
+2. **Start the server:**
    ```bash
-   cp env.example .env
-   # Edit .env with your settings
+   python -m uvicorn api:app --reload --port 8000
    ```
 
-3. **Start AnkiConnect**: 
-   - Install AnkiConnect addon in Anki
-   - Keep Anki running during sync operations
+3. **Access the web interface:**
+   Open `http://localhost:8000/admin` in your browser
 
-4. **Start the API Server**:
-   ```bash
-   uvicorn api:app --reload
-   ```
+## Web Interface
 
-## Quick Start
+The web interface provides an intuitive way to:
+- Generate AI-powered examples for your cards
+- Manage vector embeddings
+- Create text-to-speech audio
+- Publish draft cards to Anki
+- Monitor processing progress in real-time
 
-### Sync Cards from Anki
-```bash
-# Start the API server (required for all API and web operations)
-uvicorn api:app --reload
-# Use API endpoints or sync via the web interface
-```
+See [Web Interface Guide](docs/web-interface-guide.md) for detailed usage instructions.
 
-### Generate Embeddings
+## Command Line Interface
 
-**Using the standalone CLI:**
-```bash
-# Generate embeddings for all decks
-python embedding_cli.py --generate --all-decks
+For advanced users, CLI tools are available:
 
-# Generate embeddings for a specific deck
-python embedding_cli.py --generate --deck "My Deck Name"
+- `python embedding_cli.py` - Manage vector embeddings
+- `python example_generator_cli.py` - Generate examples via CLI
+- `python tts_cli.py` - Generate text-to-speech audio
+- `python publish_cli.py` - Publish draft cards to Anki
 
-# View statistics
-python embedding_cli.py --stats
+## API Documentation
 
-# Search for similar cards
-python embedding_cli.py --search "your search query" --top-k 5
-```
+When the server is running, visit `http://localhost:8000/docs` for interactive API documentation.
 
-**Using the processor directly:**
-```bash
-# Generate for all decks
-python embedding_processor.py --all-decks
+## Configuration
 
-# Generate for specific deck
-python embedding_processor.py --deck "My Deck Name"
-
-# Search similar cards
-python embedding_processor.py --search "your query" --top-k 10
-```
-
-### Generate Audio (Text-to-Speech)
-
-**Using the standalone CLI:**
-```bash
-# Generate audio for all cards in a deck (default: front column, only cards without audio)
-python tts_cli.py --deck "My Deck Name"
-
-# Specify a different column (e.g., back)
-python tts_cli.py --deck "My Deck Name" --column back
-
-# Limit the number of processed cards
-python tts_cli.py --deck "My Deck Name" --limit 10
-
-# Dry run (simulate, do not write audio)
-python tts_cli.py --deck "My Deck Name" --dry-run
-
-# Process in parallel
-python tts_cli.py --deck "My Deck Name" --parallel
-
-# Specify TTS model, format, or voice
-python tts_cli.py --deck "My Deck Name" --model tts-1 --format mp3 --voice alloy
-```
-
-**Arguments:**
-- `--deck`: Filter by deck name (required for most runs)
-- `--column`: Which card column to use as text input (default: front)
-- `--dry-run`: Do not write audio to DB, just simulate
-- `--parallel`: Process cards in parallel (default: sequential)
-- `--model`: TTS model to use (default from config)
-- `--format`: Audio format (mp3, wav, etc.; default from config)
-- `--voice`: Voice to use (default from config)
-- `--limit`: Limit number of cards to process (like SQL LIMIT)
-
-This CLI will generate audio for each card (if not already present), store it in the `audio` field, and record the TTS model used in the `tts_model` field.
-
-### Generate Examples (LLM-powered)
-
-**Using the standalone CLI:**
-```bash
-# Generate examples for all cards in a deck (using front_text and back_text as input)
-python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt
-
-# Limit the number of processed cards
-python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --limit 10
-
-# Dry run (simulate, do not write example)
-python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --dry-run
-
-# Process in parallel
-python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --parallel
-
-# Save every generated example to a file for debugging
-python example_generator_cli.py --deck "My Deck Name" --columns front_text,back_text --instructions prompt_template.txt --debug-output
-```
-
-**Arguments:**
-- `--deck`: Filter by deck name (optional)
-- `--columns`: Comma-separated list of columns to use as input for the prompt (e.g., `front_text,back_text`)
-- `--instructions`: Path to Jinja2 template file for prompt
-- `--limit`: Limit number of cards to process (like SQL LIMIT)
-- `--dry-run`: Do not write example to DB, just simulate
-- `--parallel`: Process cards in parallel (default: sequential)
-- `--debug-output`: Save every generated example to a timestamped txt file in the project root
-
-This CLI will generate an example for each card (if not already present), using the specified columns and template, and store it in the `example` field.
-
-### Configuration Options
-
-The embedding system supports various configuration options via environment variables:
+Copy `env.example` to `.env` and configure your settings:
 
 ```bash
-# Model configuration
-EMBEDDING_MODEL=all-MiniLM-L6-v2  # Sentence transformer model
-EMBEDDING_BATCH_SIZE=32           # Batch size for processing
-EMBEDDING_DEVICE=auto             # Device: auto, cpu, cuda, mps
-EMBEDDING_CACHE_DIR=./models      # Model cache directory
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
 
 # Database
 DATABASE_URL=sqlite:///anki_vector_db.db
 
-# AnkiConnect
-ANKI_CONNECT_URL=http://localhost:8765
+# OpenAI (for example generation and TTS)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Embedding Model
+EMBEDDING_MODEL=all-MiniLM-L6-v2
 ```
-
-## Embedding Types
-
-The system generates three types of embeddings for each card:
-
-- **front**: Embedding of the front text only
-- **back**: Embedding of the back text only  
-- **combined**: Embedding of front + back text combined
-
-## API Endpoints
-
-- `GET /cards` - List all cards
-- `POST /sync/deck/{deck_name}` - Sync specific deck
-- `POST /sync/all` - Sync all decks
-- `POST /search/similar` - Search for similar cards
 
 ## Architecture
 
-- **main.py**: Core application, database models, AnkiConnect client
-- **embedding_processor.py**: Embedding generation and management
-- **embedding_cli.py**: Standalone CLI for embedding operations
-- **config.py**: Configuration management
-- **api.py**: FastAPI HTTP endpoints
+The system follows a layered architecture:
 
-## Performance Notes
+- **Web Interface**: Bootstrap-based admin panel with real-time updates
+- **API Layer**: FastAPI with automatic OpenAPI documentation
+- **Service Layer**: Business logic for embeddings, examples, and TTS
+- **Data Layer**: SQLite with vector support and Anki integration
 
-- **Apple Silicon**: Automatically uses MPS acceleration when available
-- **CUDA**: Supports GPU acceleration on compatible systems
-- **Batch Processing**: Efficient batch processing for large decks
-- **Caching**: Text embeddings are cached to avoid recomputation
-- **No Regeneration**: By default, existing embeddings are not regenerated
+## Documentation
 
-## Error Handling
+- [Architecture Overview](docs/architecture-overview.md)
+- [Web Interface Guide](docs/web-interface-guide.md)
+- [Card Sync Flow](docs/card-sync-flow.md)
+- [Embedding Generation Flow](docs/embedding-generation-flow.md)
+- [Vector Search Flow](docs/vector-search-flow.md)
 
-The system uses simple error handling as requested:
-- Errors are logged with detailed context about which task failed
-- Processing continues for other cards/decks when individual items fail
-- CLI provides clear error messages with task information
+## Recent Updates
 
-## Example Usage
+### Web Interface (Latest)
+- ✅ **Example Generation Web Interface**: Full-featured web UI for AI example generation
+- ✅ **Real-time Progress Tracking**: Live progress updates with polling
+- ✅ **Template Preview**: Preview generated examples before processing
+- ✅ **Dry Run Mode**: Test templates without saving to database
+- ✅ **Parallel Processing Control**: User-configurable parallel vs sequential processing
+- ✅ **Error Handling**: Detailed error reporting and recovery options
 
-```bash
-# First, sync your cards from Anki
-python main.py &  # Start API server
-curl -X POST http://localhost:8000/sync/all
+### Previous Updates
+- ✅ Vector embedding generation and search
+- ✅ OpenAI integration for examples and TTS
+- ✅ Anki card synchronization
+- ✅ CLI tools for all operations
+- ✅ REST API with full documentation
 
-# Generate embeddings
-python embedding_cli.py --generate --all-decks
+## Contributing
 
-# Search for similar cards
-python embedding_cli.py --search "vocabulary word" --embedding-type combined --top-k 5
-
-# View statistics
-python embedding_cli.py --stats
-```
-
-This will download the sentence transformer model (~91MB) on first use and generate embeddings for all your cards.
-
-## Dependencies
-
-Key dependencies include:
-- sentence-transformers: For embedding generation
-- torch: ML framework (supports CPU, CUDA, MPS)
-- sqlite-vec: Vector operations in SQLite
-- fastapi: Web API framework
-- sqlalchemy: Database ORM
-
-## Project Structure
-
-```
-anki-vector-app/
-├── main.py              # Core application logic
-├── api.py               # FastAPI server
-├── config.py            # Configuration management
-├── requirements.txt     # Dependencies
-├── env.example         # Environment template
-└── README.md           # This file
-```
-
-## Troubleshooting
-
-### AnkiConnect Issues
-- Ensure Anki is running and AnkiConnect plugin is installed
-- Check if `localhost:8765` is accessible
-- Verify AnkiConnect version compatibility
-
-### Database Issues
-- Ensure sqlite-vec extension is properly installed
-- Check database permissions and file paths
-
-### Vector Storage
-- SQLite vector storage is ready for production
-- Mock embeddings are in place for testing
-- Replace with actual embedding models as needed
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## License
 
-MIT License 
-
-## Publish Draft Cards to Anki
-
-You can upload local draft cards (cards with `is_draft=1`) to Anki, ensuring all cards in a deck use a consistent note type (model) with a superset of fields. This includes fields like `Front`, `Back`, `Audio`, `Example`, and `Transcription`.
-
-- The system will automatically:
-  - Determine all fields present in the deck (superset across all cards)
-  - Create or update the note type (model) in Anki to match these fields
-  - Migrate existing notes in the deck to the new model if new fields are added (old fields are preserved, new fields are set empty)
-  - Upload all draft cards to Anki using the new model
-  - Mark successful uploads as synced in the local DB (`is_draft=0`, set `anki_note_id`)
-  - Tag failed uploads with `sync::failed` in the DB
-
-**Example usage in Python:**
-```python
-from services.card_service import CardService
-import asyncio
-
-service = CardService()
-result = asyncio.run(service.publish_draft_cards(deck_name="My Deck Name", model_name=None, limit=10))
-print(result)
-```
-- `deck_name`: The deck to publish to
-- `model_name`: (Optional) Use a specific model name; if not provided, a new model is generated based on the fields
-- `limit`: (Optional) Limit the number of draft cards to upload
-
-**CLI usage:**
-You can also run this feature from the command line:
-```bash
-python publish_cli.py --deck "My Deck Name" --limit 10
-```
-- `--deck`: Target deck name (required)
-- `--model`: Model name to use (optional)
-- `--limit`: Limit number of draft cards to upload (optional)
-
-**Behavior:**
-- All cards in the deck will use the same note type (model) with all required fields
-- Existing notes in the deck are migrated to the new model if needed
-- Audio is attached as an mp3 if present
-- Tags are preserved from the DB
-- Failed uploads are logged and tagged as `sync::failed` 
+MIT License - see LICENSE file for details. 

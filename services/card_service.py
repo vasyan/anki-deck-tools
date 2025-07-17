@@ -6,6 +6,9 @@ from typing import Dict, Any, List
 
 from anki.client import AnkiConnectClient
 from database.manager import DatabaseManager
+from models.database import AnkiCard, ExampleAudio
+from sqlalchemy import func
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -190,3 +193,89 @@ class CardService:
             "success_ids": success,
             "failed_ids": failed
         } 
+
+    async def add_example_audio(self, card_id: int, example_text: str, audio_blob: bytes, tts_model: str = None, order_index: int = None) -> int:
+        """Add audio for a specific example"""
+        with self.db_manager.get_session() as session:
+            # Get current max order_index for this card
+            if order_index is None:
+                max_order = session.query(func.max(ExampleAudio.order_index))\
+                    .filter_by(card_id=card_id).scalar() or -1
+                order_index = max_order + 1
+            example_audio = ExampleAudio(
+                card_id=card_id,
+                audio_blob=audio_blob,
+                example_text=example_text,
+                tts_model=tts_model,
+                order_index=order_index
+            )
+            session.add(example_audio)
+            session.commit()
+            return example_audio.id
+
+    async def get_example_audios(self, card_id: int) -> list:
+        """Get all example audios for a card"""
+        with self.db_manager.get_session() as session:
+            audios = session.query(ExampleAudio)\
+                .filter_by(card_id=card_id)\
+                .order_by(ExampleAudio.order_index)\
+                .all()
+            return [
+                {
+                    "id": audio.id,
+                    "example_text": audio.example_text,
+                    "audio_blob": audio.audio_blob,
+                    "tts_model": audio.tts_model,
+                    "order_index": audio.order_index,
+                    "created_at": audio.created_at
+                }
+                for audio in audios
+            ]
+
+    async def generate_example_audios(self, card_id: int, examples: list) -> list:
+        """Generate TTS audio for multiple examples and store them"""
+        from services.text_to_voice import TextToSpeechService
+        tts_service = TextToSpeechService()
+        audio_ids = []
+        for i, example_text in enumerate(examples):
+            try:
+                result = tts_service.synthesize(example_text)
+                audio_blob = result["audio"]
+                tts_model = result["tts_model"]
+                audio_id = await self.add_example_audio(
+                    card_id=card_id,
+                    example_text=example_text,
+                    audio_blob=audio_blob,
+                    tts_model=tts_model,
+                    order_index=i
+                )
+                audio_ids.append(audio_id)
+            except Exception as e:
+                logger.error(f"Failed to generate audio for example {i}: {e}")
+        return audio_ids
+
+    async def get_card_with_examples(self, card_id: int) -> dict:
+        """Get card and all example audios"""
+        with self.db_manager.get_session() as session:
+            card = session.query(AnkiCard).get(card_id)
+            if not card:
+                return None
+            example_audios = session.query(ExampleAudio)\
+                .filter_by(card_id=card_id)\
+                .order_by(ExampleAudio.order_index)\
+                .all()
+            return {
+                "id": card.id,
+                "front_text": card.front_text,
+                "back_text": card.back_text,
+                "audio": card.audio,
+                "example": card.example,
+                "example_audios": [
+                    {
+                        "text": audio.example_text,
+                        "audio": audio.audio_blob,
+                        "tts_model": audio.tts_model
+                    }
+                    for audio in example_audios
+                ]
+            } 

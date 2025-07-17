@@ -27,3 +27,4 @@ class ExampleGeneratorService:
 		except Exception as e:
 			logger.error(f"Example generation failed: {e}")
 			raise 
+	
