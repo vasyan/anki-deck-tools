@@ -2,30 +2,46 @@
 SQLAlchemy database models for Anki Vector application
 """
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON, LargeBinary, Index
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON, LargeBinary, Index, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
+
+class CardExampleAudioAssociation(Base):
+    """Junction table for many-to-many relationship between AnkiCard and ExampleAudio"""
+    __tablename__ = "card_example_audio_association"
+    
+    id = Column(Integer, primary_key=True)
+    card_id = Column(Integer, ForeignKey("anki_cards.id"), nullable=False)
+    example_audio_id = Column(Integer, ForeignKey("example_audio.id"), nullable=False)
+    order_index = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    __table_args__ = (
+        Index('idx_card_audio_order', 'card_id', 'order_index'),
+        Index('idx_card_audio_unique', 'card_id', 'example_audio_id', unique=True),
+    )
+
+    # Relationships
+    card = relationship("AnkiCard", back_populates="card_example_associations")
+    example_audio = relationship("ExampleAudio", back_populates="card_associations")
 
 class ExampleAudio(Base):
     """SQLAlchemy model for example audio recordings"""
     __tablename__ = "example_audio"
     
     id = Column(Integer, primary_key=True)
-    card_id = Column(Integer, ForeignKey("anki_cards.id"), nullable=False)
     audio_blob = Column(LargeBinary, nullable=False)
     example_text = Column(Text, nullable=False)
     tts_model = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    order_index = Column(Integer, default=0)
 
-    __table_args__ = (
-        Index('idx_card_id_order', 'card_id', 'order_index'),
-    )
-
-    # Relationship to card
-    card = relationship("AnkiCard", back_populates="example_audios")
+    # Relationship to association table
+    card_associations = relationship("CardExampleAudioAssociation", back_populates="example_audio")
+    
+    # Convenience relationship to get cards (through association)
+    cards = relationship("AnkiCard", secondary="card_example_audio_association", back_populates="example_audios")
 
 class AnkiCard(Base):
     """SQLAlchemy model for Anki cards"""
@@ -48,8 +64,12 @@ class AnkiCard(Base):
     
     # Relationship to embeddings
     embeddings = relationship("VectorEmbedding", back_populates="card")
-    # Add relationship
-    example_audios = relationship("ExampleAudio", back_populates="card", order_by="ExampleAudio.order_index")
+    
+    # Relationship to association table
+    card_example_associations = relationship("CardExampleAudioAssociation", back_populates="card")
+    
+    # Convenience relationship to get example audios (through association)
+    example_audios = relationship("ExampleAudio", secondary="card_example_audio_association", back_populates="cards")
 
 class VectorEmbedding(Base):
     """SQLAlchemy model for vector embeddings"""

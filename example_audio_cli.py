@@ -15,6 +15,7 @@ sys.path.append(str(Path(__file__).parent))
 from database.manager import DatabaseManager
 from models.database import AnkiCard, ExampleAudio, ExampleAudioLog
 from services.text_to_voice import TextToSpeechService
+from services.example_audio_manager import ExampleAudioManager
 from services.card_service import CardService
 from sqlalchemy.orm import Session
 
@@ -113,37 +114,39 @@ async def main():
 				audio_blobs = []
 				for idx, item in enumerate(thai_strongs):
 					try:
-						# Caching: check if this text already exists for this card
-						existing_audio = session.query(ExampleAudio).filter_by(card_id=card.id, example_text=item['thai']).first()
+						# Caching: check if this text already exists in the audio bank
+						audio_manager = ExampleAudioManager()
+						
+						existing_audio = audio_manager.find_reusable_audio(item['thai'])
 						if existing_audio:
-							audio_blob = existing_audio.audio_blob
-							tts_model = existing_audio.tts_model
-							# Optionally, re-insert to keep order_index correct
-							example_audio = ExampleAudio(
+							audio_blob = existing_audio['audio_blob']
+							tts_model = existing_audio['tts_model']
+							
+							# Associate existing audio with this card
+							audio_manager.associate_audio_with_card(
 								card_id=card.id,
-								example_text=item['thai'],
-								tts_model=tts_model,
-								audio_blob=audio_blob,
+								audio_id=existing_audio['audio_id'],
 								order_index=idx
 							)
-							session.add(example_audio)
-							session.commit()
+							
 							audio_blobs.append((idx, audio_blob))
 							log_action(session, card.id, 'generate', 'cached', f'Audio reused for index {idx}')
 							continue
+							
 						# If not cached, call TTS API
 						result = tts_service.synthesize(item['thai'])
 						audio_blob = result['audio']
 						tts_model = result['tts_model']
-						example_audio = ExampleAudio(
+						
+						# Create new audio and associate with card
+						audio_id, association_id = audio_manager.create_audio_and_associate(
 							card_id=card.id,
 							example_text=item['thai'],
-							tts_model=tts_model,
 							audio_blob=audio_blob,
+							tts_model=tts_model,
 							order_index=idx
 						)
-						session.add(example_audio)
-						session.commit()
+						
 						audio_blobs.append((idx, audio_blob))
 						log_action(session, card.id, 'generate', 'success', f'Audio generated for index {idx}')
 					except Exception as e:
@@ -166,7 +169,18 @@ async def main():
 					# Re-fetch the card in the current session
 					card_in_session = session.query(AnkiCard).get(card_id)
 					# Get all example audios for this card
-					example_audios = session.query(ExampleAudio).filter_by(card_id=card_id).order_by(ExampleAudio.order_index).all()
+					audio_manager = ExampleAudioManager()
+					example_audios_data = audio_manager.get_card_audio_examples(card_id)
+					
+					# Convert to ExampleAudio-like objects for compatibility
+					class AudioExample:
+						def __init__(self, data):
+							self.audio_blob = data['audio_blob']
+							self.example_text = data['example_text']
+							self.tts_model = data['tts_model']
+							self.order_index = data['order_index']
+					
+					example_audios = [AudioExample(data) for data in example_audios_data]
 					if not example_audios:
 						log_action(session, card_id, 'publish', 'skipped', 'No example audios to publish')
 						continue
