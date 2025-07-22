@@ -6,7 +6,7 @@ from typing import Dict, Any, List
 
 from anki.client import AnkiConnectClient
 from database.manager import DatabaseManager
-from models.database import AnkiCard, ExampleAudio
+from models.database import AnkiCard
 from sqlalchemy import func
 import base64
 

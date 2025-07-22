@@ -13,7 +13,7 @@ from datetime import datetime
 sys.path.append(str(Path(__file__).parent))
 
 from database.manager import DatabaseManager
-from models.database import AnkiCard, ExampleAudio, ExampleAudioLog
+from models.database import AnkiCard, ExampleAudioLog
 from services.text_to_voice import TextToSpeechService
 from services.example_audio_manager import ExampleAudioManager
 from services.card_service import CardService
@@ -123,9 +123,13 @@ async def main():
 							tts_model = existing_audio['tts_model']
 							
 							# Associate existing audio with this card
+							fragment_id = existing_audio['fragment_id']
+							audio_id = existing_audio['audio_id']
+							
+							# Associate fragment with card by adding it to the example field
 							audio_manager.associate_audio_with_card(
 								card_id=card.id,
-								audio_id=existing_audio['audio_id'],
+								audio_id=audio_id,
 								order_index=idx
 							)
 							
@@ -139,7 +143,7 @@ async def main():
 						tts_model = result['tts_model']
 						
 						# Create new audio and associate with card
-						audio_id, association_id = audio_manager.create_audio_and_associate(
+						asset_id, fragment_id = audio_manager.create_audio_and_associate(
 							card_id=card.id,
 							example_text=item['thai'],
 							audio_blob=audio_blob,
@@ -172,7 +176,7 @@ async def main():
 					audio_manager = ExampleAudioManager()
 					example_audios_data = audio_manager.get_card_audio_examples(card_id)
 					
-					# Convert to ExampleAudio-like objects for compatibility
+					# Create lightweight objects for publishing
 					class AudioExample:
 						def __init__(self, data):
 							self.audio_blob = data['audio_blob']
@@ -180,10 +184,13 @@ async def main():
 							self.tts_model = data['tts_model']
 							self.order_index = data['order_index']
 					
-					example_audios = [AudioExample(data) for data in example_audios_data]
+					# Skip entries with no audio blob
+					example_audios = [AudioExample(data) for data in example_audios_data if data['audio_blob']]
+					
 					if not example_audios:
 						log_action(session, card_id, 'publish', 'skipped', 'No example audios to publish')
 						continue
+					
 					# Check if already published (unless --republish)
 					already_published = False
 					if not args.republish:
@@ -193,6 +200,7 @@ async def main():
 					if already_published:
 						log_action(session, card_id, 'publish', 'skipped', 'Already published')
 						continue
+					
 					# Upload audio files and update example field in Anki
 					async def publish_to_anki():
 						async with AnkiConnectClient() as anki_client:

@@ -16,7 +16,6 @@ class AnkiCardResponse(BaseModel):
     tags: List[str] = []
     created_at: datetime
     updated_at: datetime
-    is_draft: int = 1
     example: Optional[str] = None
 
 class VectorSearchRequest(BaseModel):

@@ -3,7 +3,7 @@ FastAPI server for the Anki Vector application
 """
 import json
 import logging
-from typing import List, Dict, Any, Generator
+from typing import List, Dict, Any, Generator, Optional
 from contextlib import asynccontextmanager
 import asyncio
 import uuid
@@ -22,6 +22,12 @@ from database.manager import DatabaseManager
 from models.schemas import AnkiCardResponse, VectorSearchRequest, SyncCardRequest
 from models.database import AnkiCard
 from services.example_generator import ExampleGeneratorService
+from services.fragment_manager import FragmentManager
+from services.fragment_asset_manager import FragmentAssetManager
+from services.template_parser import TemplateParser
+from services.content_renderer import ContentRenderer
+from services.learning_content_service import LearningContentService
+from services.export_service import ExportService
 from config import settings
 
 # Configure logging
@@ -257,9 +263,19 @@ async def admin_dashboard(request: Request):
     return templates.TemplateResponse("admin/dashboard.html", {"request": request})
 
 @app.get("/admin/example", response_class=HTMLResponse)
-async def example_generation_form(request: Request):
-    """Example generation form"""
+async def admin_example(request: Request):
+    """Example generation admin page"""
     return templates.TemplateResponse("admin/example_form.html", {"request": request})
+
+@app.get("/admin/fragments", response_class=HTMLResponse)
+async def admin_fragments(request: Request):
+    """Fragment management admin page"""
+    return templates.TemplateResponse("admin/fragments.html", {"request": request})
+
+@app.get("/admin/learning-content", response_class=HTMLResponse)
+async def admin_learning_content(request: Request):
+    """Learning content management admin page"""
+    return templates.TemplateResponse("admin/learning_content.html", {"request": request})
 
 @app.get("/admin/example/instructions")
 async def list_instruction_files():
@@ -680,6 +696,472 @@ async def get_stats() -> Dict[str, Any]:
             }
     except Exception as e:
         logger.error(f"Error getting stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Fragment Management API Endpoints
+
+@app.post("/fragments")
+async def create_fragment(
+    text: str = Form(...),
+    fragment_type: str = Form(...),
+    metadata: str = Form(None)
+):
+    """Create a new content fragment"""
+    try:
+        fragment_manager = FragmentManager()
+        
+        # Parse metadata if provided
+        parsed_metadata = {}
+        if metadata:
+            try:
+                parsed_metadata = json.loads(metadata)
+            except json.JSONDecodeError:
+                raise HTTPException(status_code=400, detail="Invalid metadata JSON")
+        
+        fragment_id = fragment_manager.create_fragment(text, fragment_type, parsed_metadata)
+        
+        return {
+            "fragment_id": fragment_id,
+            "message": "Fragment created successfully"
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error creating fragment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/fragments/types")
+async def get_fragment_types():
+    """Get all supported fragment types"""
+    try:
+        fragment_manager = FragmentManager()
+        return fragment_manager.get_fragment_types()
+    except Exception as e:
+        logger.error(f"Error getting fragment types: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/fragments/stats")
+async def get_fragment_stats():
+    """Get fragment statistics"""
+    try:
+        fragment_manager = FragmentManager()
+        return fragment_manager.get_fragment_statistics()
+    except Exception as e:
+        logger.error(f"Error getting fragment stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/fragments")
+async def search_fragments(
+    text_search: str = None,
+    fragment_type: str = None,
+    has_assets: bool = None,
+    limit: int = 50,
+    offset: int = 0
+):
+    """Search fragments"""
+    try:
+        fragment_manager = FragmentManager()
+        fragments = fragment_manager.find_fragments(text_search, fragment_type, has_assets, limit, offset)
+        
+        return {
+            "fragments": fragments,
+            "limit": limit,
+            "offset": offset
+        }
+    except Exception as e:
+        logger.error(f"Error searching fragments: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/fragments/{fragment_id}")
+async def get_fragment(fragment_id: int):
+    """Get a fragment by ID"""
+    try:
+        fragment_manager = FragmentManager()
+        fragment = fragment_manager.get_fragment(fragment_id)
+        
+        if not fragment:
+            raise HTTPException(status_code=404, detail="Fragment not found")
+        
+        return fragment
+    except Exception as e:
+        logger.error(f"Error getting fragment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/fragments/{fragment_id}")
+async def update_fragment(
+    fragment_id: int,
+    text: str = Form(None),
+    fragment_type: str = Form(None),
+    metadata: str = Form(None)
+):
+    """Update a fragment"""
+    try:
+        fragment_manager = FragmentManager()
+        
+        # Parse metadata if provided
+        parsed_metadata = None
+        if metadata:
+            try:
+                parsed_metadata = json.loads(metadata)
+            except json.JSONDecodeError:
+                raise HTTPException(status_code=400, detail="Invalid metadata JSON")
+        
+        success = fragment_manager.update_fragment(fragment_id, text, fragment_type, parsed_metadata)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Fragment not found")
+        
+        return {"message": "Fragment updated successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error updating fragment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/fragments/{fragment_id}")
+async def delete_fragment(fragment_id: int):
+    """Delete a fragment"""
+    try:
+        fragment_manager = FragmentManager()
+        success = fragment_manager.delete_fragment(fragment_id)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Fragment not found")
+        
+        return {"message": "Fragment deleted successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error deleting fragment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Fragment Asset API Endpoints
+
+@app.post("/fragments/{fragment_id}/assets")
+async def add_fragment_asset(
+    fragment_id: int,
+    asset_type: str = Form(...),
+    asset_file: bytes = Form(...),
+    asset_metadata: str = Form(None),
+    created_by: str = Form(None),
+    auto_activate: bool = Form(True)
+):
+    """Add an asset to a fragment"""
+    try:
+        asset_manager = FragmentAssetManager()
+        
+        # Parse metadata if provided
+        parsed_metadata = {}
+        if asset_metadata:
+            try:
+                parsed_metadata = json.loads(asset_metadata)
+            except json.JSONDecodeError:
+                raise HTTPException(status_code=400, detail="Invalid metadata JSON")
+        
+        asset_id = asset_manager.add_asset(
+            fragment_id, asset_type, asset_file, parsed_metadata, created_by, auto_activate
+        )
+        
+        return {
+            "asset_id": asset_id,
+            "message": "Asset added successfully"
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error adding asset: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/fragments/{fragment_id}/assets")
+async def get_fragment_assets(
+    fragment_id: int,
+    asset_type: str = None,
+    active_only: bool = False
+):
+    """Get assets for a fragment"""
+    try:
+        asset_manager = FragmentAssetManager()
+        assets = asset_manager.get_fragment_assets(fragment_id, asset_type, active_only)
+        
+        # Remove binary data from response for JSON serialization
+        for asset in assets:
+            if 'asset_data' in asset:
+                asset['asset_data_size'] = len(asset['asset_data'])
+                del asset['asset_data']
+        
+        return {"assets": assets}
+    except Exception as e:
+        logger.error(f"Error getting assets: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/fragments/assets/{asset_id}/activate")
+async def activate_asset(asset_id: int, is_active: bool = Form(True)):
+    """Activate or deactivate an asset"""
+    try:
+        asset_manager = FragmentAssetManager()
+        success = asset_manager.set_asset_active(asset_id, is_active)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Asset not found")
+        
+        return {"message": f"Asset {'activated' if is_active else 'deactivated'} successfully"}
+    except Exception as e:
+        logger.error(f"Error activating asset: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/fragments/assets/{asset_id}/assess")
+async def assess_asset(
+    asset_id: int,
+    rank_score: float = Form(...),
+    assessed_by: str = Form(...),
+    assessment_notes: str = Form(None),
+    set_active: bool = Form(None)
+):
+    """Assess an asset quality"""
+    try:
+        asset_manager = FragmentAssetManager()
+        success = asset_manager.assess_asset(asset_id, rank_score, assessed_by, assessment_notes, set_active)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Asset not found")
+        
+        return {"message": "Asset assessed successfully"}
+    except Exception as e:
+        logger.error(f"Error assessing asset: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/fragments/assets/{asset_id}")
+async def delete_asset(asset_id: int):
+    """Delete an asset"""
+    try:
+        asset_manager = FragmentAssetManager()
+        success = asset_manager.delete_asset(asset_id)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Asset not found")
+        
+        return {"message": "Asset deleted successfully"}
+    except Exception as e:
+        logger.error(f"Error deleting asset: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/fragments/assets/stats")
+async def get_fragment_asset_stats():
+    """Get fragment asset statistics"""
+    try:
+        asset_manager = FragmentAssetManager()
+        return asset_manager.get_asset_statistics()
+    except Exception as e:
+        logger.error(f"Error getting fragment asset stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Template and Content Rendering API Endpoints
+
+@app.post("/templates/parse")
+async def parse_template(template_content: str = Form(...)):
+    """Parse template content and extract fragment tokens"""
+    try:
+        parser = TemplateParser()
+        tokens = parser.parse_template(template_content)
+        
+        return {
+            "tokens": tokens,
+            "fragment_count": len(set(token['fragment_id'] for token in tokens))
+        }
+    except Exception as e:
+        logger.error(f"Error parsing template: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/templates/render")
+async def render_template(
+    template_content: str = Form(...),
+    output_format: str = Form("html"),
+    card_id: int = Form(None),
+    track_usage: bool = Form(True)
+):
+    """Render template content"""
+    try:
+        parser = TemplateParser()
+        rendered_content = parser.render_template(template_content, output_format, card_id, track_usage)
+        
+        return {
+            "rendered_content": rendered_content,
+            "original_content": template_content,
+            "output_format": output_format
+        }
+    except Exception as e:
+        logger.error(f"Error rendering template: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/templates/validate")
+async def validate_template(template_content: str = Form(...)):
+    """Validate template content"""
+    try:
+        parser = TemplateParser()
+        validation = parser.validate_template(template_content)
+        
+        return validation
+    except Exception as e:
+        logger.error(f"Error validating template: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/cards/{card_id}/render")
+async def render_card_content(card_id: int, output_format: str = "html"):
+    """Render all content for a card"""
+    try:
+        renderer = ContentRenderer()
+        rendered = renderer.render_card_content(card_id, output_format)
+        
+        return rendered
+    except Exception as e:
+        logger.error(f"Error rendering card content: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/cards/{card_id}/fragments")
+async def get_card_fragments(card_id: int):
+    """Get fragments used by a card"""
+    try:
+        renderer = ContentRenderer()
+        summary = renderer.get_card_fragments_summary(card_id)
+        
+        return summary
+    except Exception as e:
+        logger.error(f"Error getting card fragments: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/cards/{card_id}/convert")
+async def convert_legacy_card(card_id: int, auto_generate_audio: bool = Form(False)):
+    """Convert legacy card content to fragment system"""
+    try:
+        renderer = ContentRenderer()
+        
+        # Get TTS service if needed
+        tts_service = None
+        if auto_generate_audio:
+            from services.text_to_voice import TextToSpeechService
+            tts_service = TextToSpeechService()
+        
+        result = renderer.convert_legacy_examples(card_id, auto_generate_audio, tts_service)
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error converting card: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/cards/{card_id}/preview")
+async def preview_card_rendering(card_id: int):
+    """Preview how a card would render in different formats"""
+    try:
+        renderer = ContentRenderer()
+        preview = renderer.preview_card_rendering(card_id)
+        
+        return preview
+    except Exception as e:
+        logger.error(f"Error previewing card: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Learning Content API Endpoints
+
+@app.get("/api/learning-content/stats")
+async def get_learning_content_stats():
+    """Get learning content statistics"""
+    try:
+        learning_service = LearningContentService()
+        
+        content_types = learning_service.get_content_types()
+        languages = learning_service.get_languages()
+        
+        return {
+            'content_types': content_types,
+            'languages': languages
+        }
+    except Exception as e:
+        logger.error(f"Error getting learning content stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/learning-content")
+async def get_learning_content(
+    page: int = 1,
+    page_size: int = 20,
+    content_type: Optional[str] = None,
+    language: Optional[str] = None,
+    search: Optional[str] = None
+):
+    """Get learning content with filtering and pagination"""
+    try:
+        learning_service = LearningContentService()
+        
+        filters = {}
+        if content_type:
+            filters['content_type'] = content_type
+        if language:
+            filters['language'] = language
+        if search:
+            filters['text_search'] = search
+            
+        result = learning_service.search_content(filters, page, page_size)
+        return result
+    except Exception as e:
+        logger.error(f"Error getting learning content: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/learning-content/{content_id}")
+async def get_learning_content_by_id(content_id: int):
+    """Get specific learning content by ID"""
+    try:
+        learning_service = LearningContentService()
+        content = learning_service.get_content(content_id)
+        
+        if not content:
+            raise HTTPException(status_code=404, detail="Learning content not found")
+            
+        return content
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting learning content {content_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/api/learning-content/{content_id}")
+async def update_learning_content(content_id: int, updates: Dict[str, Any]):
+    """Update learning content"""
+    try:
+        learning_service = LearningContentService()
+        success = learning_service.update_content(content_id, **updates)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Learning content not found")
+            
+        return {"success": True, "message": f"Learning content {content_id} updated"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating learning content {content_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/learning-content/{content_id}/export/{format}")
+async def export_learning_content(content_id: int, format: str):
+    """Export learning content to different formats"""
+    try:
+        export_service = ExportService()
+        
+        if format == 'anki':
+            result = export_service.export_to_anki(content_id)
+        elif format == 'api-json':
+            result = export_service.export_to_api_json(content_id)
+        elif format == 'html':
+            result = export_service.export_to_html(content_id)
+        else:
+            raise HTTPException(status_code=400, detail=f"Unsupported export format: {format}")
+            
+        if 'error' in result:
+            raise HTTPException(status_code=500, detail=result['error'])
+            
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error exporting learning content {content_id} to {format}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":

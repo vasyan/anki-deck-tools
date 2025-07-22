@@ -4,6 +4,9 @@ A Python-based system for managing Anki flashcards with vector embeddings and AI
 
 ## Features
 
+- **Learning Content Management**: Abstract content system with template-based approach supporting multiple export formats
+- **Fragment System**: Reusable content fragments with audio assets and quality rankings
+- **Multi-Format Export**: Export learning content to Anki, JSON (API), and HTML formats
 - **Vector Embeddings**: Generate and search card embeddings using sentence transformers
 - **AI Example Generation**: Create examples for cards using language models
 - **Text-to-Speech**: Generate audio for cards using OpenAI's TTS
@@ -13,27 +16,52 @@ A Python-based system for managing Anki flashcards with vector embeddings and AI
 
 ## Quick Start
 
-1. **Install dependencies:**
+### Prerequisites
+This project uses **miniconda** for environment management. Make sure you have conda installed.
+
+### Setup
+
+1. **Activate the conda environment:**
+   ```bash
+   conda activate anki-thai
+   ```
+
+2. **Install dependencies (if not already done):**
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Start the server:**
+3. **Test the system:**
    ```bash
+   python test_new_architecture.py
+   ```
+
+4. **Start the server:**
+   ```bash
+   python api.py
+   # OR
    python -m uvicorn api:app --reload --port 8000
    ```
 
-3. **Access the web interface:**
+5. **Access the web interface:**
    Open `http://localhost:8000/admin` in your browser
 
 ## Web Interface
 
 The web interface provides an intuitive way to:
+- **Learning Content Management**: Create, edit, and organize abstract learning content (`/admin/learning-content`)
+- **Fragment Management**: Manage reusable content fragments and audio assets (`/admin/fragments`)
+- **Multi-Format Export**: Export content to Anki cards, API JSON, or standalone HTML
 - Generate AI-powered examples for your cards
 - Manage vector embeddings
 - Create text-to-speech audio
 - Publish draft cards to Anki
 - Monitor processing progress in real-time
+
+### Key Admin Interfaces:
+- **Dashboard**: `http://localhost:8000/admin` - Main admin panel
+- **Learning Content**: `http://localhost:8000/admin/learning-content` - Content management
+- **Fragments**: `http://localhost:8000/admin/fragments` - Fragment system management
 
 See [Web Interface Guide](docs/web-interface-guide.md) for detailed usage instructions.
 
