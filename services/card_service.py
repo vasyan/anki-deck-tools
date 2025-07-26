@@ -6,7 +6,8 @@ from typing import Dict, Any, List
 
 from anki.client import AnkiConnectClient
 from database.manager import DatabaseManager
-from models.database import AnkiCard
+from models.database import AnkiCard, LearningContent
+from services.export_service import ExportService
 from sqlalchemy import func
 import base64
 
@@ -17,6 +18,7 @@ class CardService:
     
     def __init__(self, db_manager: DatabaseManager = None):
         self.db_manager = db_manager or DatabaseManager()
+        self.export_service = ExportService()
     
     async def sync_deck(self, deck_name: str) -> Dict[str, Any]:
         """Sync a specific deck from Anki"""
@@ -193,6 +195,397 @@ class CardService:
             "success_ids": success,
             "failed_ids": failed
         } 
+
+    async def sync_learning_content_to_anki(self, learning_content_id: int, deck_name: str = "top-thai-2000") -> Dict[str, Any]:
+        """
+        Sync learning_content to Anki via AnkiConnect.
+        Creates anki_card row, renders templates, uploads to Anki, and updates status.
+        
+        Args:
+            learning_content_id: ID of learning content to sync
+            deck_name: Target deck name (default: "top-thai-2000")
+        
+        Returns:
+            Dictionary with sync result and details
+        """
+        try:
+            # Step 1: Check if learning content exists and get current export hash
+            with self.db_manager.get_session() as session:
+                learning_content = session.get(LearningContent, learning_content_id)
+                if not learning_content:
+                    return {"error": f"Learning content {learning_content_id} not found"}
+                
+                # Check if anki_card already exists for this learning_content
+                existing_card = session.query(AnkiCard).filter_by(
+                    learning_content_id=learning_content_id
+                ).first()
+            
+            # Step 2: Get rendered content and hash (ExportService does NO database writes)
+            export_result = self.export_service.get_anki_content(learning_content_id)
+            if 'error' in export_result:
+                return {"error": f"Failed to get content: {export_result['error']}"}
+            
+            rendered_content = export_result['rendered_content']
+            current_export_hash = export_result['export_hash']
+            
+            # Validate that we have front and back content
+            if not rendered_content.get('front') or not rendered_content.get('back'):
+                return {"error": "Learning content must have both front_template and back_template"}
+            
+            # Step 3: Handle existing card - check skip tags first, then hash comparison
+            if existing_card:
+                # Check if card is marked to skip sync
+                if self._should_skip_sync(existing_card):
+                    return {
+                        "message": f"AnkiCard for learning_content {learning_content_id} is marked to skip sync",
+                        "anki_card_id": existing_card.id,
+                        "anki_note_id": existing_card.anki_note_id,
+                        "tags": existing_card.tags,
+                        "status": "skipped"
+                    }
+                
+                # Compare export hashes to see if content has changed
+                if existing_card.export_hash == current_export_hash:
+                    return {
+                        "message": f"AnkiCard for learning_content {learning_content_id} is already up to date",
+                        "anki_card_id": existing_card.id,
+                        "anki_note_id": existing_card.anki_note_id,
+                        "status": "up_to_date"
+                    }
+                
+                # Content has changed - update existing card
+                try:
+                    return await self._update_existing_anki_card(
+                        existing_card, rendered_content, current_export_hash, deck_name, learning_content
+                    )
+                except Exception as e:
+                    logger.error(f"Error updating existing card: {e}")
+                    return {"error": f"Failed to update existing card: {str(e)}"}
+
+            # Step 4: Create new anki_card record for new learning content
+            with self.db_manager.get_session() as session:
+                anki_card = AnkiCard(
+                    learning_content_id=learning_content_id,
+                    deck_name=deck_name,
+                    tags=["sync::in-progress"],
+                    export_hash=current_export_hash
+                )
+                session.add(anki_card)
+                session.flush()  # Get the ID
+                anki_card_id = anki_card.id
+                session.commit()
+            
+            # Step 4: Upload to Anki via AnkiConnect
+            try:
+                async with AnkiConnectClient() as anki_client:
+                    # Ensure deck exists
+                    await anki_client.create_deck(deck_name)
+                    
+                    # Prepare note fields
+                    note_fields = {
+                        "Front": rendered_content['front'],
+                        "Back": rendered_content['back']
+                    }
+                    
+                    # Add example if present
+                    if rendered_content.get('example'):
+                        note_fields["Example"] = rendered_content['example']
+                    
+                    # Determine model name and ensure it exists
+                    field_names = list(note_fields.keys())
+                    model_name = f"{deck_name}_Model"
+                    
+                    existing_models = await anki_client.model_names()
+                    if model_name not in existing_models:
+                        # Create model with basic card template
+                        card_templates = [{
+                            "Name": "Card 1",
+                            "Front": "{{Front}}",
+                            "Back": "{{Back}}"
+                        }]
+                        await anki_client.create_model(model_name, field_names, card_templates)
+                    
+                    # Create note in Anki
+                    note = {
+                        "deckName": deck_name,
+                        "modelName": model_name,
+                        "fields": note_fields,
+                        "tags": learning_content.tags or []
+                    }
+                    
+                    anki_note_id = await anki_client.add_note(note)
+                    
+                    if anki_note_id:
+                        # Step 5: Update anki_card with success status
+                        with self.db_manager.get_session() as session:
+                            anki_card = session.get(AnkiCard, anki_card_id)
+                            if anki_card:
+                                anki_card.anki_note_id = anki_note_id
+                                anki_card.tags = ["sync::success"]
+                                anki_card.export_hash = current_export_hash
+                                session.commit()
+                        
+                        return {
+                            "message": f"Successfully synced learning_content {learning_content_id} to Anki",
+                            "anki_card_id": anki_card_id,
+                            "anki_note_id": anki_note_id,
+                            "deck_name": deck_name,
+                            "status": "success"
+                        }
+                    else:
+                        # Upload failed - update status
+                        with self.db_manager.get_session() as session:
+                            anki_card = session.get(AnkiCard, anki_card_id)
+                            if anki_card:
+                                anki_card.tags = ["sync::fail"]
+                                session.commit()
+                        
+                        return {
+                            "error": "Failed to create note in Anki (AnkiConnect returned None)",
+                            "anki_card_id": anki_card_id,
+                            "status": "failed"
+                        }
+                        
+            except Exception as e:
+                # Step 6: Update anki_card with failure status
+                logger.error(f"Error uploading to Anki: {e}")
+                with self.db_manager.get_session() as session:
+                    anki_card = session.get(AnkiCard, anki_card_id)
+                    if anki_card:
+                        anki_card.tags = ["sync::fail"]
+                        session.commit()
+                
+                return {
+                    "error": f"Failed to upload to Anki: {str(e)}",
+                    "anki_card_id": anki_card_id,
+                    "status": "failed"
+                }
+                
+        except Exception as e:
+            logger.error(f"Error syncing learning content {learning_content_id}: {e}")
+            return {"error": f"Sync failed: {str(e)}"}
+
+    def _should_skip_sync(self, anki_card) -> bool:
+        """
+        Check if an AnkiCard should be skipped for sync based on its tags.
+        
+        Args:
+            anki_card: AnkiCard instance to check
+            
+        Returns:
+            bool: True if sync should be skipped, False otherwise
+        """
+        if not anki_card.tags:
+            return False
+        
+        # Tags to check for skipping sync
+        skip_patterns = [
+            "sync::skip",
+            "sync::skip_update", 
+            "sync::no_update",
+            "skip::sync",
+            "skip::update"
+        ]
+        
+        # Convert tags to list if it's not already (handle different JSON formats)
+        tags = anki_card.tags if isinstance(anki_card.tags, list) else []
+        
+        # Check if any skip pattern is present in tags
+        for tag in tags:
+            if tag in skip_patterns:
+                logger.info(f"Skipping sync for card {anki_card.id} due to tag: {tag}")
+                return True
+                
+        return False
+
+    async def _update_existing_anki_card(self, existing_card, rendered_content, current_export_hash, deck_name, learning_content) -> Dict[str, Any]:
+        """Helper method to update an existing Anki card when content has changed"""
+        try:
+            # Update local card status to in-progress
+            with self.db_manager.get_session() as session:
+                card = session.get(AnkiCard, existing_card.id)
+                if card:
+                    card.tags = ["sync::in-progress"]
+                    session.commit()
+            
+            async with AnkiConnectClient() as anki_client:
+                # Prepare note fields
+                note_fields = {
+                    "Front": rendered_content['front'],
+                    "Back": rendered_content['back']
+                }
+                
+                # Add example if present
+                if rendered_content.get('example'):
+                    note_fields["Example"] = rendered_content['example']
+                
+                # Update existing note in Anki
+                if existing_card.anki_note_id:
+                    await anki_client.update_note(
+                        existing_card.anki_note_id,
+                        fields=note_fields,
+                        tags=learning_content.tags or []
+                    )
+                    
+                    # Update local record with success status
+                    with self.db_manager.get_session() as session:
+                        card = session.get(AnkiCard, existing_card.id)
+                        if card:
+                            card.tags = ["sync::success", "sync::updated"]
+                            card.export_hash = current_export_hash
+                            session.commit()
+                    
+                    return {
+                        "message": f"Successfully updated learning_content {learning_content.id} in Anki",
+                        "anki_card_id": existing_card.id,
+                        "anki_note_id": existing_card.anki_note_id,
+                        "deck_name": deck_name,
+                        "status": "updated"
+                    }
+                else:
+                    # Existing card doesn't have anki_note_id - treat as new sync
+                    logger.warning(f"Existing card {existing_card.id} has no anki_note_id, creating new note")
+                    
+                    # Ensure deck exists
+                    await anki_client.create_deck(deck_name)
+                    
+                    # Determine model name and ensure it exists
+                    field_names = list(note_fields.keys())
+                    model_name = f"{deck_name}_Model"
+                    
+                    existing_models = await anki_client.model_names()
+                    if model_name not in existing_models:
+                        # Create model with basic card template
+                        card_templates = [{
+                            "Name": "Card 1",
+                            "Front": "{{Front}}",
+                            "Back": "{{Back}}"
+                        }]
+                        await anki_client.create_model(model_name, field_names, card_templates)
+                    
+                    # Create note in Anki
+                    note = {
+                        "deckName": deck_name,
+                        "modelName": model_name,
+                        "fields": note_fields,
+                        "tags": learning_content.tags or []
+                    }
+                    
+                    anki_note_id = await anki_client.add_note(note)
+                    
+                    if anki_note_id:
+                        # Update local record with success status
+                        with self.db_manager.get_session() as session:
+                            card = session.get(AnkiCard, existing_card.id)
+                            if card:
+                                card.anki_note_id = anki_note_id
+                                card.tags = ["sync::success", "sync::created"]
+                                card.export_hash = current_export_hash
+                                session.commit()
+                        
+                        return {
+                            "message": f"Successfully created note for learning_content {learning_content.id} in Anki",
+                            "anki_card_id": existing_card.id,
+                            "anki_note_id": anki_note_id,
+                            "deck_name": deck_name,
+                            "status": "created"
+                        }
+                    else:
+                        # Update with failure status
+                        with self.db_manager.get_session() as session:
+                            card = session.get(AnkiCard, existing_card.id)
+                            if card:
+                                card.tags = ["sync::fail"]
+                                session.commit()
+                        
+                        return {
+                            "error": "Failed to create note in Anki (AnkiConnect returned None)",
+                            "anki_card_id": existing_card.id,
+                            "status": "failed"
+                        }
+                        
+        except Exception as e:
+            logger.error(f"Error updating existing Anki card: {e}")
+            # Update with failure status
+            with self.db_manager.get_session() as session:
+                card = session.get(AnkiCard, existing_card.id)
+                if card:
+                    card.tags = ["sync::fail"]
+                    session.commit()
+            
+            return {
+                "error": f"Failed to update Anki card: {str(e)}",
+                "anki_card_id": existing_card.id,
+                "status": "failed"
+            }
+
+    async def batch_sync_learning_content_to_anki(self, learning_content_ids: List[int], deck_name: str = "top-thai-2000") -> Dict[str, Any]:
+        """
+        Batch sync multiple learning_content items to Anki.
+        
+        Args:
+            learning_content_ids: List of learning content IDs to sync
+            deck_name: Target deck name (default: "top-thai-2000")
+        
+        Returns:
+            Dictionary with batch sync results
+        """
+        results = {
+            "successful": [],
+            "failed": [],
+            "up_to_date": [],
+            "updated": [],
+            "skipped": [],
+            "total": len(learning_content_ids)
+        }
+        
+        for learning_content_id in learning_content_ids:
+            try:
+                result = await self.sync_learning_content_to_anki(learning_content_id, deck_name)
+                
+                if "error" in result:
+                    results["failed"].append({
+                        "learning_content_id": learning_content_id,
+                        "error": result["error"]
+                    })
+                elif result.get("status") == "up_to_date":
+                    results["up_to_date"].append({
+                        "learning_content_id": learning_content_id,
+                        "anki_card_id": result["anki_card_id"]
+                    })
+                elif result.get("status") == "skipped":
+                    results["skipped"].append({
+                        "learning_content_id": learning_content_id,
+                        "anki_card_id": result["anki_card_id"],
+                        "tags": result.get("tags", [])
+                    })
+                elif result.get("status") in ["updated", "created"]:
+                    results["updated"].append({
+                        "learning_content_id": learning_content_id,
+                        "anki_card_id": result["anki_card_id"],
+                        "anki_note_id": result.get("anki_note_id"),
+                        "action": result.get("status")
+                    })
+                else:
+                    results["successful"].append({
+                        "learning_content_id": learning_content_id,
+                        "anki_card_id": result["anki_card_id"],
+                        "anki_note_id": result.get("anki_note_id")
+                    })
+                    
+            except Exception as e:
+                logger.error(f"Error in batch sync for learning_content {learning_content_id}: {e}")
+                results["failed"].append({
+                    "learning_content_id": learning_content_id,
+                    "error": str(e)
+                })
+        
+        summary_msg = f"Batch sync completed: {len(results['successful'])} successful, {len(results['updated'])} updated/created, {len(results['up_to_date'])} up-to-date, {len(results['skipped'])} skipped, {len(results['failed'])} failed"
+        
+        return {
+            "message": summary_msg,
+            "results": results
+        }
 
     async def add_example_audio(self, card_id: int, example_text: str, audio_blob: bytes, tts_model: str = None, order_index: int = None) -> int:
         """Add audio for a specific example - updated to use ExampleAudioManager"""

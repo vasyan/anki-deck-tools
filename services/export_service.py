@@ -16,10 +16,11 @@ from services.template_parser import TemplateParser
 from sqlalchemy import text
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class ExportService:
-    """Service for exporting learning content to different formats"""
+    """Service for rendering learning content to different formats (READ-ONLY - no database writes)"""
     
     def __init__(self):
         self.db_manager = DatabaseManager()
@@ -64,16 +65,15 @@ class ExportService:
         
         return False
     
-    def export_to_anki(self, learning_content_id: int, update_existing: bool = True) -> Dict[str, Any]:
+    def get_anki_content(self, learning_content_id: int) -> Dict[str, Any]:
         """
-        Export learning content to Anki card format
+        Get learning content rendered for Anki format (no database updates)
         
         Args:
-            learning_content_id: ID of learning content to export
-            update_existing: Whether to update existing linked anki_cards
+            learning_content_id: ID of learning content to render
         
         Returns:
-            Dictionary with export result
+            Dictionary with rendered content and export hash (no database writes)
         """
         content = self.learning_service.get_content(learning_content_id)
         if not content:
@@ -108,56 +108,17 @@ class ExportService:
             # Calculate export hash
             content_hash = self._calculate_content_hash(content)
             
-            with self.db_manager.get_session() as session:
-                # Update existing anki_cards or create new ones
-                if content['linked_anki_cards'] and update_existing:
-                    # Update existing cards
-                    for card_id in content['linked_anki_cards']:
-                        updates = {
-                            'front_text': rendered_content.get('front'),
-                            'back_text': rendered_content.get('back'),  
-                            'example': rendered_content.get('example'),
-                            'export_hash': content_hash,
-                            'last_exported_at': datetime.utcnow(),
-                            'updated_at': datetime.utcnow()
-                        }
-                        
-                        # Build update query dynamically for non-None values
-                        update_fields = []
-                        params = {'card_id': card_id}
-                        
-                        for field, value in updates.items():
-                            if value is not None:
-                                update_fields.append(f"{field} = :{field}")
-                                params[field] = value
-                        
-                        if update_fields:
-                            session.execute(text(f"""
-                                UPDATE anki_cards 
-                                SET {', '.join(update_fields)}
-                                WHERE id = :card_id
-                            """), params)
-                    
-                    session.commit()
-                    
-                    return {
-                        'success': True,
-                        'action': 'updated',
-                        'updated_cards': content['linked_anki_cards'],
-                        'rendered_content': rendered_content,
-                        'export_hash': content_hash
-                    }
-                else:
-                    # Create new anki_card (not linked yet)
-                    return {
-                        'success': True,
-                        'action': 'prepared',
-                        'rendered_content': rendered_content,
-                        'export_hash': content_hash,
-                        'note': 'Ready to create new anki_card - use create_anki_card method'
-                    }
+            # Return rendered content and hash - no database operations!
+            return {
+                'rendered_content': rendered_content,
+                'export_hash': content_hash,
+                'learning_content_id': learning_content_id,
+                'content_title': content.get('title', ''),
+                'content_type': content.get('content_type', '')
+            }
             
         except Exception as e:
+
             logger.error(f"Error exporting learning content {learning_content_id} to Anki: {e}")
             return {'error': str(e)}
     
@@ -332,7 +293,7 @@ class ExportService:
         for content_id in content_ids:
             try:
                 if export_format == 'anki':
-                    result = self.export_to_anki(content_id, **format_options)
+                    result = self.get_anki_content(content_id)
                 elif export_format == 'api_json':
                     result = self.export_to_api_json(content_id)
                 elif export_format == 'html':

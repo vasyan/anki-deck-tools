@@ -4,12 +4,16 @@ High-level service for rendering cards with fragment templates
 """
 from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime
+import logging
 
 from database.manager import DatabaseManager
 from models.database import AnkiCard, ContentFragment
 from services.fragment_manager import FragmentManager
 from services.fragment_asset_manager import FragmentAssetManager
 from services.template_parser import TemplateParser
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class ContentRenderer:

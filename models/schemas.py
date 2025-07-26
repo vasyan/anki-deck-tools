@@ -29,4 +29,14 @@ class VectorSearchRequest(BaseModel):
 class SyncCardRequest(BaseModel):
     """Request model for syncing cards"""
     deck_names: Optional[List[str]] = None
-    force_update: bool = False 
+    force_update: bool = False
+
+class SyncLearningContentRequest(BaseModel):
+    """Request model for syncing learning content to Anki"""
+    learning_content_id: int
+    deck_name: str = "top-thai-2000"
+
+class BatchSyncLearningContentRequest(BaseModel):
+    """Request model for batch syncing learning content to Anki"""
+    learning_content_ids: List[int]
+    deck_name: str = "top-thai-2000" 

@@ -2,12 +2,16 @@
 Template Parser Service
 Handles parsing and rendering of {{fragment:123}} tokens in card content
 """
+import logging
 import re
 from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime
 
 from database.manager import DatabaseManager
 from models.database import ContentFragment, FragmentAsset, FragmentAssetRanking
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class TemplateParser:

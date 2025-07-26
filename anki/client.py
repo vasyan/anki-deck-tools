@@ -103,4 +103,17 @@ class AnkiConnectClient:
         }
         if tags is not None:
             params["note"]["tags"] = tags
-        return await self._request("updateNoteModel", params) 
+        return await self._request("updateNoteModel", params)
+
+    async def update_note(self, note_id: int, fields: dict = None, tags: List[str] = None) -> Any:
+        """Update a note's fields and/or tags without changing the model."""
+        params = {
+            "note": {
+                "id": note_id
+            }
+        }
+        if fields is not None:
+            params["note"]["fields"] = fields
+        if tags is not None:
+            params["note"]["tags"] = tags
+        return await self._request("updateNote", params) 

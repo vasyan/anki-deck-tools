@@ -21,7 +21,7 @@ class EmbeddingService:
         """Get embedding manager with lazy initialization"""
         if self._embedding_manager is None:
             # Import here to avoid circular imports
-            from embedding_processor import EmbeddingManager, EmbeddingConfig
+            from cli.embedding_processor import EmbeddingManager, EmbeddingConfig
             
             config = EmbeddingConfig()
             self._embedding_manager = EmbeddingManager(config)

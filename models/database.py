@@ -15,42 +15,16 @@ class AnkiCard(Base):
     id = Column(Integer, primary_key=True)
     anki_note_id = Column(Integer, unique=True, nullable=True)
     deck_name = Column(String(255), nullable=False)
-    model_name = Column(String(255), nullable=True)
-    front_text = Column(Text)
-    back_text = Column(Text)
     tags = Column(JSON)  # Store as JSON array
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    transcription = Column(Text)
-    audio = Column(LargeBinary)  # If you want to use BLOB, use LargeBinary
-    example = Column(Text)
-    is_draft = Column(Integer, default=1, nullable=False)
-    tts_model = Column(Text, nullable=True)  # Store the TTS model used for audio
     
-    # New fields for learning content abstraction
     learning_content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=True)
     export_hash = Column(Text, nullable=True)  # Track when re-export needed
-    last_exported_at = Column(DateTime, nullable=True)
     
-    # Relationship to embeddings
     embeddings = relationship("VectorEmbedding", back_populates="card")
     
-    # Relationship to learning content
     learning_content = relationship("LearningContent", back_populates="anki_cards")
-
-class VectorEmbedding(Base):
-    """SQLAlchemy model for vector embeddings"""
-    __tablename__ = "vector_embeddings"
-    
-    id = Column(Integer, primary_key=True)
-    card_id = Column(Integer, ForeignKey("anki_cards.id"), nullable=False)
-    embedding_type = Column(String(50), nullable=False)  # e.g., 'front', 'back', 'combined'
-    vector_data = Column(Text)  # Store as JSON for now, will be BLOB for sqlite-vec
-    vector_dimension = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relationship to card
-    card = relationship("AnkiCard", back_populates="embeddings") 
 
 class ExampleAudioLog(Base):
     """SQLAlchemy model for logging example audio generation and publishing actions"""
@@ -108,7 +82,7 @@ class ContentFragment(Base):
     
     id = Column(Integer, primary_key=True)
     text = Column(Text, nullable=False)
-    fragment_type = Column(String(50), nullable=False)  # 'thai_word', 'thai_phrase', 'english_explanation', 'romanization', etc.
+    fragment_type = Column(String(50), nullable=False)  # `basic_meaning` | `pronunciation_and_tone` | `usage_example` | `usage_tip` 
     fragment_metadata = Column(JSON)  # Extensible metadata (difficulty, frequency, etc.)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -172,8 +146,8 @@ class FragmentLearningContentMap(Base):
     id = Column(Integer, primary_key=True)
     fragment_id = Column(Integer, ForeignKey("content_fragments.id"), nullable=False)
     learning_content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=False)
-    status = Column(String(20), nullable=False, default="active")  # 'active', 'pending', 'processing', 'unused'
-    association_column = Column(String(50), nullable=False)  # 'front_text', 'example', 'related', 'pronunciation'
+    status = Column(String(20), nullable=False, default="active")  # TODO, TBD
+    association_column = Column(String(50), nullable=False)  # TODO, maybe it can be the same as fragment_type. 'front_text', 'back_text', 'example', 'related', 'pronunciation'
     fragment_metadata = Column(JSON)  # Additional properties
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -188,4 +162,16 @@ class FragmentLearningContentMap(Base):
         Index('idx_fragment_association', 'association_column'),
     )
 
-
+class VectorEmbedding(Base):
+    """SQLAlchemy model for vector embeddings"""
+    __tablename__ = "vector_embeddings"
+    
+    id = Column(Integer, primary_key=True)
+    card_id = Column(Integer, ForeignKey("anki_cards.id"), nullable=False)
+    embedding_type = Column(String(50), nullable=False)  # e.g., 'front', 'back', 'combined'
+    vector_data = Column(Text)  # Store as JSON for now, will be BLOB for sqlite-vec
+    vector_dimension = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationship to card
+    card = relationship("AnkiCard", back_populates="embeddings") 

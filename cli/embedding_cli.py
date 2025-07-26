@@ -10,7 +10,7 @@ from pathlib import Path
 # Add current directory to path so we can import our modules
 sys.path.append(str(Path(__file__).parent))
 
-from embedding_processor import EmbeddingManager, EmbeddingConfig
+from cli.embedding_processor import EmbeddingManager, EmbeddingConfig
 
 async def main():
     """CLI entry point for embedding operations"""

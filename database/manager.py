@@ -16,6 +16,7 @@ from models.database import Base, AnkiCard, VectorEmbedding
 from config import settings
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class DatabaseManager:
     """Manages database connections and operations"""

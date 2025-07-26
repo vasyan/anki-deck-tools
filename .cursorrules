@@ -1,0 +1,30 @@
+# anki-thai Project Rules
+
+## Python Code Style
+- Use type hints
+- Functional over OOP except for external clients
+- Avoid bare `except:` clauses
+- Use dataclasses or Pydantic models for structured data
+
+## File Creation
+- Only create files that solve actual problems
+- Migrations, POCs, utility scripts are valid
+- No demo files that just print messages
+- Modify existing files when possible
+
+## Database
+- Check actual DB schema, not just SQLAlchemy models
+- CardService handles all `anki_cards` operations
+- ExportService only renders content (READ-only)
+- No database migrations (external microservice manages DB)
+
+## Error Handling
+- Use specific exceptions (ValueError, TypeError, etc.)
+- Try/except with specific error messages
+- Log errors before raising
+
+## Communication
+- Show code changes, not essays
+- Explain what changed and why
+- Focus on the actual problem
+- Senior dev prefers code over documentation 

@@ -41,6 +41,8 @@ class Settings(BaseSettings):
     openai_tts_rate_limit: int = Field(default=60, env="OPENAI_TTS_RATE_LIMIT")
     openai_tts_voice: str = Field(default="alloy", env="OPENAI_TTS_VOICE")
     
+
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

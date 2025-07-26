@@ -12,6 +12,7 @@ from sqlalchemy import text, and_, or_
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class LearningContentService:
