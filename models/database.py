@@ -26,19 +26,6 @@ class AnkiCard(Base):
     
     learning_content = relationship("LearningContent", back_populates="anki_cards")
 
-class ExampleAudioLog(Base):
-    """SQLAlchemy model for logging example audio generation and publishing actions"""
-    __tablename__ = "example_audio_log"
-
-    id = Column(Integer, primary_key=True)
-    card_id = Column(Integer, ForeignKey("anki_cards.id"), nullable=True)
-    action = Column(String(50), nullable=False)  # e.g., 'generate', 'publish'
-    status = Column(String(20), nullable=False)  # e.g., 'success', 'failed', 'skipped'
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    details = Column(Text, nullable=True)  # JSON or text for error messages, etc.
-
-    card = relationship("AnkiCard") 
-
 # Learning Content Abstraction System
 
 class LearningContent(Base):
@@ -51,12 +38,12 @@ class LearningContent(Base):
     language = Column(String(10), nullable=False)            # 'thai', 'english', etc.
     
     # Template fields (can contain {{fragment:123}} tokens)
-    front_template = Column(Text, nullable=True)             # "{{fragment:123}}"
-    back_template = Column(Text, nullable=True)              # "{{fragment:123}} means 'to eat'"
-    example_template = Column(Text, nullable=True)           # "{{fragment:456}}, {{fragment:789}}"
+    front_template = Column(Text)             # "{{fragment:123}}"
+    back_template = Column(Text)              # "{{fragment:123}} means 'to eat'"
+    example_template = Column(Text)           # "{{fragment:456}}, {{fragment:789}}"
     
     # Metadata and classification
-    difficulty_level = Column(Integer, nullable=True)        # 1-5 scale
+    difficulty_level = Column(Integer)        # 1-5 scale
     tags = Column(JSON, nullable=True)                       # ['beginner', 'pronouns', etc.]
     content_metadata = Column(JSON, nullable=True)           # Flexible additional data
     
@@ -66,7 +53,7 @@ class LearningContent(Base):
     
     # Relationships
     anki_cards = relationship("AnkiCard", back_populates="learning_content")
-    fragments = relationship("FragmentLearningContentMap", back_populates="learning_content")
+    fragments = relationship("ContentFragment", back_populates="learning_content")
     
     __table_args__ = (
         Index('idx_learning_content_type', 'content_type'),
@@ -81,19 +68,23 @@ class ContentFragment(Base):
     __tablename__ = "content_fragments"
     
     id = Column(Integer, primary_key=True)
-    text = Column(Text, nullable=False)
+    native_text = Column(Text, nullable=False)
+    body_text = Column(Text, nullable=False)
+    ipa = Column(Text)
+    extra = Column(Text)
     fragment_type = Column(String(50), nullable=False)  # `basic_meaning` | `pronunciation_and_tone` | `usage_example` | `usage_tip` 
     fragment_metadata = Column(JSON)  # Extensible metadata (difficulty, frequency, etc.)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    learning_content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=False)
     
     # Relationships
     assets = relationship("FragmentAsset", back_populates="fragment", cascade="all, delete-orphan")
-    learning_contents = relationship("FragmentLearningContentMap", back_populates="fragment")
+    learning_content = relationship("LearningContent", back_populates="fragments")
     
     __table_args__ = (
         Index('idx_fragment_type', 'fragment_type'),
-        Index('idx_fragment_text', 'text'),
+        Index('idx_fragment_text', 'native_text'),
     )
 
 class FragmentAsset(Base):
@@ -116,6 +107,44 @@ class FragmentAsset(Base):
         Index('idx_fragment_asset_type', 'fragment_id', 'asset_type'),
     )
 
+# class FragmentLearningContentMap(Base):
+#     """SQLAlchemy model for mapping content fragments to learning content"""
+#     __tablename__ = "fragment_learning_content_map"
+    
+#     id = Column(Integer, primary_key=True)
+#     fragment_id = Column(Integer, ForeignKey("content_fragments.id"), nullable=False)
+#     learning_content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=False)
+#     status = Column(String(20), nullable=False, default="active")  # TODO, TBD
+#     association_column = Column(String(50), nullable=False)  # TODO, maybe it can be the same as fragment_type. 'front_text', 'back_text', 'example', 'related', 'pronunciation'
+#     fragment_metadata = Column(JSON)  # Additional properties
+#     created_at = Column(DateTime, default=datetime.utcnow)
+#     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+#     # Relationships
+#     fragment = relationship("ContentFragment", back_populates="learning_contents")
+#     learning_content = relationship("LearningContent", back_populates="fragments")
+    
+#     __table_args__ = (
+#         Index('idx_fragment_learning_content', 'fragment_id', 'learning_content_id'),
+#         Index('idx_fragment_learning_status', 'status'),
+#         Index('idx_fragment_association', 'association_column'),
+#     )
+
+class VectorEmbedding(Base):
+    """SQLAlchemy model for vector embeddings"""
+    __tablename__ = "vector_embeddings"
+    
+    id = Column(Integer, primary_key=True)
+    card_id = Column(Integer, ForeignKey("anki_cards.id"), nullable=False)
+    embedding_type = Column(String(50), nullable=False)  # e.g., 'front', 'back', 'combined'
+    vector_data = Column(Text)  # Store as JSON for now, will be BLOB for sqlite-vec
+    vector_dimension = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relationship to card
+    card = relationship("AnkiCard", back_populates="embeddings") 
+
+# TODO: figure out how it should be used
 class FragmentAssetRanking(Base):
     """SQLAlchemy model for ranking and selecting fragment assets"""
     __tablename__ = "fragment_asset_rankings"
@@ -138,40 +167,3 @@ class FragmentAssetRanking(Base):
         Index('idx_fragment_active', 'fragment_id', 'is_active'),
         Index('idx_asset_ranking', 'asset_id', 'rank_score'),
     )
-
-class FragmentLearningContentMap(Base):
-    """SQLAlchemy model for mapping content fragments to learning content"""
-    __tablename__ = "fragment_learning_content_map"
-    
-    id = Column(Integer, primary_key=True)
-    fragment_id = Column(Integer, ForeignKey("content_fragments.id"), nullable=False)
-    learning_content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=False)
-    status = Column(String(20), nullable=False, default="active")  # TODO, TBD
-    association_column = Column(String(50), nullable=False)  # TODO, maybe it can be the same as fragment_type. 'front_text', 'back_text', 'example', 'related', 'pronunciation'
-    fragment_metadata = Column(JSON)  # Additional properties
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relationships
-    fragment = relationship("ContentFragment", back_populates="learning_contents")
-    learning_content = relationship("LearningContent", back_populates="fragments")
-    
-    __table_args__ = (
-        Index('idx_fragment_learning_content', 'fragment_id', 'learning_content_id'),
-        Index('idx_fragment_learning_status', 'status'),
-        Index('idx_fragment_association', 'association_column'),
-    )
-
-class VectorEmbedding(Base):
-    """SQLAlchemy model for vector embeddings"""
-    __tablename__ = "vector_embeddings"
-    
-    id = Column(Integer, primary_key=True)
-    card_id = Column(Integer, ForeignKey("anki_cards.id"), nullable=False)
-    embedding_type = Column(String(50), nullable=False)  # e.g., 'front', 'back', 'combined'
-    vector_data = Column(Text)  # Store as JSON for now, will be BLOB for sqlite-vec
-    vector_dimension = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relationship to card
-    card = relationship("AnkiCard", back_populates="embeddings") 

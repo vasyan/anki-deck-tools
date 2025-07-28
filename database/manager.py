@@ -6,7 +6,7 @@ import logging
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Iterator
 
 import sqlite_vec
 from sqlalchemy import create_engine
@@ -60,7 +60,7 @@ class DatabaseManager:
             logger.error(f"Failed to setup sqlite-vec: {e}")
     
     @contextmanager
-    def get_session(self) -> Session:
+    def get_session(self) -> Iterator[Session]:
         """Get database session with context manager"""
         session = self.SessionLocal()
         try:
