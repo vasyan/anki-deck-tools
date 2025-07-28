@@ -60,6 +60,14 @@ class ContentFragmentInput(BaseModel):
     # Allow population by either alias ('type') or actual field name ('fragment_type')
     model_config = ConfigDict(populate_by_name=True)
 
+class ContentFragmentRowSchema(BaseModel):
+    id: int
+    native_text: str
+    body_text: str
+    ipa: Optional[str] = None
+    extra: Optional[str] = None
+    fragment_type: FragmentType
+
 class LearningContentRowSchema(BaseModel):
     id: int
     title: str

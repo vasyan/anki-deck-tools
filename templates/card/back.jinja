@@ -1,0 +1,15 @@
+<h3>Examples:</h3>
+{% for fragment in fragments %}
+<ul>
+  {% if fragment.fragment_type == 'real_life_example' %}
+    <li>
+        {{ fragment.native_text }}
+        {{ fragment.ipa }}
+        {{ fragment.body_text }}
+        {% if fragment.extra %}
+            {{ fragment.extra  }}
+        {% endif %}
+    </li>
+  {% endif %}
+</ul>
+{% endfor %}

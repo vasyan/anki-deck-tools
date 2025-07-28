@@ -4,12 +4,16 @@ Handles CRUD operations for content fragments
 """
 from typing import Dict, List, Optional, Any
 from datetime import datetime
+import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
 
 from database.manager import DatabaseManager
 from models.database import ContentFragment
+from models.schemas import ContentFragmentRowSchema
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class FragmentManager:
     """Service for managing content fragments"""
@@ -60,6 +64,13 @@ class FragmentManager:
                 'assets_count': len(fragment.assets),
                 'usage_count': 0  # TODO: Implement usage tracking when needed
             }
+
+    def get_fragments_by_learning_content_id(self, learning_content_id: int) -> List[ContentFragmentRowSchema]:
+        with self.db_manager.get_session() as session:
+            # logger.info(f" =========== Getting fragments for learning content ID: {learning_content_id}")
+            fragments = session.query(ContentFragment).filter(ContentFragment.learning_content_id == learning_content_id).all()
+            # logger.info(f" =========== Fragments: {fragments}")
+            return [ContentFragmentRowSchema.model_validate(fragment, from_attributes=True) for fragment in fragments]
 
     def update_fragment(self, fragment_id: int, text: str = None, fragment_type: str = None, metadata: Dict = None) -> bool:
         """Update an existing fragment"""

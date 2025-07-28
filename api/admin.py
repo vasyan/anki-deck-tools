@@ -17,6 +17,7 @@ from pathlib import Path
 from services.example_generator import ExampleGeneratorService
 from services.fragment_manager import FragmentManager
 from services.learning_content_service import extract_object_data, format_operation_result
+from workflows.anki_builder import AnkiBuilder
 from fastapi import Form
 from pydantic import ValidationError
 
@@ -52,6 +53,7 @@ class GenerateExampleOptions:
 async def admin_dashboard(request: Request):
     """Main admin dashboard"""
     return templates.TemplateResponse("admin/dashboard.html", {"request": request})
+
 
 @router.post("/admin/example/preview")
 async def preview_example_generation(
@@ -509,3 +511,13 @@ def process_single_learning_content(learning_content, columns_list, template_str
             data={"learning_content_data": learning_content_data},
             error=str(e)
         )
+
+@router.get("/admin/test-anki-builder")
+async def render_card(request: Request):
+    anki_builder = AnkiBuilder()
+    materials = await anki_builder.get_materials(52)
+
+    return {
+        "message": "Card rendered",
+        "materials": materials
+    }
