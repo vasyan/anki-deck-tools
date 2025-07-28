@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-12">
                 <h1 class="mb-4">🤖 Example Generation</h1>
-                <p class="text-muted">Generate examples for your Anki cards using AI language models</p>
+                <p class="text-muted">Generate examples for your Anki learning contents using AI language models</p>
             </div>
         </div>
 
@@ -46,20 +46,22 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="card_id" class="form-label">Card ID (optional)</label>
-                                <input type="number" class="form-control" id="card_id" name="card_id" 
-                                       placeholder="Enter specific card ID for testing">
+                                <label for="learning_content_id" class="form-label">Learning Content ID (optional)</label>
+                                <input type="number" class="form-control" id="learning_content_id" name="learning_content_id" 
+                                       placeholder="Enter specific learning content ID for testing"
+                                       value="52">
+
                                 <div class="form-text">
                                     <i class="fas fa-info-circle text-info"></i> 
-                                    If specified, only this card will be processed (overrides deck selection)
+                                    If specified, only this learning content will be processed (overrides deck selection)
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="columns" class="form-label">Card Columns <span class="text-danger">*</span></label>
+                                <label for="columns" class="form-label">Learning Content Columns <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="columns" name="columns" 
-                                       value="front_text,back_text" required>
-                                <div class="form-text">Comma-separated list of card columns to use in template</div>
+                                       value="title" required>
+                                <div class="form-text">Comma-separated list of learning content columns to use in template</div>
                             </div>
 
                             <div class="mb-3">
@@ -74,12 +76,12 @@
                                 <label for="limit" class="form-label">Limit (optional)</label>
                                 <input type="number" class="form-control" id="limit" name="limit" 
                                        min="1" max="10000" placeholder="No limit">
-                                <div class="form-text">Maximum number of cards to process</div>
+                                <div class="form-text">Maximum number of learning contents to process</div>
                             </div>
 
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="with_preview" name="with_preview">
+                                    <input class="form-check-input" type="checkbox" id="with_preview" name="with_preview" checked>
                                     <label class="form-check-label" for="with_preview">
                                         With Preview
                                     </label>
@@ -97,12 +99,12 @@
                                         Enable Parallel Processing
                                     </label>
                                 </div>
-                                <div class="form-text">Process cards in parallel for faster performance</div>
+                                <div class="form-text">Process learning contents in parallel for faster performance</div>
                             </div>
 
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="dry_run" name="dry_run">
+                                    <input class="form-check-input" type="checkbox" id="dry_run" name="dry_run" checked>
                                     <label class="form-check-label" for="dry_run">
                                         Dry Run (Preview Only)
                                     </label>
@@ -199,19 +201,19 @@
                     }
                 });
 
-                // Card ID input affects deck selection
-                document.getElementById('card_id').addEventListener('input', (e) => {
+                // Learning Content ID input affects deck selection
+                document.getElementById('learning_content_id').addEventListener('input', (e) => {
                     const deckSelect = document.getElementById('deck');
                     const limitInput = document.getElementById('limit');
                     
                     if (e.target.value.trim()) {
-                        // If card ID is specified, disable deck selection and limit
+                        // If learning content ID is specified, disable deck selection and limit
                         deckSelect.disabled = true;
                         limitInput.disabled = true;
-                        deckSelect.title = 'Disabled when Card ID is specified';
-                        limitInput.title = 'Disabled when Card ID is specified';
+                        deckSelect.title = 'Disabled when Learning Content ID is specified';
+                        limitInput.title = 'Disabled when Learning Content ID is specified';
                     } else {
-                        // If card ID is empty, re-enable deck selection and limit
+                        // If learning content ID is empty, re-enable deck selection and limit
                         deckSelect.disabled = false;
                         limitInput.disabled = false;
                         deckSelect.title = '';
@@ -222,7 +224,7 @@
                 // Proceed after preview
                 document.getElementById('proceed-after-preview').addEventListener('click', () => {
                     this.previewModal.hide();
-                    this.startGeneration(false); // false = not preview mode
+                    this.startGeneration();
                 });
             }
 
@@ -240,6 +242,7 @@
                         option.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
                         select.appendChild(option);
                     });
+                    select.value = data.files[0].path;
                 } catch (error) {
                     console.error('Error loading instruction files:', error);
                     this.showError('Failed to load instruction files');
@@ -277,7 +280,7 @@
                 if (withPreview) {
                     await this.showPreview(formData);
                 } else {
-                    await this.startGeneration(true);
+                    await this.startGeneration();
                 }
             }
 
@@ -313,7 +316,7 @@
                 let html = `
                     <div class="alert alert-info">
                         <h6>📋 Preview Summary</h6>
-                        <p><strong>Cards in preview:</strong> ${data.total_cards}</p>
+                        <p><strong>Learning Contents in preview:</strong> ${data.total_learning_contents}</p>
                         <p><strong>Template:</strong> ${data.template}</p>
                     </div>
                 `;
@@ -331,14 +334,14 @@
                                     <button class="accordion-button ${index === 0 ? '' : 'collapsed'}" type="button" 
                                             data-bs-toggle="collapse" data-bs-target="#collapse${index}">
                                         <i class="fas fa-${icon} text-${status} me-2"></i>
-                                        Card ${result.card_id} - ${result.deck_name}
+                                        Learning Content ${result.learning_content_id} - ${result.deck_name}
                                     </button>
                                 </h2>
                                 <div id="collapse${index}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
                                      data-bs-parent="#previewAccordion">
                                     <div class="accordion-body">
-                                        <h6>Card Data:</h6>
-                                        <pre class="bg-light p-2 rounded">${JSON.stringify(result.card_data, null, 2)}</pre>
+                                        <h6>Learning Content Data:</h6>
+                                        <pre class="bg-light p-2 rounded">${JSON.stringify(result.learning_content_data, null, 2)}</pre>
                                         
                                         ${result.status === 'success' ? `
                                             <h6>Generated Example:</h6>
@@ -365,12 +368,10 @@
                 previewContent.innerHTML = html;
             }
 
-            async startGeneration(fromForm) {
+            async startGeneration() {
                 try {
-                    const formData = fromForm ? new FormData(this.form) : new FormData(this.form);
-                    
-                    // Remove preview flag for actual generation
-                    if (!fromForm) {
+                    const formData = new FormData(this.form);
+                    if (formData.get('with_preview') === 'on') {
                         formData.delete('with_preview');
                     }
                     
@@ -510,13 +511,13 @@
                                 <h2 class="accordion-header" id="dryHeading${index}">
                                     <button class="accordion-button ${index === 0 ? '' : 'collapsed'}" type="button" 
                                             data-bs-toggle="collapse" data-bs-target="#dryCollapse${index}">
-                                        Card ${dryResult.card_id} - ${dryResult.deck_name}
+                                        Learning Content ${dryResult.learning_content_id} - ${dryResult.deck_name}
                                     </button>
                                 </h2>
                                 <div id="dryCollapse${index}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
                                      data-bs-parent="#dryRunAccordion">
                                     <div class="accordion-body">
-                                        <p><strong>Front:</strong> ${dryResult.front_text}</p>
+                                        <p><strong>Title:</strong> ${dryResult.title}</p>
                                         <p><strong>Generated Example:</strong></p>
                                         <div class="alert alert-light">
                                             ${dryResult.generated_example}
@@ -531,16 +532,16 @@
                 }
                 
                 // Show failed cards if any
-                if (result.failed_cards && result.failed_cards.length > 0) {
+                if (result.failed_learning_contents && result.failed_learning_contents.length > 0) {
                     html += `
                         <div class="mt-3">
-                            <h6>❌ Failed Cards</h6>
+                            <h6>❌ Failed Learning Contents</h6>
                             <div class="alert alert-danger">
                                 <ul class="mb-0">
                     `;
                     
-                    result.failed_cards.forEach(failedCard => {
-                        html += `<li>Card ${failedCard.card_id}: ${failedCard.error}</li>`;
+                    result.failed_learning_contents.forEach(failedLearningContent => {
+                        html += `<li>Learning Content ${failedLearningContent.learning_content_id}: ${failedLearningContent.error}</li>`;
                     });
                     
                     html += `

@@ -251,7 +251,7 @@
         // Load statistics
         async function loadStats() {
             try {
-                const response = await fetch('/api/learning-content/stats');
+                const response = await fetch('/learning-content/stats');
                 const data = await response.json();
                 
                 let statsHtml = '';
@@ -355,7 +355,7 @@
                 if (currentFilters.language) params.append('language', currentFilters.language);
                 if (currentFilters.search) params.append('search', currentFilters.search);
                 
-                const response = await fetch('/api/learning-content?' + params);
+                const response = await fetch('/learning-content?' + params);
                 const data = await response.json();
                 
                 displayContent(data.content);
@@ -492,7 +492,7 @@
         // Edit content
         async function editContent(contentId) {
             try {
-                const response = await fetch(`/api/learning-content/${contentId}`);
+                const response = await fetch(`/learning-content/${contentId}`);
                 const content = await response.json();
                 
                 // Populate form
@@ -530,7 +530,7 @@
             };
             
             try {
-                const response = await fetch(`/api/learning-content/${contentId}`, {
+                const response = await fetch(`/learning-content/${contentId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -558,7 +558,7 @@
         async function exportContent(contentId, format) {
             try {
                 showLoading(true);
-                const response = await fetch(`/api/learning-content/${contentId}/export/${format}`, {
+                const response = await fetch(`/learning-content/${contentId}/export/${format}`, {
                     method: 'POST'
                 });
                 
@@ -566,6 +566,7 @@
                 
                 if (response.ok) {
                     if (format === 'anki') {
+                        console.log(result);
                         alert(`Anki export successful! Action: ${result.action}`);
                         if (result.updated_cards) {
                             alert(`Updated cards: ${result.updated_cards.join(', ')}`);

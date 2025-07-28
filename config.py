@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     
     # External APIs (optional)
     openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
+    openai_model: str = Field(default="gpt-3.5-turbo", env="OPENAI_MODEL")
     huggingface_api_key: Optional[str] = Field(default=None, env="HUGGINGFACE_API_KEY")
     
     # TTS Configuration

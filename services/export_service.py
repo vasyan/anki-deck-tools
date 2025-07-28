@@ -21,93 +21,93 @@ logger.setLevel(logging.DEBUG)
 
 class ExportService:
     """Service for rendering learning content to different formats (READ-ONLY - no database writes)"""
-    
+
     def __init__(self):
         self.db_manager = DatabaseManager()
         self.learning_service = LearningContentService()
         self.content_renderer = ContentRenderer()
         self.template_parser = TemplateParser()
-    
+
     def needs_re_export(self, learning_content_id: int, target_format: str = 'anki') -> bool:
         """
         Check if learning content needs re-export due to changes
-        
+
         Args:
             learning_content_id: ID of learning content
             target_format: Target export format ('anki', 'api', 'html')
-        
+
         Returns:
             True if re-export needed
         """
         content = self.learning_service.get_content(learning_content_id)
         if not content:
             return False
-        
+
         # Calculate content hash
         content_hash = self._calculate_content_hash(content)
-        
+
         if target_format == 'anki':
             # Check anki_cards export_hash
             with self.db_manager.get_session() as session:
                 card = session.execute(text("""
                     SELECT export_hash, last_exported_at
-                    FROM anki_cards 
+                    FROM anki_cards
                     WHERE learning_content_id = :content_id
                     LIMIT 1
                 """), {'content_id': learning_content_id}).fetchone()
-                
+
                 if not card or card[0] != content_hash:
                     return True
-                    
+
                 # Also check if content was updated after last export
                 if card[1] and content['updated_at'] > card[1]:
                     return True
-        
+
         return False
-    
+
     def get_anki_content(self, learning_content_id: int) -> Dict[str, Any]:
         """
         Get learning content rendered for Anki format (no database updates)
-        
+
         Args:
             learning_content_id: ID of learning content to render
-        
+
         Returns:
             Dictionary with rendered content and export hash (no database writes)
         """
         content = self.learning_service.get_content(learning_content_id)
         if not content:
             return {'error': f'Learning content {learning_content_id} not found'}
-        
+
         try:
             # Render templates to HTML using fragment system
             rendered_content = {}
-            
+
             if content['front_template']:
                 front_result = self.template_parser.render_template(
-                    content['front_template'], 
+                    content['front_template'],
                     output_format='anki'
                 )
                 # render_template returns a string directly
                 rendered_content['front'] = front_result
-            
+
             if content['back_template']:
                 back_result = self.template_parser.render_template(
                     content['back_template'],
                     output_format='anki'
                 )
                 rendered_content['back'] = back_result
-            
+
             if content['example_template']:
                 example_result = self.template_parser.render_template(
                     content['example_template'],
                     output_format='anki'
                 )
                 rendered_content['example'] = example_result
-            
+
             # Calculate export hash
             content_hash = self._calculate_content_hash(content)
-            
+
             # Return rendered content and hash - no database operations!
             return {
                 'rendered_content': rendered_content,
@@ -116,47 +116,47 @@ class ExportService:
                 'content_title': content.get('title', ''),
                 'content_type': content.get('content_type', '')
             }
-            
+
         except Exception as e:
 
             logger.error(f"Error exporting learning content {learning_content_id} to Anki: {e}")
             return {'error': str(e)}
-    
+
     def export_to_api_json(self, learning_content_id: int) -> Dict[str, Any]:
         """
         Export learning content to API JSON format (for mobile apps, web API)
-        
+
         Args:
             learning_content_id: ID of learning content to export
-        
+
         Returns:
             JSON-serializable dictionary
         """
         content = self.learning_service.get_content(learning_content_id)
         if not content:
             return {'error': f'Learning content {learning_content_id} not found'}
-        
+
         try:
             # Render templates for mobile/API consumption
             rendered_templates = {}
             fragment_assets = {}
-            
+
             for template_type in ['front_template', 'back_template', 'example_template']:
                 template_content = content.get(template_type)
                 if template_content:
                     # Parse and render for API
                     fragment_tokens = self.template_parser.parse_template(template_content)
-                    
+
                     # For API, we want structured data with fragment references
                     rendered_templates[template_type.replace('_template', '')] = {
                         'raw_template': template_content,
                         'fragment_tokens': fragment_tokens,  # parse_template returns list directly
                         'rendered_text': self.template_parser.render_template(
-                            template_content, 
+                            template_content,
                             output_format='text'
                         )  # render_template returns string directly
                     }
-                    
+
                     # Collect fragment assets for this template
                     for token in fragment_tokens:  # fragment_tokens is already a list
                         fragment_id = token['fragment_id']
@@ -164,7 +164,7 @@ class ExportService:
                             fragment_data = self._get_fragment_assets(fragment_id)
                             if fragment_data:
                                 fragment_assets[fragment_id] = fragment_data
-            
+
             return {
                 'id': content['id'],
                 'title': content['title'],
@@ -178,40 +178,40 @@ class ExportService:
                 'created_at': content['created_at'].isoformat() if content['created_at'] else None,
                 'updated_at': content['updated_at'].isoformat() if content['updated_at'] else None
             }
-            
+
         except Exception as e:
             logger.error(f"Error exporting learning content {learning_content_id} to API JSON: {e}")
             return {'error': str(e)}
-    
+
     def export_to_html(self, learning_content_id: int, standalone: bool = False) -> Dict[str, Any]:
         """
         Export learning content to HTML format (for web viewing, static sites)
-        
+
         Args:
             learning_content_id: ID of learning content to export
             standalone: Whether to include full HTML page structure
-        
+
         Returns:
             Dictionary with HTML content
         """
         content = self.learning_service.get_content(learning_content_id)
         if not content:
             return {'error': f'Learning content {learning_content_id} not found'}
-        
+
         try:
             html_parts = []
-            
+
             # Add title
             html_parts.append(f'<h1>{content["title"]}</h1>')
-            
+
             # Add metadata
             if content['difficulty_level']:
                 html_parts.append(f'<div class="difficulty">Difficulty: {content["difficulty_level"]}/5</div>')
-            
+
             if content['tags']:
                 tags_html = ', '.join([f'<span class="tag">{tag}</span>' for tag in content['tags']])
                 html_parts.append(f'<div class="tags">Tags: {tags_html}</div>')
-            
+
             # Render each template
             if content['front_template']:
                 front_result = self.template_parser.render_template(
@@ -219,23 +219,23 @@ class ExportService:
                     output_format='html'
                 )
                 html_parts.append(f'<div class="front-content">{front_result}</div>')  # direct string
-            
+
             if content['back_template']:
                 back_result = self.template_parser.render_template(
                     content['back_template'],
-                    output_format='html'  
+                    output_format='html'
                 )
                 html_parts.append(f'<div class="back-content">{back_result}</div>')  # direct string
-            
+
             if content['example_template']:
                 example_result = self.template_parser.render_template(
                     content['example_template'],
                     output_format='html'
                 )
                 html_parts.append(f'<div class="example-content">{example_result}</div>')  # direct string
-            
+
             content_html = '\n'.join(html_parts)
-            
+
             if standalone:
                 # Wrap in full HTML page
                 full_html = f"""
@@ -264,23 +264,23 @@ class ExportService:
                 return {'html': full_html, 'standalone': True}
             else:
                 return {'html': content_html, 'standalone': False}
-            
+
         except Exception as e:
             logger.error(f"Error exporting learning content {learning_content_id} to HTML: {e}")
             return {'error': str(e)}
-    
-    def bulk_export(self, 
+
+    def bulk_export(self,
                    content_ids: List[int],
                    export_format: str,
                    **format_options) -> Dict[str, Any]:
         """
         Export multiple learning content items in batch
-        
+
         Args:
             content_ids: List of learning content IDs
             export_format: 'anki', 'api_json', 'html'
             **format_options: Format-specific options
-        
+
         Returns:
             Dictionary with batch export results
         """
@@ -289,7 +289,7 @@ class ExportService:
             'failed': [],
             'total': len(content_ids)
         }
-        
+
         for content_id in content_ids:
             try:
                 if export_format == 'anki':
@@ -300,17 +300,18 @@ class ExportService:
                     result = self.export_to_html(content_id, **format_options)
                 else:
                     raise ValueError(f"Unsupported export format: {export_format}")
-                
+
                 if 'error' in result:
                     results['failed'].append({'content_id': content_id, 'error': result['error']})
                 else:
                     results['successful'].append({'content_id': content_id, 'result': result})
-                    
+
             except Exception as e:
                 results['failed'].append({'content_id': content_id, 'error': str(e)})
-        
+
         return results
-    
+
+    # keep it as reference
     def _calculate_content_hash(self, content: Dict[str, Any]) -> str:
         """Calculate hash of content for change detection"""
         # Include fields that affect export output
@@ -323,16 +324,16 @@ class ExportService:
             'language': content.get('language', ''),
             'updated_at': content.get('updated_at', '').isoformat() if content.get('updated_at') else ''
         }
-        
+
         hash_string = json.dumps(hash_data, sort_keys=True)
         return hashlib.md5(hash_string.encode()).hexdigest()
-    
+
     def _get_fragment_assets(self, fragment_id: int) -> Optional[Dict[str, Any]]:
         """Get fragment assets for API export"""
         try:
             with self.db_manager.get_session() as session:
                 result = session.execute(text("""
-                    SELECT 
+                    SELECT
                         cf.text,
                         cf.fragment_type,
                         fa.asset_type,
@@ -345,17 +346,17 @@ class ExportService:
                     WHERE cf.id = :fragment_id
                     AND (far.is_active = 1 OR far.is_active IS NULL)
                 """), {'fragment_id': fragment_id}).fetchall()
-                
+
                 if not result:
                     return None
-                
+
                 # Build fragment data
                 fragment_data = {
                     'text': result[0][0],
                     'fragment_type': result[0][1],
                     'assets': []
                 }
-                
+
                 for row in result:
                     if row[2]:  # has asset
                         fragment_data['assets'].append({
@@ -364,9 +365,9 @@ class ExportService:
                             'metadata': row[4],
                             'is_active': bool(row[5])
                         })
-                
+
                 return fragment_data
-                
+
         except Exception as e:
             logger.error(f"Error getting fragment assets for {fragment_id}: {e}")
-            return None 
+            return None
