@@ -1,0 +1,11 @@
+{
+  "typeCheckingMode": "strict",
+  "reportMissingParameterType": true,
+  "reportMissingReturnType": true,
+  "reportMissingTypeStubs": false,
+  "reportMissingImports": true,
+  "reportOptionalSubscript": true,
+  "reportUntypedFunctionDecorator": true,
+  "exclude": ["**/__pycache__"],
+  "include": ["."],
+}
