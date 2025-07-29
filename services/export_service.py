@@ -1,7 +1,5 @@
-"""
-Export Service
-Convert learning content to different output formats
-"""
+## TODO: remove this file and it's usage
+
 import logging
 import hashlib
 import json
@@ -12,7 +10,6 @@ from database.manager import DatabaseManager
 from models.database import LearningContent, AnkiCard
 from services.learning_content_service import LearningContentService
 from services.content_renderer import ContentRenderer
-from services.template_parser import TemplateParser
 from sqlalchemy import text
 
 logger = logging.getLogger(__name__)
