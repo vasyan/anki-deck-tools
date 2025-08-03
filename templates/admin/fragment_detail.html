@@ -85,6 +85,12 @@
                 <a href="/admin/fragments" class="btn btn-outline-secondary mb-3">
                     <i class="fas fa-arrow-left"></i> Back to Fragments
                 </a>
+                <button class="btn btn-outline-secondary mb-3" type="button" onclick="navigateToPreviousFragment()">
+                    <i class="fas fa-arrow-left"></i> Previous Fragment
+                </button>
+                <button class="btn btn-outline-secondary mb-3" type="button" onclick="navigateToNextFragment()">
+                    <i class="fas fa-arrow-right"></i> Next Fragment
+                </button>
                 <div class="card">
                     <div class="card-header bg-light">
                         <div class="d-flex justify-content-between align-items-center">
@@ -98,6 +104,19 @@
                     </div>
                     <div class="card-body" id="fragmentDetails">
                         <!-- Fragment details will be loaded here -->
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center gap-2">
+                            <strong>Learning Content:</strong>
+                            <span id="main-learning-content-title">Loading ...</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="setFragmentRanking(1)">Bad</button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="setFragmentRanking(3)">Ok</button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="setFragmentRanking(5)">Good</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -114,6 +133,7 @@
                         <div id="assetsList">
                             <!-- Assets will be loaded here -->
                         </div>
+                        <button class="btn btn-sm btn-outline-secondary" id="generateAssetButton" onclick="generateAssetForFragment()">Generate Asset</button>
                     </div>
                 </div>
             </div>
@@ -145,6 +165,14 @@
             loadFragmentDetails();
             loadFragmentAssets();
             loadRelatedLearningContent();
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                navigateToPreviousFragment();
+            } else if (event.key === 'ArrowRight') {
+                navigateToNextFragment();
+            }
         });
 
         // Show/hide loading
@@ -300,6 +328,12 @@
                         <div class="p-3 bg-light rounded">${fragment.extra || '<em class="text-muted">Not set</em>'}</div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6>Ranking:</h6>
+                        <div class="p-3 bg-light rounded">${fragment.avg_rank_score || '<em class="text-muted">Not set</em>'}</div>
+                    </div>
+                </div>
             `;
 
             // Add metadata section if available
@@ -343,6 +377,7 @@
                             </div>
                             <p class="mb-0"><small class="text-muted">Created: ${new Date(asset.created_at).toLocaleDateString()}</small></p>
                             <p class="mb-0"><small class="text-muted">Size: ${formatBytes(asset.asset_data_size || 0)}</small></p>
+                            <p class="mb-0"><small class="text-muted">Ranking: ${asset.avg_rank_score || 0}</small></p>
 
                             ${asset.asset_metadata ?
                                 `<div class="mt-2">
@@ -351,6 +386,16 @@
                                 </div>` :
                                 ''
                             }
+                            <div class="mt-2">
+                                <small><strong>Ranking:</strong></small>
+                                <input type="number" class="form-control" id="rankingInput_${asset.id}" value="${asset.avg_rank_score || 0}">
+                                <button class="btn btn-sm btn-outline-primary" onclick="setAssetRanking(${asset.id})">Set Ranking</button>
+                            </div>
+                            <div class="flex">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="setAssetRanking(${asset.id}, 1)">Bad</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="setAssetRanking(${asset.id}, 3)">Ok</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="setAssetRanking(${asset.id}, 5)">Good</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -398,7 +443,12 @@
                 `;
             });
 
+            if (learningContents.length > 0) {
+                document.getElementById('main-learning-content-title').textContent = learningContents[0].title;
+            }
+
             document.getElementById('learningContentList').innerHTML = html;
+
         }
 
         // Helper function to get badge color for asset type
@@ -423,6 +473,31 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
 
             return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        async function setAssetRanking(assetId, rankScore) {
+            try {
+                const ranking = rankScore || document.getElementById(`rankingInput_${assetId}`).value;
+                const response = await fetch(`/assets/${assetId}/ranking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ rank_score: parseFloat(ranking) })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error:", errorData);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log("Success:", data);
+                loadFragmentAssets();
+            } catch (error) {
+                console.error("Request failed:", error);
+            }
         }
 
         // Asset audio player
@@ -494,6 +569,55 @@
                     icon.classList.remove('icon-pulse');
                 });
             }
+        }
+
+        function getCurrentFragmentId() {
+            return parseInt(window.location.pathname.split('/').filter(v => /^\d+$/.test(v))[0], 10);
+        }
+
+        function navigateToNextFragment() {
+            window.location.href = `/admin/fragments/${getCurrentFragmentId() + 1}/detail`;
+        }
+
+        function navigateToPreviousFragment() {
+            window.location.href = `/admin/fragments/${getCurrentFragmentId() - 1}/detail`;
+        }
+
+        async function setFragmentRanking(rankScore) {
+            try {
+                const response = await fetch(`/fragments/${fragmentId}/ranking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ rank_score: parseFloat(rankScore) })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error:", errorData);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log("Success:", data);
+                loadFragmentDetails();
+            } catch (error) {
+                console.error("Request failed:", error);
+            }
+        }
+
+        async function generateAssetForFragment() {
+            document.getElementById('generateAssetButton').disabled = true;
+            document.getElementById('generateAssetButton').innerHTML = 'Generating...';
+            const response = await fetch(`/fragments/${fragmentId}/generate-asset`, {
+                method: 'POST',
+            });
+            document.getElementById('generateAssetButton').innerHTML = 'Generate Asset';
+            const data = await response.json();
+            console.log("Success:", data);
+            document.getElementById('generateAssetButton').disabled = false;
+            loadFragmentAssets();
         }
     </script>
 </body>

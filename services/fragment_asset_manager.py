@@ -2,9 +2,10 @@ import logging
 
 from typing import Dict, Literal, Optional, Any, cast
 from datetime import datetime, timezone
+from sqlalchemy import func
 
 from database.manager import DatabaseManager
-from models.database import ContentFragment, FragmentAsset
+from models.database import ContentFragment, FragmentAsset, Ranking
 from services.text_to_voice import TextToSpeechService
 from models.schemas import FragmentAssetRowSchema
 
@@ -64,6 +65,7 @@ class FragmentAssetManager:
             asset_type: Literal['audio', 'image', 'video'],
             existing_asset_id: Optional[int] = None,
         ) -> FragmentAssetRowSchema:
+        logger.info(f"Generating asset for fragment {fragment_id} of type {asset_type}")
         """Generate or regenerate an asset for a fragment"""
         with self.db_manager.get_session() as session:
             fragment = session.get(ContentFragment, fragment_id)
@@ -154,4 +156,44 @@ class FragmentAssetManager:
                     "created_at": asset.created_at
                 }
                 for asset in assets
+            ]
+
+    def get_fragment_assets_with_rankings(self, fragment_id: int, asset_type: Optional[str] = None) -> list[Dict[str, Any]]:
+        """Get all assets for a fragment with their average rankings"""
+        with self.db_manager.get_session() as session:
+            # Base query for assets
+            query = session.query(
+                FragmentAsset,
+                func.avg(Ranking.rank_score).label("avg_rank_score"),
+                func.count(Ranking.id).label("ranking_count")
+            ).outerjoin(
+                Ranking, FragmentAsset.id == Ranking.asset_id
+            ).filter(
+                FragmentAsset.fragment_id == fragment_id
+            )
+
+            if asset_type:
+                query = query.filter(FragmentAsset.asset_type == asset_type)
+
+            # Group by the asset to get aggregates
+            query = query.group_by(FragmentAsset)
+
+            # Order by average ranking (highest first), then by creation date
+            query = query.order_by(func.avg(Ranking.rank_score).desc().nullslast(), FragmentAsset.created_at.desc())
+
+            results = query.all()
+
+            # Convert to dict with ranking data
+            return [
+                {
+                    "id": asset.id,
+                    "fragment_id": asset.fragment_id,
+                    "asset_type": asset.asset_type,
+                    "asset_metadata": asset.asset_metadata,
+                    "created_at": asset.created_at,
+                    "avg_rank_score": float(avg_score) if avg_score is not None else 0.0,
+                    "ranking_count": int(count) if count is not None else 0,
+                    # "asset_data": asset.asset_data,
+                }
+                for asset, avg_score, count in results
             ]

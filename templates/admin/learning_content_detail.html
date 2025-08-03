@@ -75,6 +75,12 @@
                 <a href="/admin/learning-content" class="btn btn-outline-secondary mb-3">
                     <i class="fas fa-arrow-left"></i> Back to Learning Content
                 </a>
+                <button class="btn btn-outline-secondary mb-3" type="button" onclick="navigateToPrevious()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn btn-outline-secondary mb-3" type="button" onclick="navigateToNext()">
+                    <i class="fas fa-arrow-right"></i> Next
+                </button>
                 <div class="card">
                     <div class="card-header bg-light">
                         <div class="d-flex justify-content-between align-items-center">
@@ -119,6 +125,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadContentDetails();
             loadContentFragments();
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                navigateToPrevious();
+            } else if (event.key === 'ArrowRight') {
+                navigateToNext();
+            }
         });
 
         // Show/hide loading
@@ -285,6 +299,11 @@
                                     ${fragment.extra ? `<p class="mb-0 text-muted"><small>${fragment.extra}</small></p>` : ''}
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="setFragmentRanking(${fragment.id}, 1)">Bad</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="setFragmentRanking(${fragment.id}, 3)">Ok</button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="setFragmentRanking(${fragment.id}, 5)">Good</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -387,6 +406,42 @@
                     icon.classList.remove('icon-pulse');
                 });
             }
+        }
+
+        async function setFragmentRanking(fragmentId, rankScore) {
+            try {
+                const response = await fetch(`/fragments/${fragmentId}/ranking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ rank_score: parseFloat(rankScore) })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error:", errorData);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log("Success:", data);
+                loadContentFragments();
+            } catch (error) {
+                console.error("Request failed:", error);
+            }
+        }
+
+        function getCurrentContentId() {
+            return parseInt(window.location.pathname.split('/').filter(v => /^\d+$/.test(v))[0], 10);
+        }
+
+        function navigateToNext() {
+            window.location.href = `/admin/learning-content/${getCurrentContentId() + 1}/detail`;
+        }
+
+        function navigateToPrevious() {
+            window.location.href = `/admin/learning-content/${getCurrentContentId() - 1}/detail`;
         }
     </script>
 </body>

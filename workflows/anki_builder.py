@@ -6,7 +6,7 @@ import traceback
 from typing import Any, Dict, List
 import logging
 import uuid
-from models.schemas import ContentFragmentCreate, ContentFragmentWithAssetsRowSchema, LearningContentRowSchema
+from models.schemas import ContentFragmentCreate, ContentFragmentSearchRow, ContentFragmentWithAssetsRowSchema, LearningContentRowSchema
 from services.card_service import CardService, SyncLearningContentToAnkiInputSchema
 from services.card_template_service import CardTemplateService, RenderCardInputSchema
 from services.learning_content_service import LearningContentService
@@ -35,6 +35,7 @@ class AnkiBuilder:
         self.card_template_service = CardTemplateService()
         self.fragment_asset_service = FragmentAssetManager()
         self.llm_service = LLMService(model=settings.local_model_thai)
+        self.job_id = uuid.uuid4().hex
 
     def _calculate_content_hash(self, content: Dict[str, Any]) -> str:
         hash_data = {
@@ -134,7 +135,7 @@ class AnkiBuilder:
                         fragment_type='real_life_example',
                         extra=example['extra'],
                         fragment_metadata={
-                            'job_id': uuid.uuid4().hex,
+                            'job_id': self.job_id
                         }
                     ))
         except Exception as e:
@@ -143,7 +144,12 @@ class AnkiBuilder:
             return
 
     def process_contents(self):
-        for i in range(65, 80):
+        # for i in range(65, 80):
+        #     self.populate_content_with_example(i)
+        contents = self.lc_service.find_content(filters={'has_fragments': True})['content']
+        ids = [content['id'] for content in contents]
+        print(f"ids: {ids}")
+        for i in ids:
             self.populate_content_with_example(i)
 
     async def process_fragments(self):
@@ -157,8 +163,17 @@ class AnkiBuilder:
                 except Exception as e:
                     logger.error(f"Error processing fragment {fragment_id}: {e}")
 
-        # Create tasks for all fragments
-        tasks = [process_single_fragment(i) for i in range(47, 49)]
+        fragments_withouth_assets = self.fragment_service.find_fragments(ContentFragmentSearchRow(
+            has_assets=False
+        ))
+        ids = [fragment.id for fragment in fragments_withouth_assets]
+
+        print(f"ids: {ids}")
+
+        tasks = [process_single_fragment(i) for i in ids]
+
+        # # Create tasks for all fragments
+        # tasks = [process_single_fragment(i) for i in range(47, 60)]
 
         # Wait for all tasks to complete
         await asyncio.gather(*tasks, return_exceptions=True)

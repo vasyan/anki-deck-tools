@@ -102,19 +102,6 @@ class FragmentManager:
 
             return result
 
-    def find_by_text_and_type(self, text: str, fragment_type: Optional[str] = None) -> Optional[ContentFragmentRowSchema]:
-        with self.db_manager.get_session() as session:
-            query = session.query(ContentFragment).filter(ContentFragment.text == text.strip())
-
-            if fragment_type:
-                query = query.filter(ContentFragment.fragment_type == fragment_type)
-
-            fragment = query.first()
-            if not fragment:
-                return None
-
-            return ContentFragmentRowSchema.model_validate(fragment, from_attributes=True)
-
     def get_fragment_types(self) -> Dict[str, str]:
         return self.FRAGMENT_TYPES.copy()
 
@@ -190,8 +177,3 @@ class FragmentManager:
                 "created_at": learning_content.created_at,
                 "updated_at": learning_content.updated_at
             }]
-
-
-    # def get_fragment_with_assets(self, fragment_id: int) -> Optional[ContentFragmentRowSchema]:
-    #     # we have to check if there is at least one audio aseet
-    #     # if none found, have to create it with

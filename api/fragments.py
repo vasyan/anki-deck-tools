@@ -1,10 +1,9 @@
 import logging
 from fastapi import APIRouter, Form, HTTPException
-# from typing import Dict, Any, List
 from database.manager import DatabaseManager
 from database.manager import DatabaseManager
-import logging
 import json
+from models.schemas import ContentFragmentSearchRow, FragmentType
 from services.fragment_asset_manager import FragmentAssetManager
 
 from services.fragment_manager import FragmentManager
@@ -69,16 +68,22 @@ async def get_fragment_stats():
 
 @router.get("/fragments")
 async def search_fragments(
-    text_search: str = None,
-    fragment_type: str = None,
-    has_assets: bool = None,
+    text_search: str | None = None,
+    fragment_type: FragmentType | None = None,
+    has_assets: bool | None = None,
     limit: int = 50,
     offset: int = 0
 ):
     """Search fragments"""
     try:
         fragment_manager = FragmentManager()
-        fragments = fragment_manager.find_fragments(text_search, fragment_type, has_assets, limit, offset)
+        fragments = fragment_manager.find_fragments(ContentFragmentSearchRow(
+            text_search=text_search,
+            fragment_type=fragment_type,
+            has_assets=has_assets,
+            limit=limit,
+            offset=offset
+        ))
 
         return {
             "fragments": fragments,
@@ -192,13 +197,12 @@ async def add_fragment_asset(
 @router.get("/fragments/{fragment_id}/assets")
 async def get_fragment_assets(
     fragment_id: int,
-    asset_type: str = None,
-    active_only: bool = False
+    asset_type: str | None = None
 ):
     """Get assets for a fragment"""
     try:
         asset_manager = FragmentAssetManager()
-        assets = asset_manager.get_fragment_assets(fragment_id, asset_type, active_only)
+        assets = asset_manager.get_fragment_assets_with_rankings(fragment_id, asset_type)
 
         # Remove binary data from response for JSON serialization
         for asset in assets:
@@ -249,4 +253,15 @@ async def get_fragment_learning_content(fragment_id: int):
         return {"learning_content": learning_content}
     except Exception as e:
         logger.error(f"Error getting learning content for fragment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/fragments/{fragment_id}/generate-asset")
+async def generate_asset_for_fragment(fragment_id: int):
+    """Generate an asset for a fragment"""
+    try:
+        asset_manager = FragmentAssetManager()
+        await asset_manager.generate_asset_for_fragment(fragment_id, 'audio')
+        return {"message": "Asset generated successfully"}
+    except Exception as e:
+        logger.error(f"Error generating asset for fragment: {e}")
         raise HTTPException(status_code=500, detail=str(e))

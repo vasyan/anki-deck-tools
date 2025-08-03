@@ -167,6 +167,12 @@ class LearningContentService:
                 LearningContent.example_template.like(search_term)
             ))
 
+        if 'has_fragments' in filter_data:
+            if filter_data['has_fragments']:
+                query = query.filter(LearningContent.fragments.any())
+            else:
+                query = query.filter(~LearningContent.fragments.any())
+
         return query
 
     def find_content(self,
@@ -254,4 +260,3 @@ class LearningContentService:
                 {'language': row[0], 'count': row[1]}
                 for row in result
             ]
-

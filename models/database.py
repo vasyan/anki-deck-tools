@@ -1,5 +1,5 @@
 from datetime import datetime, UTC
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON, LargeBinary, Index, Boolean, Float
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON, LargeBinary, Index, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -91,6 +91,14 @@ class FragmentAsset(Base):
     __table_args__ = (
         Index('idx_fragment_asset_type', 'fragment_id', 'asset_type'),
     )
+
+    @property
+    def avg_rank_score(self) -> float:
+        """Computed property that returns the average rank score for this asset"""
+        if not self.rankings:
+            return 0.0
+        total = sum(ranking.rank_score for ranking in self.rankings)
+        return total / len(self.rankings)
 
 class VectorEmbedding(Base):
     __tablename__ = "vector_embeddings"

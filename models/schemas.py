@@ -118,7 +118,7 @@ class LearningContentFilter(BaseModel):
     difficulty_level: Optional[int] = None
     tags: Optional[List[str]] = None
     text_search: Optional[str] = None
-
+    has_fragments: Optional[bool] = None
     model_config = ConfigDict(extra='ignore')
 
 class LearningContentRowSchema(BaseModel):
