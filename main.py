@@ -13,10 +13,10 @@ from config import settings
 from api.sync import router as sync_router
 from api.embedding import router as embedding_router
 from api.fragments import router as fragments_router
-from api.templates import router as templates_router
 from api.cards import router as cards_router
 from api.learning_content import router as learning_content_router
 from api.admin import router as admin_router
+from api.assets import router as assets_router
 
 # Configure logging
 logging.basicConfig(level=getattr(logging, settings.log_level))
@@ -43,10 +43,10 @@ app = FastAPI(
 app.include_router(sync_router)
 app.include_router(embedding_router)
 app.include_router(fragments_router)
-app.include_router(templates_router)
 app.include_router(cards_router)
 app.include_router(learning_content_router)
 app.include_router(admin_router)
+app.include_router(assets_router)
 
 # CORS middleware
 app.add_middleware(
@@ -81,13 +81,13 @@ async def get_stats() -> Dict[str, Any]:
         with db_manager.get_session() as session:
             total_cards = session.query(AnkiCard).count()
             deck_counts = {}
-            
+
             # Get card count per deck
             decks = session.query(AnkiCard.deck_name).distinct().all()
             for (deck_name,) in decks:
                 count = session.query(AnkiCard).filter_by(deck_name=deck_name).count()
                 deck_counts[deck_name] = count
-            
+
             return {
                 "total_cards": total_cards,
                 "total_decks": len(deck_counts),
@@ -105,4 +105,4 @@ async def get_stats() -> Dict[str, Any]:
 #         host=settings.api_host,
 #         port=settings.api_port,
 #         reload=True
-#     ) 
+#     )

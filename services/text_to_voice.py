@@ -1,23 +1,45 @@
 import logging
+from pydantic import BaseModel
 from config import settings
 from litellm import speech
 
 logger = logging.getLogger(__name__)
 
+instructions_file = "instructions/pronounce-teacher-thai.txt"
+
+class SynthesizeOutput(BaseModel):
+	audio: bytes
+	tts_model: str
+
 class TextToSpeechService:
-	def __init__(self, api_key: str = None, model: str = None, audio_format: str = None, voice: str = None):
+	def __init__(
+			self,
+			api_key: str | None = None,
+			model: str | None = None,
+			audio_format: str | None = None,
+			voice: str | None = None,
+			instructions: str | None = None):
 		self.api_key = api_key or settings.openai_api_key
 		self.model = model or settings.openai_tts_model
 		self.audio_format = audio_format or settings.openai_tts_format
 		self.voice = voice or settings.openai_tts_voice
+		self.instructions = instructions or self._read_instructions()
 
-	def synthesize(self, text: str, model: str = None, audio_format: str = None, voice: str = None, instructions: str = None) -> dict:
+	async def synthesize(
+			self,
+			text: str,
+			model: str | None = None,
+			audio_format: str | None = None,
+			voice: str | None = None,
+			instructions: str | None = None) -> SynthesizeOutput:
 		"""
 		Call OpenAI TTS via litellm and return audio bytes and model name.
 		"""
 		model = model or self.model
 		audio_format = audio_format or self.audio_format
 		voice = voice or self.voice
+		instructions = instructions or self.instructions
+		logger.info(f"Using instructions: {instructions}")
 		try:
 			response = speech(
 				model=model,
@@ -27,10 +49,14 @@ class TextToSpeechService:
 				response_format=audio_format,
 				instructions=instructions
 			)
-			return {
-				"audio": response.content,
-				"tts_model": model
-			}
+			return SynthesizeOutput(
+				audio=response.content,
+				tts_model=model
+			)
 		except Exception as e:
 			logger.error(f"TTS synthesis failed: {e}")
 			raise
+
+	def _read_instructions(self) -> str:
+		with open(instructions_file, "r") as f:
+			return f.read()

@@ -63,7 +63,7 @@ async def main():
 	async def process_card(card):
 		card_data = get_card_data(card, columns)
 		try:
-			result = example_service.generate_example(card_data, template_str)
+			result = example_service.generate_example_from_learning_content(card_data, template_str)
 			if not args.dry_run:
 				card.example = result
 				with db_manager.get_session() as s2:
@@ -92,4 +92,4 @@ async def main():
 	logger.info(f"Example generation complete. Success: {success}, Failed: {fail}")
 
 if __name__ == "__main__":
-	asyncio.run(main()) 
+	asyncio.run(main())

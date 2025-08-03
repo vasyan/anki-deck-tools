@@ -28,9 +28,9 @@ class FragmentManager:
 
             return ContentFragmentRowSchema.model_validate(fragment, from_attributes=True)
 
-    def get_fragments_by_learning_content_id(self, learning_content_id: int) -> List[ContentFragmentRowSchema]:
+    def get_top_rated_fragments_by_learning_content_id(self, learning_content_id: int, limit: int = 10) -> List[ContentFragmentRowSchema]:
         with self.db_manager.get_session() as session:
-            fragments = session.query(ContentFragment).filter(ContentFragment.learning_content_id == learning_content_id).all()
+            fragments = session.query(ContentFragment).filter(ContentFragment.learning_content_id == learning_content_id).order_by(ContentFragment.created_at.desc()).limit(limit)
             return [ContentFragmentRowSchema.model_validate(fragment, from_attributes=True) for fragment in fragments]
 
     def update_fragment(self, fragment_id: int, input: ContentFragmentUpdate) -> bool:

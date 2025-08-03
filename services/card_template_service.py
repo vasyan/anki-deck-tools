@@ -4,13 +4,13 @@ from database.manager import DatabaseManager
 from typing import Any, List, Dict, cast
 from jinja2 import Template as JinjaTemplate
 
-from models.schemas import ContentFragmentRowSchema
+from models.schemas import ContentFragmentWithAssetsRowSchema
 
 templates = Jinja2Templates(directory="templates/card")
 
 class RenderCardInputSchema(BaseModel):
-    title: str
-    fragments: List[ContentFragmentRowSchema]
+    native_text: str
+    fragments: List[ContentFragmentWithAssetsRowSchema]
 
 class RenderCardOutputSchema(BaseModel):
     front: str

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any, Optional
 from database.manager import DatabaseManager
-from services.export_service import ExportService
 import logging
 
 from services.learning_content_service import LearningContentService
@@ -90,27 +89,7 @@ async def update_learning_content(content_id: int, updates: Dict[str, Any]):
         logger.error(f"Error updating learning content {content_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/learning-content/{content_id}/export/{format}")
-async def export_learning_content(content_id: int, format: str):
-    """Export learning content to different formats"""
-    try:
-        export_service = ExportService()
-
-        if format == 'anki':
-            result = export_service.get_anki_content(content_id)
-        elif format == 'api-json':
-            result = export_service.export_to_api_json(content_id)
-        elif format == 'html':
-            result = export_service.export_to_html(content_id)
-        else:
-            raise HTTPException(status_code=400, detail=f"Unsupported export format: {format}")
-
-        if 'error' in result:
-            raise HTTPException(status_code=500, detail=result['error'])
-
-        return result
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error exporting learning content {content_id} to {format}: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+# @router.post("/learning-content/{content_id}/export/{format}")
+# async def export_learning_content(content_id: int, format: str):
+#     """Deprecated export endpoint"""
+#     raise HTTPException(status_code=501, detail="Export endpoint deprecated")

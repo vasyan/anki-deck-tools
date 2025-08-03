@@ -104,7 +104,7 @@ async def preview_example_generation(
                         learning_content_data[col] = None
 
                 # Generate example
-                generated_example = example_service.generate_example(learning_content_data, template_str)
+                generated_example = example_service.generate_example_from_learning_content(learning_content_data, template_str)
 
                 preview_results.append({
                     "learning_content_id": learning_content.id,

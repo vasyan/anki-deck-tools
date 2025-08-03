@@ -1,7 +1,3 @@
-"""
-Learning Content Service
-CRUD operations and management for abstract learning content
-"""
 import logging
 from typing import Dict, List, Optional, Any, cast
 
@@ -173,7 +169,7 @@ class LearningContentService:
                 search_term = f"%{filters['text_search']}%"
                 query = query.filter(or_(
                     LearningContent.title.like(search_term),
-                    LearningContent.front_template.like(search_term),
+                    LearningContent.native_text.like(search_term),
                     LearningContent.back_template.like(search_term),
                     LearningContent.example_template.like(search_term)
                 ))

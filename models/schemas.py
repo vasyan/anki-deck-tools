@@ -5,6 +5,8 @@ from datetime import datetime
 from typing import Dict, List, Optional, Literal, Any
 from pydantic import BaseModel, Field, computed_field
 from pydantic import ConfigDict
+import base64
+
 
 # Define reusable type alias for optional metadata dictionaries
 Metadata = Optional[Dict[str, Any]]
@@ -68,19 +70,51 @@ class ContentFragmentRowSchema(BaseModel):
     extra: Optional[str] = None
     fragment_type: FragmentType
 
+class ContentFragmentUpdate(BaseModel):
+    native_text: Optional[str] = None
+    body_text: Optional[str] = None
+    ipa: Optional[str] = None
+    extra: Optional[str] = None
+    fragment_type: Optional[FragmentType] = None
+    fragment_metadata: Optional[Metadata] = None
+
+class ContentFragmentCreate(BaseModel):
+    native_text: str
+    body_text: str
+    ipa: Optional[str] = None
+    extra: Optional[str] = None
+    fragment_type: FragmentType
+    fragment_metadata: Optional[Metadata] = None
+
 class LearningContentRowSchema(BaseModel):
     id: int
     title: str
     content_type: str
     language: str
-    front_template: Optional[str] = None
+    native_text: Optional[str] = None
     back_template: Optional[str] = None
-    example_template: Optional[str] = None
     difficulty_level: Optional[int] = None
     tags: Tags = None
     content_metadata: Metadata = None
 
     model_config = ConfigDict(from_attributes=True)
+
+class FragmentAssetRowSchema(BaseModel):
+    """Schema representing an asset (audio/image/video) attached to a content fragment."""
+    id: int
+    fragment_id: int
+    asset_type: Literal['audio', 'image', 'video']
+    asset_data: bytes
+    asset_metadata: Dict[str, Any]
+    created_at: datetime
+
+    model_config = ConfigDict(
+        json_encoders={bytes: lambda v: base64.b64encode(v).decode()},
+        from_attributes=True,
+    )
+
+class ContentFragmentWithAssetsRowSchema(ContentFragmentRowSchema):
+    audio_asset: Optional[FragmentAssetRowSchema] = None
 
 class LearningContentUpdate(BaseModel):
     # every updatable column is optional
@@ -89,7 +123,6 @@ class LearningContentUpdate(BaseModel):
     language: str | None = None
     front_template: str | None = None
     back_template: str | None = None
-    example_template: str | None = None
     difficulty_level: int | None = None
     tags: Tags | None = None
     content_metadata: Metadata | None = None
@@ -103,7 +136,6 @@ class LearningContentCreate(BaseModel):
     language: str = "thai"
     front_template: str | None = None
     back_template: str | None = None
-    example_template: str | None = None
     difficulty_level: int | None = None
     tags: Tags | None = None
     content_metadata: Metadata | None = None
@@ -119,10 +151,6 @@ class LearningContentSearchRow(LearningContentRowSchema):
     @computed_field(return_type=bool)
     def has_back_template(self) -> bool:  # type: ignore[override]
         return bool(self.back_template)
-
-    @computed_field(return_type=bool)
-    def has_example_template(self) -> bool:  # type: ignore[override]
-        return bool(self.example_template)
 
     @computed_field(return_type=int)
     def linked_anki_cards_count(self) -> int:  # type: ignore[override]

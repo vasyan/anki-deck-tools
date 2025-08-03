@@ -4,12 +4,11 @@ Service for managing Anki card operations
 import logging
 from typing import Dict, Any, List, Optional, Literal, cast
 
-from openai import BaseModel
+from pydantic import BaseModel
 
 from anki.client import AnkiConnectClient
 from models.database import AnkiCard
 from models.schemas import LearningContentRowSchema
-from services.export_service import ExportService
 from database.manager import DatabaseManager
 import base64
 import asyncio
@@ -21,8 +20,9 @@ DEFAULT_DECK = "top-thai-2000"
 
 logger = logging.getLogger(__name__)
 
+# TODO: extract to separate file to prevent cycle imports
 class SyncLearningContentToAnkiInputSchema(BaseModel):
-    lc_data: LearningContentRowSchema
+    learning_content_id: int
     front: str
     back: str
     content_hash: str
@@ -34,14 +34,10 @@ class SyncLearningContentToAnkiOutputSchema(BaseModel):
     status: Literal["created", "updated", "skipped", "failed"]
 
 class CardService:
-    """Service for Anki card operations"""
-
     def __init__(self, db_manager: Optional[DatabaseManager] = None):
         self.db_manager = db_manager or DatabaseManager()
-        self.export_service = ExportService()
 
     async def sync_deck(self, deck_name: str) -> Dict[str, Any]:
-        """Sync a specific deck from Anki"""
         print(f"calling sync_deck: {deck_name}")
         try:
             async with AnkiConnectClient() as anki_client:
@@ -147,7 +143,7 @@ class CardService:
         try:
             with self.db_manager.get_session() as session:
                 existing_card = session.query(AnkiCard).filter_by(
-                    learning_content_id=input.lc_data.id
+                    learning_content_id=input.learning_content_id
                 ).first()
                 if existing_card:
                     if cast(str, existing_card.export_hash) == input.content_hash and not force_update:
@@ -187,7 +183,7 @@ class CardService:
                 status="failed",
             )
         except Exception as e:
-            logger.error(f"Error syncing learning content {input.lc_data.id}: {e}")
+            logger.error(f"Error syncing learning content {input.learning_content_id}: {e}")
             return SyncLearningContentToAnkiOutputSchema(
                 anki_card_id=None,
                 anki_note_id=None,
@@ -198,7 +194,7 @@ class CardService:
         for asset in assets:
             existing_files = await anki_client._request("getMediaFilesNames", {"pattern": f"asset_{asset.id}.mp3"}) # type: ignore[reportUnknownMemberType]
             if existing_files:
-                await anki_client.delete_media_file(f"asset_{asset.id}.mp3") # type: ignore[reportUnknownMemberType]
+                await anki_client._request("deleteMediaFile", {"filename": f"asset_{asset.id}.mp3"}) # type: ignore[reportUnknownMemberType]
             await anki_client._request(  # type: ignore[reportUnknownMemberType]
                 "storeMediaFile",
                 {

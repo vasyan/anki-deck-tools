@@ -1,7 +1,7 @@
 import logging
 
 from typing import Dict, Literal, Optional, Any, cast
-
+from datetime import datetime, timezone
 
 from database.manager import DatabaseManager
 from models.database import ContentFragment, FragmentAsset
@@ -39,25 +39,13 @@ class FragmentAssetManager:
 
                 # Safety-check: fragment should exist because of the FK, but guard anyway.
                 if fragment:
-                    from datetime import datetime, timezone
-
                     # Extract actual datetimes (SQLAlchemy Columns may confuse the type checker)
                     frag_updated: Optional[datetime] = getattr(fragment, "updated_at", None)  # type: ignore[attr-defined]
                     asset_created: Optional[datetime] = getattr(asset, "created_at", None)  # type: ignore[attr-defined]
 
                     if frag_updated and asset_created and frag_updated > asset_created:
-                        # Fragment text was modified after the asset was generated → regenerate the asset so that
-                        # the media matches the latest fragment content.
-                        text_to_voice_result = await self.text_to_voice_service.synthesize(text=cast(str, fragment.native_text))
-
-                        # Use setattr to avoid static-typing complaints about SQLAlchemy instrumentation
-                        setattr(asset, "asset_data", text_to_voice_result.audio)
-                        setattr(asset, "asset_metadata", {"tts_model": text_to_voice_result.tts_model})
-
-                        # Force the ORM to pick up the change in timestamp to reflect regeneration time.
-                        setattr(asset, "created_at", datetime.now(timezone.utc))
-
-                        session.commit()
+                        # Fragment text was modified after the asset was generated → regenerate the asset
+                        return await self.generate_asset_for_fragment(fragment_id, type, existing_asset_id=cast(int, asset.id))
 
                 return FragmentAssetRowSchema.model_validate(asset, from_attributes=True)
 
@@ -65,18 +53,48 @@ class FragmentAssetManager:
             if generate_if_not_found:
                 fragment = session.get(ContentFragment, fragment_id)
                 if fragment:
-                    text_to_voice_result = await self.text_to_voice_service.synthesize(text=cast(str, fragment.native_text))
-                    new_asset = self.create_asset(
-                        fragment_id,
-                        type,
-                        text_to_voice_result.audio,
-                        {"tts_model": text_to_voice_result.tts_model},
-                    )
-                    return new_asset
+                    return await self.generate_asset_for_fragment(fragment_id, type)
                 return None
 
             return None
 
+    async def generate_asset_for_fragment(
+            self,
+            fragment_id: int,
+            asset_type: Literal['audio', 'image', 'video'],
+            existing_asset_id: Optional[int] = None,
+        ) -> FragmentAssetRowSchema:
+        """Generate or regenerate an asset for a fragment"""
+        with self.db_manager.get_session() as session:
+            fragment = session.get(ContentFragment, fragment_id)
+            if not fragment:
+                raise ValueError(f"Fragment with id {fragment_id} not found")
+
+            text_to_voice_result = await self.text_to_voice_service.synthesize(text=cast(str, fragment.native_text))
+
+            if existing_asset_id:
+                # Update existing asset
+                existing_asset = session.get(FragmentAsset, existing_asset_id)
+                if not existing_asset:
+                    raise ValueError(f"Asset with id {existing_asset_id} not found")
+
+                setattr(existing_asset, "asset_data", text_to_voice_result.audio)
+                setattr(existing_asset, "asset_metadata", {"tts_model": text_to_voice_result.tts_model})
+                setattr(existing_asset, "created_at", datetime.now(timezone.utc))
+                session.commit()
+                return FragmentAssetRowSchema.model_validate(existing_asset, from_attributes=True)
+            else:
+                # Create new asset
+                new_asset = FragmentAsset(
+                    fragment_id=fragment_id,
+                    asset_type=asset_type,
+                    asset_data=text_to_voice_result.audio,
+                    asset_metadata={"tts_model": text_to_voice_result.tts_model}
+                )
+                session.add(new_asset)
+                session.commit()
+                session.refresh(new_asset)
+                return FragmentAssetRowSchema.model_validate(new_asset, from_attributes=True)
 
     def create_asset(
             self,
