@@ -1,12 +1,16 @@
 import logging
-from typing import Dict, List, Optional, Any, cast
+from typing import Dict, List, Optional, Any, cast, TypeVar
 
 from database.manager import DatabaseManager
 from models.database import LearningContent
 from models.schemas import LearningContentRowSchema, LearningContentUpdate
 from models.schemas import LearningContentCreate
-from models.schemas import LearningContentSearchRow
+from models.schemas import LearningContentSearchRow, LearningContentFilter
 from sqlalchemy import text, or_
+from sqlalchemy.orm import Query
+
+# Define type variable for LearningContent
+T = TypeVar('T')
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -125,54 +129,73 @@ class LearningContentService:
             logger.info(f"Deleted learning content #{lc_id}")
             return True
 
-    def search_content(self,
-                      filters: Optional[Dict[str, Any]] = None,
+    def _apply_filters(self, query: Query[T], filters: LearningContentFilter) -> Query[T]:
+        """
+        Apply filters to a query based on a filter model
+
+        Args:
+            query: SQLAlchemy query object
+            filters: Pydantic filter model with search criteria
+
+        Returns:
+            Updated query with filters applied
+        """
+        filter_data = filters.model_dump(exclude_unset=True, exclude_none=True)
+
+        if 'content_type' in filter_data:
+            query = query.filter(LearningContent.content_type == filter_data['content_type'])
+
+        if 'language' in filter_data:
+            query = query.filter(LearningContent.language == filter_data['language'])
+
+        if 'difficulty_level' in filter_data:
+            query = query.filter(LearningContent.difficulty_level == filter_data['difficulty_level'])
+
+        if 'tags' in filter_data and filter_data['tags']:
+            tag_conditions: List[Any] = []
+            for tag in filter_data['tags']:
+                tag_conditions.append(text(f"JSON_EXTRACT(tags, '$') LIKE '%{tag}%'"))
+            if tag_conditions:
+                query = query.filter(or_(*tag_conditions))
+
+        if 'text_search' in filter_data and filter_data['text_search']:
+            search_term = f"%{filter_data['text_search']}%"
+            query = query.filter(or_(
+                LearningContent.title.like(search_term),
+                LearningContent.native_text.like(search_term),
+                LearningContent.back_template.like(search_term),
+                LearningContent.example_template.like(search_term)
+            ))
+
+        return query
+
+    def find_content(self,
+                      filters: Optional[Dict[str, Any] | LearningContentFilter] = None,
                       page: int = 1,
                       page_size: int = 20) -> Dict[str, Any]:
         """
         Search learning content with filters and pagination
 
         Args:
-            filters: Search filters (content_type, language, difficulty_level, tags, text_search)
+            filters: Search filters as dict or LearningContentFilter instance
             page: Page number (1-based)
             page_size: Items per page
 
         Returns:
             Dictionary with results, pagination info
         """
-        filters = filters or {}
+        if filters is None:
+            filters = LearningContentFilter()
+        elif isinstance(filters, dict):
+            filters = LearningContentFilter(**filters)
+
         offset = (page - 1) * page_size
 
         with self.db_manager.get_session() as session:
-            query = session.query(LearningContent)
+            query: Query[LearningContent] = session.query(LearningContent)
 
             # Apply filters
-            if filters.get('content_type'):
-                query = query.filter(LearningContent.content_type == filters['content_type'])
-
-            if filters.get('language'):
-                query = query.filter(LearningContent.language == filters['language'])
-
-            if filters.get('difficulty_level'):
-                query = query.filter(LearningContent.difficulty_level == filters['difficulty_level'])
-
-            if filters.get('tags'):
-                # Search for any of the provided tags
-                tag_conditions: List[Any] = []
-                for tag in filters['tags']:
-                    # JSON contains search - database specific
-                    tag_conditions.append(text(f"JSON_EXTRACT(tags, '$') LIKE '%{tag}%'"))
-                if tag_conditions:
-                    query = query.filter(or_(*tag_conditions))
-
-            if filters.get('text_search'):
-                search_term = f"%{filters['text_search']}%"
-                query = query.filter(or_(
-                    LearningContent.title.like(search_term),
-                    LearningContent.native_text.like(search_term),
-                    LearningContent.back_template.like(search_term),
-                    LearningContent.example_template.like(search_term)
-                ))
+            query = self._apply_filters(query, filters)
 
             # Get total count
             total_count = query.count()
@@ -199,7 +222,7 @@ class LearningContentService:
                     'has_next': offset + page_size < total_count,
                     'has_prev': page > 1
                 },
-                'filters_applied': filters
+                'filters_applied': filters.model_dump(exclude_unset=True, exclude_none=True)
             }
 
     def get_content_types(self) -> List[Dict[str, Any]]:

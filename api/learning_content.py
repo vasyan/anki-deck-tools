@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from database.manager import DatabaseManager
 import logging
 
 from services.learning_content_service import LearningContentService
+from services.fragment_manager import FragmentManager
+from models.schemas import ContentFragmentSearchRow, ContentFragmentRowSchema
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -18,13 +20,23 @@ async def get_learning_content_stats():
     try:
         learning_service = LearningContentService()
 
-        content_types = learning_service.get_content_types()
-        languages = learning_service.get_languages()
+        try:
+            content_types = learning_service.get_content_types()
+            languages = learning_service.get_languages()
 
-        return {
-            'content_types': content_types,
-            'languages': languages
-        }
+            return {
+                'content_types': content_types,
+                'languages': languages
+            }
+        except Exception as db_error:
+            # If there's a database error (e.g., table doesn't exist), return empty results
+            logger.warning(f"Database query error for stats: {db_error}")
+
+            # Return empty result
+            return {
+                'content_types': [],
+                'languages': []
+            }
     except Exception as e:
         logger.error(f"Error getting learning content stats: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -49,8 +61,26 @@ async def get_learning_content(
         if search:
             filters['text_search'] = search
 
-        result = learning_service.search_content(filters, page, page_size)
-        return result
+        try:
+            result = learning_service.find_content(filters, page, page_size)
+            return result
+        except Exception as db_error:
+            # If there's a database error (e.g., table doesn't exist), return empty results
+            logger.warning(f"Database query error: {db_error}")
+
+            # Return empty result with valid pagination structure
+            return {
+                'content': [],
+                'pagination': {
+                    'page': page,
+                    'page_size': page_size,
+                    'total_count': 0,
+                    'total_pages': 0,
+                    'has_next': False,
+                    'has_prev': False
+                },
+                'filters_applied': filters
+            }
     except Exception as e:
         logger.error(f"Error getting learning content: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -93,3 +123,19 @@ async def update_learning_content(content_id: int, updates: Dict[str, Any]):
 # async def export_learning_content(content_id: int, format: str):
 #     """Deprecated export endpoint"""
 #     raise HTTPException(status_code=501, detail="Export endpoint deprecated")
+
+@router.get("/learning-content/{content_id}/fragments", response_model=List[ContentFragmentRowSchema])
+async def get_learning_content_fragments(content_id: int):
+    """Get fragments related to specific learning content"""
+    try:
+        fragment_service = FragmentManager()
+
+        # Create a ContentFragmentSearchRow instance with learning_content_id
+        search_params = ContentFragmentSearchRow(learning_content_id=content_id)
+
+        fragments = fragment_service.find_fragments(input=search_params)
+
+        return fragments
+    except Exception as e:
+        logger.error(f"Error getting fragments for content {content_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

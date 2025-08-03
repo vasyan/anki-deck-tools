@@ -216,6 +216,16 @@ async def admin_learning_content(request: Request):
     """Learning content management admin page"""
     return templates.TemplateResponse("admin/learning_content.html", {"request": request})
 
+@router.get("/admin/learning-content/{content_id}/detail", response_class=HTMLResponse)
+async def admin_learning_content_detail(request: Request, content_id: int):
+    """Learning content detail page"""
+    return templates.TemplateResponse("admin/learning_content_detail.html", {"request": request})
+
+@router.get("/admin/fragments/{fragment_id}/detail", response_class=HTMLResponse)
+async def admin_fragment_detail(request: Request, fragment_id: int):
+    """Fragment detail page"""
+    return templates.TemplateResponse("admin/fragment_detail.html", {"request": request})
+
 @router.get("/admin/example/instructions")
 async def list_instruction_files():
     """List available instruction template files"""

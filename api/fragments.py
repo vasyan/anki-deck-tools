@@ -210,3 +210,43 @@ async def get_fragment_assets(
     except Exception as e:
         logger.error(f"Error getting assets: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/fragments/assets/{asset_id}")
+async def get_asset_data(asset_id: int):
+    """Get the binary data for an asset"""
+    try:
+        asset_manager = FragmentAssetManager()
+        asset = asset_manager.get_asset(asset_id)
+
+        if not asset or 'asset_data' not in asset:
+            raise HTTPException(status_code=404, detail="Asset not found")
+
+        from fastapi.responses import Response
+
+        # Determine content type based on asset_type
+        content_type = "audio/mpeg"  # Default for audio
+        if asset.get('asset_type') == 'image':
+            content_type = "image/jpeg"  # Adjust based on your image types
+
+        return Response(
+            content=asset['asset_data'],
+            media_type=content_type
+        )
+    except Exception as e:
+        logger.error(f"Error fetching asset data: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/fragments/{fragment_id}/learning-content")
+async def get_fragment_learning_content(fragment_id: int):
+    """Get learning content related to a fragment"""
+    try:
+        fragment_manager = FragmentManager()
+        learning_content = fragment_manager.get_fragment_learning_content(fragment_id)
+
+        if not learning_content:
+            return {"learning_content": []}
+
+        return {"learning_content": learning_content}
+    except Exception as e:
+        logger.error(f"Error getting learning content for fragment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

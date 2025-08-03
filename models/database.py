@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON, LargeBinary, Index, Boolean, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -12,8 +12,8 @@ class AnkiCard(Base):
     anki_note_id = Column(Integer, unique=True, nullable=True)
     deck_name = Column(String(255), nullable=False)
     tags = Column(JSON)  # Store as JSON array
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 
     learning_content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=True)
     export_hash = Column(Text, nullable=True)  # Track when re-export needed
@@ -39,8 +39,8 @@ class LearningContent(Base):
     content_metadata = Column(JSON, nullable=True)
 
     # Timestamps
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 
     # Relationships
     anki_cards = relationship("AnkiCard", back_populates="learning_content")
@@ -62,8 +62,8 @@ class ContentFragment(Base):
     extra = Column(Text)
     fragment_type = Column(String(50), nullable=False)  # `basic_meaning` | `pronunciation_and_tone` | `usage_example` | `usage_tip`
     fragment_metadata = Column(JSON)  # Extensible metadata (difficulty, frequency, etc.)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
     learning_content_id = Column(Integer, ForeignKey("learning_content.id"), nullable=False)
 
     assets = relationship("FragmentAsset", back_populates="fragment", cascade="all, delete-orphan")
@@ -82,11 +82,11 @@ class FragmentAsset(Base):
     asset_type = Column(String(20), nullable=False)  # 'audio', 'image', 'video'
     asset_data = Column(LargeBinary)  # Store the actual asset data
     asset_metadata = Column(JSON)  # TTS model, voice, quality, speaker info, etc.
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
     created_by = Column(String(100))  # Who created this asset (system, operator, speaker)
 
     fragment = relationship("ContentFragment", back_populates="assets")
-    rankings = relationship("FragmentAssetRanking", back_populates="asset", cascade="all, delete-orphan")
+    rankings = relationship("Ranking", back_populates="asset", cascade="all, delete-orphan")
 
     __table_args__ = (
         Index('idx_fragment_asset_type', 'fragment_id', 'asset_type'),
@@ -100,28 +100,22 @@ class VectorEmbedding(Base):
     embedding_type = Column(String(50), nullable=False)  # e.g., 'front', 'back', 'combined'
     vector_data = Column(Text)  # Store as JSON for now, will be BLOB for sqlite-vec
     vector_dimension = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
     card = relationship("AnkiCard", back_populates="embeddings")
 
 # TODO: figure out how it should be used
-class FragmentAssetRanking(Base):
-    __tablename__ = "fragment_asset_rankings"
+class Ranking(Base):
+    __tablename__ = "rankings"
 
     id = Column(Integer, primary_key=True)
     fragment_id = Column(Integer, ForeignKey("content_fragments.id"), nullable=False)
     asset_id = Column(Integer, ForeignKey("fragment_assets.id"), nullable=False)
-    is_active = Column(Boolean, default=False, nullable=False)  # Currently selected/active asset
-    rank_score = Column(Float, default=0.0)  # Quality ranking by operators
+    rank_score: Column[float] = Column(Float, default=0.0)  # Quality ranking by operators
     assessed_by = Column(String(100))  # Who assessed this asset
     assessment_notes = Column(Text)  # Notes about the assessment
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
 
     fragment = relationship("ContentFragment")
     asset = relationship("FragmentAsset", back_populates="rankings")
-
-    __table_args__ = (
-        Index('idx_fragment_active', 'fragment_id', 'is_active'),
-        Index('idx_asset_ranking', 'asset_id', 'rank_score'),
-    )

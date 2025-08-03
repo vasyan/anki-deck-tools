@@ -14,6 +14,21 @@ Tags = Optional[List[str]]
 # Define type alias for allowed fragment types
 FragmentType = Literal["basic_meaning", "pronunciation_and_tone", "real_life_example", "usage_tip"]
 
+class FragmentAssetRowSchema(BaseModel):
+    """Schema representing an asset (audio/image/video) attached to a content fragment."""
+    id: int
+    fragment_id: int
+    asset_type: Literal['audio', 'image', 'video']
+    asset_data: bytes
+    asset_metadata: Dict[str, Any]
+    created_at: datetime
+
+    model_config = ConfigDict(
+        json_encoders={bytes: lambda v: base64.b64encode(v).decode()},
+        from_attributes=True,
+    )
+
+
 class AnkiCardResponse(BaseModel):
     """Response model for Anki cards"""
     id: int
@@ -69,6 +84,7 @@ class ContentFragmentRowSchema(BaseModel):
     ipa: Optional[str] = None
     extra: Optional[str] = None
     fragment_type: FragmentType
+    assets: Optional[List[FragmentAssetRowSchema]] = None
 
 class ContentFragmentUpdate(BaseModel):
     native_text: Optional[str] = None
@@ -86,6 +102,25 @@ class ContentFragmentCreate(BaseModel):
     fragment_type: FragmentType
     fragment_metadata: Optional[Metadata] = None
 
+
+class ContentFragmentSearchRow(BaseModel):
+    learning_content_id: Optional[int] = None
+    text_search: Optional[str] = None
+    fragment_type: Optional[FragmentType] = None
+    has_assets: Optional[bool] = Field(default=None)
+    limit: int = 50
+    offset: int = 0
+
+class LearningContentFilter(BaseModel):
+    """Filter parameters for learning content search"""
+    content_type: Optional[str] = None
+    language: Optional[str] = None
+    difficulty_level: Optional[int] = None
+    tags: Optional[List[str]] = None
+    text_search: Optional[str] = None
+
+    model_config = ConfigDict(extra='ignore')
+
 class LearningContentRowSchema(BaseModel):
     id: int
     title: str
@@ -96,22 +131,10 @@ class LearningContentRowSchema(BaseModel):
     difficulty_level: Optional[int] = None
     tags: Tags = None
     content_metadata: Metadata = None
+    created_at: datetime
+    updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
-
-class FragmentAssetRowSchema(BaseModel):
-    """Schema representing an asset (audio/image/video) attached to a content fragment."""
-    id: int
-    fragment_id: int
-    asset_type: Literal['audio', 'image', 'video']
-    asset_data: bytes
-    asset_metadata: Dict[str, Any]
-    created_at: datetime
-
-    model_config = ConfigDict(
-        json_encoders={bytes: lambda v: base64.b64encode(v).decode()},
-        from_attributes=True,
-    )
 
 class ContentFragmentWithAssetsRowSchema(ContentFragmentRowSchema):
     audio_asset: Optional[FragmentAssetRowSchema] = None
@@ -121,8 +144,7 @@ class LearningContentUpdate(BaseModel):
     title: str | None = None
     content_type: str | None = None
     language: str | None = None
-    front_template: str | None = None
-    back_template: str | None = None
+    native_text: str | None = None
     difficulty_level: int | None = None
     tags: Tags | None = None
     content_metadata: Metadata | None = None
@@ -134,8 +156,7 @@ class LearningContentCreate(BaseModel):
     title: str
     content_type: str
     language: str = "thai"
-    front_template: str | None = None
-    back_template: str | None = None
+    native_text: str | None = None
     difficulty_level: int | None = None
     tags: Tags | None = None
     content_metadata: Metadata | None = None
@@ -144,14 +165,6 @@ class LearningContentCreate(BaseModel):
 
 # Schema for list/search results with computed helper flags
 class LearningContentSearchRow(LearningContentRowSchema):
-    @computed_field(return_type=bool)
-    def has_front_template(self) -> bool:  # type: ignore[override]
-        return bool(self.front_template)
-
-    @computed_field(return_type=bool)
-    def has_back_template(self) -> bool:  # type: ignore[override]
-        return bool(self.back_template)
-
     @computed_field(return_type=int)
     def linked_anki_cards_count(self) -> int:  # type: ignore[override]
         return len(getattr(self, "anki_cards", []))

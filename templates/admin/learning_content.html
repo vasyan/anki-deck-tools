@@ -117,7 +117,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">
-                    <i class="fas fa-list"></i> Learning Content 
+                    <i class="fas fa-list"></i> Learning Content
                     <span id="totalCount" class="badge bg-secondary ms-2">0</span>
                 </h5>
             </div>
@@ -125,7 +125,7 @@
                 <div id="contentList">
                     <!-- Content will be loaded here -->
                 </div>
-                
+
                 <!-- Pagination -->
                 <nav aria-label="Content pagination" class="mt-4">
                     <ul class="pagination justify-content-center" id="pagination">
@@ -147,7 +147,7 @@
                 <div class="modal-body">
                     <form id="editContentForm">
                         <input type="hidden" id="editContentId">
-                        
+
                         <div class="row">
                             <div class="col-md-8">
                                 <label for="editTitle" class="form-label">Title</label>
@@ -235,11 +235,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadStats();
             loadContent();
-            
+
             // Event listeners
             document.getElementById('searchBtn').addEventListener('click', handleSearch);
             document.getElementById('saveContentBtn').addEventListener('click', handleSaveContent);
-            
+
             // Enter key search
             document.getElementById('searchInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -252,10 +252,51 @@
         async function loadStats() {
             try {
                 const response = await fetch('/learning-content/stats');
+
+                if (!response.ok) {
+                    // Handle error but don't show alert - just default to empty stats
+                    document.getElementById('statsRow').innerHTML = `
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-tags text-primary"></i> Content Types</h6>
+                                    <p class="text-muted">No content types available.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-globe text-success"></i> Languages</h6>
+                                    <p class="text-muted">No languages available.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    // Set empty defaults for filter dropdowns
+                    populateFilterDropdowns([], []);
+                    return;
+                }
+
                 const data = await response.json();
-                
+
+                // Check for expected data structure
+                if (!data || !data.content_types || !data.languages) {
+                    document.getElementById('statsRow').innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Invalid statistics data received.
+                            </div>
+                        </div>
+                    `;
+                    // Set empty defaults for filter dropdowns
+                    populateFilterDropdowns([], []);
+                    return;
+                }
+
                 let statsHtml = '';
-                
+
                 // Content types card
                 statsHtml += `
                     <div class="col-md-6 mb-3">
@@ -263,16 +304,23 @@
                             <div class="card-body">
                                 <h6 class="card-title"><i class="fas fa-tags text-primary"></i> Content Types</h6>
                                 <div class="row">`;
-                
-                data.content_types.forEach(type => {
+
+                if (data.content_types.length === 0) {
                     statsHtml += `
-                        <div class="col-6">
-                            <small>${type.content_type}: <strong>${type.count}</strong></small>
+                        <div class="col-12">
+                            <p class="text-muted">No content types available.</p>
                         </div>`;
-                });
-                
+                } else {
+                    data.content_types.forEach(type => {
+                        statsHtml += `
+                            <div class="col-6">
+                                <small>${type.content_type}: <strong>${type.count}</strong></small>
+                            </div>`;
+                    });
+                }
+
                 statsHtml += `</div></div></div></div>`;
-                
+
                 // Languages card
                 statsHtml += `
                     <div class="col-md-6 mb-3">
@@ -280,28 +328,35 @@
                             <div class="card-body">
                                 <h6 class="card-title"><i class="fas fa-globe text-success"></i> Languages</h6>
                                 <div class="row">`;
-                
-                data.languages.forEach(lang => {
+
+                if (data.languages.length === 0) {
                     statsHtml += `
-                        <div class="col-6">
-                            <small>${lang.language}: <strong>${lang.count}</strong></small>
+                        <div class="col-12">
+                            <p class="text-muted">No languages available.</p>
                         </div>`;
-                });
-                
+                } else {
+                    data.languages.forEach(lang => {
+                        statsHtml += `
+                            <div class="col-6">
+                                <small>${lang.language}: <strong>${lang.count}</strong></small>
+                            </div>`;
+                    });
+                }
+
                 statsHtml += `</div></div></div></div>`;
-                
+
                 document.getElementById('statsRow').innerHTML = statsHtml;
-                
+
                 // Populate filter dropdowns
                 populateFilterDropdowns(data.content_types, data.languages);
-                
+
             } catch (error) {
                 console.error('Error loading stats:', error);
                 // Show error message and set defaults
                 document.getElementById('statsRow').innerHTML = `
                     <div class="col-12">
                         <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle"></i> Error loading statistics. Please refresh the page.
+                            <i class="fas fa-exclamation-triangle"></i> Error loading statistics: ${error.message}
                         </div>
                     </div>
                 `;
@@ -314,14 +369,14 @@
         function populateFilterDropdowns(contentTypes, languages) {
             const contentTypeSelect = document.getElementById('contentTypeFilter');
             const languageSelect = document.getElementById('languageFilter');
-            
+
             contentTypes.forEach(type => {
                 const option = document.createElement('option');
                 option.value = type.content_type;
                 option.textContent = type.content_type + ' (' + type.count + ')';
                 contentTypeSelect.appendChild(option);
             });
-            
+
             languages.forEach(lang => {
                 const option = document.createElement('option');
                 option.value = lang.language;
@@ -344,29 +399,59 @@
         // Load content with filters
         async function loadContent() {
             showLoading(true);
-            
+
             try {
                 const params = new URLSearchParams({
                     page: currentPage,
                     page_size: 10
                 });
-                
+
                 if (currentFilters.content_type) params.append('content_type', currentFilters.content_type);
                 if (currentFilters.language) params.append('language', currentFilters.language);
                 if (currentFilters.search) params.append('search', currentFilters.search);
-                
+
                 const response = await fetch('/learning-content?' + params);
+
+                if (!response.ok) {
+                    document.getElementById('contentList').innerHTML =
+                        '<div class="alert alert-danger">' +
+                        `<h4><i class="fas fa-exclamation-circle"></i> Server Error (${response.status})</h4>` +
+                        '<p>The server encountered an error while processing your request.</p>' +
+                        '</div>';
+                    document.getElementById('pagination').innerHTML = '';
+                    document.getElementById('totalCount').textContent = '0';
+                    return;
+                }
+
                 const data = await response.json();
-                
-                displayContent(data.content);
+
+                // Check if data has expected structure
+                if (!data || !data.pagination) {
+                    document.getElementById('contentList').innerHTML =
+                        '<div class="alert alert-warning">' +
+                        '<h4><i class="fas fa-exclamation-triangle"></i> Invalid Response</h4>' +
+                        '<p>The server returned an invalid response format.</p>' +
+                        '</div>';
+                    document.getElementById('pagination').innerHTML = '';
+                    document.getElementById('totalCount').textContent = '0';
+                    return;
+                }
+
+                displayContent(data.content || []);
                 displayPagination(data.pagination);
-                
+
                 document.getElementById('totalCount').textContent = data.pagination.total_count;
-                
+
             } catch (error) {
                 console.error('Error loading content:', error);
-                document.getElementById('contentList').innerHTML = 
-                    '<div class="alert alert-danger">Error loading content: ' + error.message + '</div>';
+                document.getElementById('contentList').innerHTML =
+                    '<div class="alert alert-danger">' +
+                    '<h4><i class="fas fa-exclamation-circle"></i> Error</h4>' +
+                    '<p>There was a problem loading the content list:</p>' +
+                    `<pre class="text-danger">${error.message}</pre>` +
+                    '</div>';
+                document.getElementById('pagination').innerHTML = '';
+                document.getElementById('totalCount').textContent = '0';
             } finally {
                 showLoading(false);
             }
@@ -375,54 +460,42 @@
         // Display content
         function displayContent(content) {
             if (!content || content.length === 0) {
-                document.getElementById('contentList').innerHTML = 
+                document.getElementById('contentList').innerHTML =
                     '<div class="alert alert-info">No content found matching your criteria.</div>';
                 return;
             }
-            
+
             let html = '';
-            
+
             content.forEach(item => {
                 const tags = item.tags || [];
                 const tagsHtml = tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-                
+
                 html += `
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-8">
-                                    <h6 class="card-title">
-                                        ${item.title}
+                                                                            <h6 class="card-title">
+                                        <a href="/admin/learning-content/${item.id}/detail" class="text-primary">
+                                            ${item.title}
+                                        </a>
                                         <span class="badge bg-primary content-type-badge">${item.content_type}</span>
                                         ${item.difficulty_level ? `<span class="badge bg-warning content-type-badge">Level ${item.difficulty_level}</span>` : ''}
                                     </h6>
                                     <p class="text-muted small mb-2">
-                                        Language: ${item.language} | 
+                                        Language: ${item.language} |
                                         Created: ${new Date(item.created_at).toLocaleDateString()} |
                                         Linked Anki Cards: ${item.linked_anki_cards_count}
                                     </p>
                                     ${tagsHtml ? `<div class="mb-2">${tagsHtml}</div>` : ''}
-                                    
+
                                     <div class="row">
                                         <div class="col-md-4">
                                             <small class="text-muted">Front:</small>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" disabled ${item.has_front_template ? 'checked' : ''}>
-                                                <label class="form-check-label small">Has Template</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <small class="text-muted">Back:</small>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" disabled ${item.has_back_template ? 'checked' : ''}>
-                                                <label class="form-check-label small">Has Template</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <small class="text-muted">Example:</small>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" disabled ${item.has_example_template ? 'checked' : ''}>
-                                                <label class="form-check-label small">Has Template</label>
+                                                <input class="form-check-input" type="checkbox" disabled ${item.has_native_text ? 'checked' : ''}>
+                                                <label class="form-check-label small">Has Native Text</label>
                                             </div>
                                         </div>
                                     </div>
@@ -450,18 +523,18 @@
                         </div>
                     </div>`;
             });
-            
+
             document.getElementById('contentList').innerHTML = html;
         }
 
         // Display pagination
         function displayPagination(pagination) {
             let html = '';
-            
+
             if (pagination.has_prev) {
                 html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
             }
-            
+
             for (let i = 1; i <= pagination.total_pages; i++) {
                 if (i === currentPage) {
                     html += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
@@ -469,11 +542,11 @@
                     html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
                 }
             }
-            
+
             if (pagination.has_next) {
                 html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`;
             }
-            
+
             document.getElementById('pagination').innerHTML = html;
         }
 
@@ -494,7 +567,7 @@
             try {
                 const response = await fetch(`/learning-content/${contentId}`);
                 const content = await response.json();
-                
+
                 // Populate form
                 document.getElementById('editContentId').value = content.id;
                 document.getElementById('editTitle').value = content.title;
@@ -502,13 +575,13 @@
                 document.getElementById('editLanguage').value = content.language;
                 document.getElementById('editDifficultyLevel').value = content.difficulty_level || '';
                 document.getElementById('editTags').value = content.tags ? content.tags.join(', ') : '';
-                document.getElementById('editFrontTemplate').value = content.front_template || '';
+                document.getElementById('editFrontTemplate').value = content.native_text || '';
                 document.getElementById('editBackTemplate').value = content.back_template || '';
                 document.getElementById('editExampleTemplate').value = content.example_template || '';
-                
+
                 // Show modal
                 new bootstrap.Modal(document.getElementById('editContentModal')).show();
-                
+
             } catch (error) {
                 console.error('Error loading content for edit:', error);
                 alert('Error loading content: ' + error.message);
@@ -524,11 +597,10 @@
                 language: document.getElementById('editLanguage').value,
                 difficulty_level: document.getElementById('editDifficultyLevel').value ? parseInt(document.getElementById('editDifficultyLevel').value) : null,
                 tags: document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(t => t),
-                front_template: document.getElementById('editFrontTemplate').value,
+                native_text: document.getElementById('editFrontTemplate').value,
                 back_template: document.getElementById('editBackTemplate').value,
-                example_template: document.getElementById('editExampleTemplate').value
             };
-            
+
             try {
                 const response = await fetch(`/learning-content/${contentId}`, {
                     method: 'PUT',
@@ -537,9 +609,9 @@
                     },
                     body: JSON.stringify(updates)
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (response.ok) {
                     alert('Content updated successfully!');
                     bootstrap.Modal.getInstance(document.getElementById('editContentModal')).hide();
@@ -547,7 +619,7 @@
                 } else {
                     alert('Error updating content: ' + result.detail);
                 }
-                
+
             } catch (error) {
                 console.error('Error saving content:', error);
                 alert('Error saving content: ' + error.message);
@@ -561,9 +633,9 @@
                 const response = await fetch(`/learning-content/${contentId}/export/${format}`, {
                     method: 'POST'
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (response.ok) {
                     if (format === 'anki') {
                         console.log(result);
@@ -585,7 +657,7 @@
                 } else {
                     alert('Export error: ' + result.detail);
                 }
-                
+
             } catch (error) {
                 console.error('Error exporting content:', error);
                 alert('Export error: ' + error.message);
@@ -594,10 +666,10 @@
             }
         }
 
-        // Preview content (placeholder)
+        // Preview content - redirect to detail page
         function previewContent(contentId) {
-            alert('Preview functionality coming soon!');
+            window.location.href = `/admin/learning-content/${contentId}/detail`;
         }
     </script>
 </body>
-</html> 
+</html>

@@ -111,3 +111,47 @@ class FragmentAssetManager:
             session.refresh(asset)
 
             return FragmentAssetRowSchema.model_validate(asset, from_attributes=True)
+
+    def get_asset(self, asset_id: int) -> Optional[Dict[str, Any]]:
+        """Get an asset by ID, including its binary data"""
+        with self.db_manager.get_session() as session:
+            asset = session.get(FragmentAsset, asset_id)
+
+            if not asset:
+                return None
+
+            # Convert to dict to include binary data that might not be in Pydantic model
+            return {
+                "id": asset.id,
+                "fragment_id": asset.fragment_id,
+                "asset_type": asset.asset_type,
+                "asset_data": asset.asset_data,
+                "asset_metadata": asset.asset_metadata,
+                "created_at": asset.created_at
+            }
+
+    def get_fragment_assets(self, fragment_id: int, asset_type: Optional[str] = None, active_only: bool = False) -> list[Dict[str, Any]]:
+        """Get all assets for a fragment"""
+        with self.db_manager.get_session() as session:
+            query = session.query(FragmentAsset).filter(FragmentAsset.fragment_id == fragment_id)
+
+            if asset_type:
+                query = query.filter(FragmentAsset.asset_type == asset_type)
+
+            # Order by creation date, newest first
+            query = query.order_by(FragmentAsset.created_at.desc())
+
+            assets = query.all()
+
+            # Convert to dict to include binary data
+            return [
+                {
+                    "id": asset.id,
+                    "fragment_id": asset.fragment_id,
+                    "asset_type": asset.asset_type,
+                    "asset_data": asset.asset_data,
+                    "asset_metadata": asset.asset_metadata,
+                    "created_at": asset.created_at
+                }
+                for asset in assets
+            ]

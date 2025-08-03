@@ -10,12 +10,18 @@ class LLMService:
 		self.api_key = api_key or settings.openai_api_key
 		self.model = model or settings.openai_model
 
-	def call_llm(self, prompt: str) -> str:
+	def call_llm(self, system_prompt: str, user_prompt: str) -> str:
 		try:
-			# logger.debug(f"Prompt: {prompt}")
+			# print(f"System prompt: {system_prompt}")
+			# print(f"User prompt: {user_prompt}")
+			print(f"Model: {self.model}")
+
 			response = completion(
 				model=self.model,
-				messages=[{"role": "user", "content": prompt}],
+				messages=[
+					{"role": "system", "content": system_prompt},
+					{"role": "user", "content": user_prompt}
+				],
 				api_key=self.api_key
 			)
 

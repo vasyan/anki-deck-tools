@@ -5,6 +5,7 @@ import re
 import traceback
 from typing import Any, Dict, List
 import logging
+import uuid
 from models.schemas import ContentFragmentCreate, ContentFragmentWithAssetsRowSchema, LearningContentRowSchema
 from services.card_service import CardService, SyncLearningContentToAnkiInputSchema
 from services.card_template_service import CardTemplateService, RenderCardInputSchema
@@ -12,7 +13,6 @@ from services.learning_content_service import LearningContentService
 from services.fragment_manager import FragmentManager
 from services.fragment_asset_manager import FragmentAssetManager
 from services.llm_service import LLMService
-from jinja2 import Template
 import asyncio
 from config import settings
 
@@ -21,7 +21,7 @@ logger.setLevel(logging.DEBUG)
 
 DEFAULT_DECK = "top-thai-2000"
 
-# os.environ['LM_STUDIO_API_BASE'] = "http://127.0.0.1:1234/v1"
+os.environ['LM_STUDIO_API_BASE'] = "http://127.0.0.1:1234/v1"
 
 class AnkiBuilder:
     def __init__(
@@ -108,15 +108,10 @@ class AnkiBuilder:
             with open(TEMPLATE_PATH, 'r', encoding='utf-8') as f:
                 template_str = f.read()
 
-            prompt = Template(template_str).render(
-                # drop unecessary english annotation
-                title=re.sub(r'\w?\(.+', ' ', lc_data.title)
+            llm_response = self.llm_service.call_llm(
+                system_prompt=template_str,
+                user_prompt=re.sub(r'\w?\(.+', ' ', lc_data.title)
             )
-
-            # print(f"TEMPLATE_PATH: {TEMPLATE_PATH}")
-            # print(f"prompt: {prompt}")
-
-            llm_response = self.llm_service.call_llm(prompt)
             llm_response = llm_response.replace("```json", "").replace("```", "")
 
             # print(f"llm_response: {llm_response}")
@@ -137,7 +132,10 @@ class AnkiBuilder:
                         ipa=example['ipa'],
                         body_text=example['body_text'],
                         fragment_type='real_life_example',
-                        extra=example['extra']
+                        extra=example['extra'],
+                        fragment_metadata={
+                            'job_id': uuid.uuid4().hex,
+                        }
                     ))
         except Exception as e:
             logger.error(f"Error populating content with example: {e}")
@@ -145,7 +143,7 @@ class AnkiBuilder:
             return
 
     def process_contents(self):
-        for i in range(1903, 1914):
+        for i in range(65, 80):
             self.populate_content_with_example(i)
 
     async def process_fragments(self):
@@ -160,7 +158,7 @@ class AnkiBuilder:
                     logger.error(f"Error processing fragment {fragment_id}: {e}")
 
         # Create tasks for all fragments
-        tasks = [process_single_fragment(i) for i in range(100, 300)]
+        tasks = [process_single_fragment(i) for i in range(47, 49)]
 
         # Wait for all tasks to complete
         await asyncio.gather(*tasks, return_exceptions=True)

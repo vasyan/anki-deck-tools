@@ -3,7 +3,8 @@ import logging
 
 from database.manager import DatabaseManager
 from models.database import ContentFragment
-from models.schemas import ContentFragmentCreate, ContentFragmentRowSchema, ContentFragmentUpdate
+from models.schemas import ContentFragmentCreate, ContentFragmentRowSchema, ContentFragmentUpdate, ContentFragmentSearchRow
+from models.schemas import FragmentAssetRowSchema
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -56,31 +57,50 @@ class FragmentManager:
             return True
 
     def find_fragments(self,
-                       text_search: Optional[str] = None,
-                       fragment_type: Optional[str] = None,
-                       has_assets: Optional[bool] = None,
-                       limit: int = 50,
-                       offset: int = 0) -> List[ContentFragmentRowSchema]:
+                       input: ContentFragmentSearchRow,
+                       with_assets: bool = False
+                       ) -> List[ContentFragmentRowSchema]:
         with self.db_manager.get_session() as session:
             query = session.query(ContentFragment)
 
-            if text_search:
+            if input.learning_content_id:
+                query = query.filter(ContentFragment.learning_content_id == input.learning_content_id)
+
+            if input.text_search:
                 # Use LIKE for case-insensitive text search
-                query = query.filter(ContentFragment.text.ilike(f'%{text_search}%'))
+                query = query.filter(ContentFragment.native_text.ilike(f'%{input.text_search}%'))
 
-            if fragment_type:
-                query = query.filter(ContentFragment.fragment_type == fragment_type)
+            if input.fragment_type:
+                query = query.filter(ContentFragment.fragment_type == input.fragment_type)
 
-            if has_assets is not None:
-                if has_assets:
+            if input.has_assets is not None:
+                if input.has_assets:
                     query = query.filter(ContentFragment.assets.any())
                 else:
                     query = query.filter(~ContentFragment.assets.any())
 
-            query = query.offset(offset).limit(limit)
+            logger.debug(f"filters: {input.model_dump()}")
+
+            query = query.order_by(ContentFragment.created_at.desc()).offset(input.offset).limit(input.limit)
             fragments = query.all()
 
-            return [ContentFragmentRowSchema.model_validate(fragment, from_attributes=True) for fragment in fragments]
+            # Process results and conditionally include assets
+            result: List[ContentFragmentRowSchema] = []
+            for fragment in fragments:
+                fragment_data = ContentFragmentRowSchema.model_validate(fragment, from_attributes=True)
+
+                # Conditionally include assets
+                if with_assets:
+                    # Create a new model with assets included
+                    assets_data = [
+                        FragmentAssetRowSchema.model_validate(asset, from_attributes=True)
+                        for asset in fragment.assets
+                    ]
+                    fragment_data.assets = assets_data
+
+                result.append(fragment_data)
+
+            return result
 
     def find_by_text_and_type(self, text: str, fragment_type: Optional[str] = None) -> Optional[ContentFragmentRowSchema]:
         with self.db_manager.get_session() as session:
@@ -140,6 +160,37 @@ class FragmentManager:
             session.commit()
 
             return ContentFragmentRowSchema.model_validate(fragment, from_attributes=True)
+
+    def get_fragment_learning_content(self, fragment_id: int) -> List[Dict[str, Any]]:
+        """Get learning content related to a fragment"""
+        with self.db_manager.get_session() as session:
+            fragment = session.get(ContentFragment, fragment_id)
+            if not fragment:
+                return []
+
+            # Get the learning content by ID
+            from models.database import LearningContent
+            learning_content = session.query(LearningContent).filter(
+                LearningContent.id == fragment.learning_content_id
+            ).first()
+
+            if not learning_content:
+                return []
+
+            # Return a serializable dictionary
+            return [{
+                "id": learning_content.id,
+                "title": learning_content.title,
+                "content_type": learning_content.content_type,
+                "difficulty_level": learning_content.difficulty_level,
+                "language": learning_content.language,
+                "tags": learning_content.tags,
+                "native_text": learning_content.native_text,
+                "back_template": learning_content.back_template,
+                "created_at": learning_content.created_at,
+                "updated_at": learning_content.updated_at
+            }]
+
 
     # def get_fragment_with_assets(self, fragment_id: int) -> Optional[ContentFragmentRowSchema]:
     #     # we have to check if there is at least one audio aseet
