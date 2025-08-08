@@ -111,6 +111,11 @@ class ContentFragmentSearchRow(BaseModel):
     limit: int = 50
     offset: int = 0
 
+class FragmentRankingInput(BaseModel):
+    rank_score: float
+    assessment_notes: Optional[str] = None
+    assessed_by: str = "admin"
+
 class LearningContentFilter(BaseModel):
     """Filter parameters for learning content search"""
     content_type: Optional[str] = None
@@ -136,8 +141,8 @@ class LearningContentRowSchema(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-class ContentFragmentWithAssetsRowSchema(ContentFragmentRowSchema):
-    audio_asset: Optional[FragmentAssetRowSchema] = None
+# class ContentFragmentWithAssetsRowSchema(ContentFragmentRowSchema):
+#     audio_asset: Optional[FragmentAssetRowSchema] = None
 
 class LearningContentUpdate(BaseModel):
     # every updatable column is optional
@@ -170,3 +175,8 @@ class LearningContentSearchRow(LearningContentRowSchema):
         return len(getattr(self, "anki_cards", []))
 
     model_config = ConfigDict(from_attributes=True, extra='allow')
+
+class LearningContentWebExportDTO(BaseModel):
+    front: str
+    back: str
+    examples: Optional[List[ContentFragmentRowSchema]] = None

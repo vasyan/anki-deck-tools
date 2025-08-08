@@ -4,7 +4,7 @@ from database.manager import DatabaseManager
 import logging
 
 from services.learning_content_service import LearningContentService
-from services.fragment_manager import FragmentManager
+from services.fragment_service import FragmentService
 from models.schemas import ContentFragmentSearchRow, ContentFragmentRowSchema
 
 logger = logging.getLogger(__name__)
@@ -124,16 +124,22 @@ async def update_learning_content(content_id: int, updates: Dict[str, Any]):
 #     """Deprecated export endpoint"""
 #     raise HTTPException(status_code=501, detail="Export endpoint deprecated")
 
-@router.get("/learning-content/{content_id}/fragments", response_model=List[ContentFragmentRowSchema])
-async def get_learning_content_fragments(content_id: int):
+@router.get("/learning-content/{content_id}/fragments")
+async def get_learning_content_fragments(content_id: int, order_by: str = "avg_rank_score"):
     """Get fragments related to specific learning content"""
     try:
-        fragment_service = FragmentManager()
+        fragment_service = FragmentService()
 
         # Create a ContentFragmentSearchRow instance with learning_content_id
         search_params = ContentFragmentSearchRow(learning_content_id=content_id)
 
-        fragments = fragment_service.find_fragments(input=search_params)
+        # Get fragments with assets and rankings
+        fragments = fragment_service.find_fragments(
+            input=search_params,
+            with_assets=True,
+            with_rankings=True,
+            order_by=order_by
+        )
 
         return fragments
     except Exception as e:

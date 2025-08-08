@@ -17,6 +17,7 @@ from api.cards import router as cards_router
 from api.learning_content import router as learning_content_router
 from api.admin import router as admin_router
 from api.assets import router as assets_router
+from api.web import router as web_router
 
 # Configure logging
 logging.basicConfig(level=getattr(logging, settings.log_level))
@@ -47,7 +48,7 @@ app.include_router(cards_router)
 app.include_router(learning_content_router)
 app.include_router(admin_router)
 app.include_router(assets_router)
-
+app.include_router(web_router)
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,

@@ -15,7 +15,7 @@ import asyncio
 import uuid
 from pathlib import Path
 from services.example_generator import ExampleGeneratorService
-from services.fragment_manager import FragmentManager
+from services.fragment_service import FragmentService
 from services.learning_content_service import extract_object_data, format_operation_result
 from workflows.anki_builder import AnkiBuilder
 from fastapi import Form
@@ -490,7 +490,7 @@ def process_single_learning_content(learning_content, columns_list, template_str
                     logger.error(f"Invalid fragment data for learning_content {learning_content.id}: {e}")
                     continue
 
-                fragment_manager = FragmentManager()
+                fragment_manager = FragmentService()
                 try:
                   fid = fragment_manager.create_fragment(
                       **validated.model_dump(exclude_none=True),  # unpack validated data

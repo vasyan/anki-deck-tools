@@ -60,7 +60,7 @@ class ContentFragment(Base):
     body_text = Column(Text, nullable=False)
     ipa = Column(Text)
     extra = Column(Text)
-    fragment_type = Column(String(50), nullable=False)  # `basic_meaning` | `pronunciation_and_tone` | `usage_example` | `usage_tip`
+    fragment_type = Column(String(50), nullable=False)  # `basic_meaning` | `pronunciation_and_tone` | `usage_example` | `usage_tip` | `target_learning_item`
     fragment_metadata = Column(JSON)  # Extensible metadata (difficulty, frequency, etc.)
     created_at = Column(DateTime, default=lambda: datetime.now(UTC))
     updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
@@ -117,8 +117,8 @@ class Ranking(Base):
     __tablename__ = "rankings"
 
     id = Column(Integer, primary_key=True)
-    fragment_id = Column(Integer, ForeignKey("content_fragments.id"), nullable=False)
-    asset_id = Column(Integer, ForeignKey("fragment_assets.id"), nullable=False)
+    fragment_id = Column(Integer, ForeignKey("content_fragments.id"), nullable=True)
+    asset_id = Column(Integer, ForeignKey("fragment_assets.id"), nullable=True)
     rank_score: Column[float] = Column(Float, default=0.0)  # Quality ranking by operators
     assessed_by = Column(String(100))  # Who assessed this asset
     assessment_notes = Column(Text)  # Notes about the assessment

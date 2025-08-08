@@ -3,10 +3,10 @@ from fastapi import APIRouter, Form, HTTPException
 from database.manager import DatabaseManager
 from database.manager import DatabaseManager
 import json
-from models.schemas import ContentFragmentSearchRow, FragmentType
+from models.schemas import ContentFragmentSearchRow, FragmentType, FragmentRankingInput
 from services.fragment_asset_manager import FragmentAssetManager
 
-from services.fragment_manager import FragmentManager
+from services.fragment_service import FragmentService
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -24,7 +24,7 @@ async def create_fragment(
 ):
     """Create a new content fragment"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
 
         # Parse metadata if provided
         parsed_metadata = {}
@@ -50,7 +50,7 @@ async def create_fragment(
 async def get_fragment_types():
     """Get all supported fragment types"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
         return fragment_manager.get_fragment_types()
     except Exception as e:
         logger.error(f"Error getting fragment types: {e}")
@@ -60,7 +60,7 @@ async def get_fragment_types():
 async def get_fragment_stats():
     """Get fragment statistics"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
         return fragment_manager.get_fragment_statistics()
     except Exception as e:
         logger.error(f"Error getting fragment stats: {e}")
@@ -76,7 +76,7 @@ async def search_fragments(
 ):
     """Search fragments"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
         fragments = fragment_manager.find_fragments(ContentFragmentSearchRow(
             text_search=text_search,
             fragment_type=fragment_type,
@@ -98,7 +98,7 @@ async def search_fragments(
 async def get_fragment(fragment_id: int):
     """Get a fragment by ID"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
         fragment = fragment_manager.get_fragment(fragment_id)
 
         if not fragment:
@@ -118,7 +118,7 @@ async def update_fragment(
 ):
     """Update a fragment"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
 
         # Parse metadata if provided
         parsed_metadata = None
@@ -144,7 +144,7 @@ async def update_fragment(
 async def delete_fragment(fragment_id: int):
     """Delete a fragment"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
         success = fragment_manager.delete_fragment(fragment_id)
 
         if not success:
@@ -244,7 +244,7 @@ async def get_asset_data(asset_id: int):
 async def get_fragment_learning_content(fragment_id: int):
     """Get learning content related to a fragment"""
     try:
-        fragment_manager = FragmentManager()
+        fragment_manager = FragmentService()
         learning_content = fragment_manager.get_fragment_learning_content(fragment_id)
 
         if not learning_content:
@@ -264,4 +264,15 @@ async def generate_asset_for_fragment(fragment_id: int):
         return {"message": "Asset generated successfully"}
     except Exception as e:
         logger.error(f"Error generating asset for fragment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/fragments/{fragment_id}/ranking")
+async def set_fragment_ranking(fragment_id: int, ranking_data: FragmentRankingInput):
+    """Set a ranking score for a fragment"""
+    try:
+        fragment_manager = FragmentService()
+        ranking = fragment_manager.set_fragment_ranking(fragment_id, ranking_data)
+        return ranking
+    except Exception as e:
+        logger.error(f"Error setting fragment ranking: {e}")
         raise HTTPException(status_code=500, detail=str(e))

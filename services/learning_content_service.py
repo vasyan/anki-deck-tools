@@ -164,7 +164,7 @@ class LearningContentService:
                 LearningContent.title.like(search_term),
                 LearningContent.native_text.like(search_term),
                 LearningContent.back_template.like(search_term),
-                LearningContent.example_template.like(search_term)
+                # LearningContent.example_template.like(search_term)
             ))
 
         if 'has_fragments' in filter_data:
@@ -207,7 +207,8 @@ class LearningContentService:
             total_count = query.count()
 
             # Apply pagination and ordering
-            results = query.order_by(LearningContent.updated_at.desc())\
+            # results = query.order_by(LearningContent.updated_at.desc())\
+            results = query.order_by(LearningContent.id.asc())\
                           .offset(offset)\
                           .limit(page_size)\
                           .all()

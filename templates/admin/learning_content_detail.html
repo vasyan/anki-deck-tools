@@ -188,7 +188,7 @@
         async function loadContentFragments() {
             showLoading(true);
             try {
-                const response = await fetch(`/learning-content/${contentId}/fragments`);
+                const response = await fetch(`/learning-content/${contentId}/fragments?order_by=created_at`);
 
                 if (!response.ok) {
                     // Handle errors but don't show an alert - just show empty state
@@ -267,15 +267,35 @@
                 // Determine fragment type class for styling
                 const typeClass = fragment.fragment_type.toLowerCase().replace(/\s+/g, '_');
 
+                // Determine current ranking display
+                let rankingDisplay = '';
+                if (fragment.avg_rank_score !== null && fragment.avg_rank_score !== undefined) {
+                    const score = fragment.avg_rank_score;
+                    let rankingBadge = '';
+                    if (score >= 4) {
+                        rankingBadge = '<span class="badge bg-success">Good</span>';
+                    } else if (score >= 2.5) {
+                        rankingBadge = '<span class="badge bg-warning">Ok</span>';
+                    } else {
+                        rankingBadge = '<span class="badge bg-danger">Bad</span>';
+                    }
+                    rankingDisplay = `${rankingBadge} <small class="text-muted">(${score.toFixed(1)} / ${fragment.ranking_count} votes)</small>`;
+                } else {
+                    rankingDisplay = '<small class="text-muted">Not rated</small>';
+                }
+
                 html += `
                     <div class="card fragment-card ${typeClass} mb-3">
                         <div class="card-header bg-light py-2">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-${getBadgeColor(fragment.fragment_type)}">
-                                    ${fragment.fragment_type}
-                                </span>
                                 <div>
-                                    <button class="btn btn-sm btn-outline-secondary me-1 ${!fragment.assets.length ? 'disabled' : ''}" title="Play Audio"
+                                    <span class="badge bg-${getBadgeColor(fragment.fragment_type)}">
+                                        ${fragment.fragment_type}
+                                    </span>
+                                    <span class="ms-2">${rankingDisplay}</span>
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary me-1 ${!fragment.assets || !fragment.assets.length ? 'disabled' : ''}" title="Play Audio"
                                            onclick="playFragmentAudio(${fragment.id})" data-fragment-id="${fragment.id}">
                                         <i class="fas fa-volume-up"></i>
                                     </button>

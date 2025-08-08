@@ -84,7 +84,6 @@ async def set_asset_ranking(asset_id: int, ranking_data: AssetRankingInput):
             return {
                 "id": result.id,
                 "asset_id": result.asset_id,
-                "fragment_id": result.fragment_id,
                 "rank_score": result.rank_score,
                 "assessed_by": result.assessed_by,
                 "assessment_notes": result.assessment_notes

@@ -330,8 +330,10 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <h6>Ranking:</h6>
-                        <div class="p-3 bg-light rounded">${fragment.avg_rank_score || '<em class="text-muted">Not set</em>'}</div>
+                        <h6>Fragment Ranking:</h6>
+                        <div class="p-3 bg-light rounded">
+                            ${getRankingDisplay(fragment.avg_rank_score, fragment.ranking_count)}
+                        </div>
                     </div>
                 </div>
             `;
@@ -460,6 +462,25 @@
             };
 
             return typeColors[assetType] || 'secondary';
+        }
+        
+        // Helper function to display ranking
+        function getRankingDisplay(avgRankScore, rankingCount) {
+            if (avgRankScore === null || avgRankScore === undefined) {
+                return '<em class="text-muted">Not rated</em>';
+            }
+            
+            const score = avgRankScore;
+            let rankingBadge = '';
+            if (score >= 4) {
+                rankingBadge = '<span class="badge bg-success">Good</span>';
+            } else if (score >= 2.5) {
+                rankingBadge = '<span class="badge bg-warning">Ok</span>';
+            } else {
+                rankingBadge = '<span class="badge bg-danger">Bad</span>';
+            }
+            
+            return `${rankingBadge} <span class="text-muted">(${score.toFixed(1)} avg from ${rankingCount} votes)</span>`;
         }
 
         // Helper function to format byte sizes
