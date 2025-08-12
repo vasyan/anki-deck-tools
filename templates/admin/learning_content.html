@@ -576,7 +576,7 @@
                 document.getElementById('editDifficultyLevel').value = content.difficulty_level || '';
                 document.getElementById('editTags').value = content.tags ? content.tags.join(', ') : '';
                 document.getElementById('editFrontTemplate').value = content.native_text || '';
-                document.getElementById('editBackTemplate').value = content.back_template || '';
+                document.getElementById('editBackTemplate').value = content.translation || '';
                 document.getElementById('editExampleTemplate').value = content.example_template || '';
 
                 // Show modal
@@ -598,7 +598,7 @@
                 difficulty_level: document.getElementById('editDifficultyLevel').value ? parseInt(document.getElementById('editDifficultyLevel').value) : null,
                 tags: document.getElementById('editTags').value.split(',').map(t => t.trim()).filter(t => t),
                 native_text: document.getElementById('editFrontTemplate').value,
-                back_template: document.getElementById('editBackTemplate').value,
+                // back_template: document.getElementById('editBackTemplate').value,
             };
 
             try {

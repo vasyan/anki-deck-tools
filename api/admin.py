@@ -1,13 +1,13 @@
 from datetime import datetime
 import json
 from fastapi import APIRouter, HTTPException, Request, Depends
-from typing import Dict
+from typing import Dict, Any, List, cast
 
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import func
 from database.manager import DatabaseManager
 from models.database import AnkiCard, LearningContent, ContentFragment
-from models.schemas import ContentFragmentInput
+from models.schemas import ContentFragmentInput, ContentFragmentCreate
 from database.manager import DatabaseManager
 from fastapi.responses import HTMLResponse
 import logging
@@ -17,7 +17,7 @@ from pathlib import Path
 from services.example_generator import ExampleGeneratorService
 from services.fragment_service import FragmentService
 from services.learning_content_service import extract_object_data, format_operation_result
-from workflows.anki_builder import AnkiBuilder
+# from workflows.anki_builder import AnkiBuilder  # Unused import
 from fastapi import Form
 from pydantic import ValidationError
 
@@ -50,7 +50,7 @@ class GenerateExampleOptions:
         self.dry_run = dry_run
 
 @router.get("/admin", response_class=HTMLResponse)
-async def admin_dashboard(request: Request):
+async def admin_dashboard(request: Request) -> HTMLResponse:
     """Main admin dashboard"""
     return templates.TemplateResponse("admin/dashboard.html", {"request": request})
 
@@ -58,7 +58,7 @@ async def admin_dashboard(request: Request):
 @router.post("/admin/example/preview")
 async def preview_example_generation(
     options: GenerateExampleOptions = Depends(GenerateExampleOptions)
-):
+) -> Dict[str, Any]:
     logger.debug(f"/admin/example/preview: previewing example generation {options.learning_content_id}")
     """Preview example generation with sample cards"""
     try:
@@ -94,9 +94,9 @@ async def preview_example_generation(
         preview_results = []
 
         for learning_content in sample_learning_contents:
+            learning_content_data: Dict[str, Any] = {}
             try:
                 # Get card data for specified columns
-                learning_content_data = {}
                 for col in columns_list:
                     if hasattr(learning_content, col):
                         learning_content_data[col] = getattr(learning_content, col)
@@ -117,7 +117,7 @@ async def preview_example_generation(
                 preview_results.append({
                     "learning_content_id": learning_content.id,
                     "learning_content_data": learning_content_data,
-                    "generated_example": None,
+                    "generated_example": "",  # Empty string instead of None for type consistency
                     "error": str(e),
                     "status": "error"
                 })
@@ -136,7 +136,7 @@ async def preview_example_generation(
 @router.post("/admin/example/start")
 async def start_example_generation(
     options: GenerateExampleOptions = Depends(GenerateExampleOptions)
-):
+) -> Dict[str, Any]:
     logger.debug(f"/admin/example/start: starting example generation task {options.learning_content_id}")
     """Start example generation process"""
     try:
@@ -175,7 +175,7 @@ async def start_example_generation(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/admin/example/status/{task_id}")
-async def get_example_generation_status(task_id: str):
+async def get_example_generation_status(task_id: str) -> Dict[str, Any]:
     """Get status of example generation task"""
     task = task_storage.get(task_id)
     if not task:
@@ -190,7 +190,7 @@ async def get_example_generation_status(task_id: str):
     }
 
 @router.get("/admin/example/results/{task_id}")
-async def get_example_generation_results(task_id: str):
+async def get_example_generation_results(task_id: str) -> Dict[str, Any]:
     """Get results of completed example generation task"""
     task = task_storage.get(task_id)
     if not task:
@@ -202,32 +202,32 @@ async def get_example_generation_results(task_id: str):
     return task.get("result", {})
 
 @router.get("/admin/example", response_class=HTMLResponse)
-async def admin_example(request: Request):
+async def admin_example(request: Request) -> HTMLResponse:
     """Example generation admin page"""
     return templates.TemplateResponse("admin/example_form.html", {"request": request})
 
 @router.get("/admin/fragments", response_class=HTMLResponse)
-async def admin_fragments(request: Request):
+async def admin_fragments(request: Request) -> HTMLResponse:
     """Fragment management admin page"""
     return templates.TemplateResponse("admin/fragments.html", {"request": request})
 
 @router.get("/admin/learning-content", response_class=HTMLResponse)
-async def admin_learning_content(request: Request):
+async def admin_learning_content(request: Request) -> HTMLResponse:
     """Learning content management admin page"""
     return templates.TemplateResponse("admin/learning_content.html", {"request": request})
 
 @router.get("/admin/learning-content/{content_id}/detail", response_class=HTMLResponse)
-async def admin_learning_content_detail(request: Request, content_id: int):
+async def admin_learning_content_detail(request: Request, content_id: int) -> HTMLResponse:
     """Learning content detail page"""
     return templates.TemplateResponse("admin/learning_content_detail.html", {"request": request})
 
 @router.get("/admin/fragments/{fragment_id}/detail", response_class=HTMLResponse)
-async def admin_fragment_detail(request: Request, fragment_id: int):
+async def admin_fragment_detail(request: Request, fragment_id: int) -> HTMLResponse:
     """Fragment detail page"""
     return templates.TemplateResponse("admin/fragment_detail.html", {"request": request})
 
 @router.get("/admin/example/instructions")
-async def list_instruction_files():
+async def list_instruction_files() -> Dict[str, List[Dict[str, Any]]]:
     """List available instruction template files"""
     try:
         instructions_dir = Path("instructions")
@@ -248,7 +248,7 @@ async def list_instruction_files():
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/admin/example/decks")
-async def list_available_decks():
+async def list_available_decks() -> Dict[str, Any]:
     """List available decks for selection"""
     try:
         with db_manager.get_session() as session:
@@ -264,7 +264,7 @@ async def list_available_decks():
         logger.error(f"Error listing available decks: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-async def run_example_generation_task(task_id: str):
+async def run_example_generation_task(task_id: str) -> None:
     """Background task for example generation"""
     task = task_storage[task_id]
 
@@ -428,16 +428,23 @@ async def run_example_generation_task(task_id: str):
         logger.error(f"Example generation task failed: {e}")
         logger.debug(f"forr task: {task}")
 
-def process_single_learning_content(learning_content, columns_list, template_str, example_service, dry_run):
+def process_single_learning_content(
+    learning_content: LearningContent,
+    columns_list: List[str],
+    template_str: str,
+    example_service: ExampleGeneratorService,
+    dry_run: bool
+) -> Dict[str, Any]:
     logger.debug(f"/admin/example/process_single_learning_content: processing single learning content {learning_content.id}")
     """Process a single learning content for example generation"""
+    learning_content_data: Dict[str, Any] = {}
     try:
         # Extract learning content data using utility function
         learning_content_data = extract_object_data(learning_content, columns_list)
         print(learning_content_data)
 
         # we getting JSON formatted list of examples and need to parse it
-        generated_examples = json.loads(example_service.generate_example(learning_content_data, template_str))
+        generated_examples = json.loads(example_service.generate_example_from_learning_content(learning_content_data, template_str))
 
         # logger.debug(f"generated_examples: {generated_examples}")
         # logger.debug(f"generated_examples type: {type(generated_examples)}")
@@ -492,14 +499,23 @@ def process_single_learning_content(learning_content, columns_list, template_str
 
                 fragment_manager = FragmentService()
                 try:
-                  fid = fragment_manager.create_fragment(
-                      **validated.model_dump(exclude_none=True),  # unpack validated data
-                      metadata={
-                          'source_columns': columns_list,
-                          'template_used': template_str[:100] + '...' if len(template_str) > 100 else template_str
-                      },
-                  )
-                  created_fragment_ids.append(fid)
+                    # Convert ContentFragmentInput to ContentFragmentCreate
+                    fragment_create_data = ContentFragmentCreate(
+                        native_text=validated.native_text,
+                        body_text=validated.body_text,
+                        fragment_type=validated.fragment_type,
+                        ipa=validated.ipa,
+                        extra=validated.extra,
+                        fragment_metadata={
+                            'source_columns': columns_list,
+                            'template_used': template_str[:100] + '...' if len(template_str) > 100 else template_str
+                        }
+                    )
+                    result = fragment_manager.create_fragment(
+                        learning_content_id=cast(int, learning_content.id),
+                        input=fragment_create_data
+                    )
+                    created_fragment_ids.append(result.id)
                 except Exception as e:
                     logger.error(f" !!!!!!!!!!! error creating fragment: {e}")
                     continue
@@ -523,11 +539,12 @@ def process_single_learning_content(learning_content, columns_list, template_str
         )
 
 @router.get("/admin/test-anki-builder")
-async def render_card(request: Request):
-    anki_builder = AnkiBuilder()
-    materials = await anki_builder.get_materials(52)
+async def render_card() -> Dict[str, Any]:
+    # This route appears to be unused and references a non-existent method
+    # anki_builder = AnkiBuilder()
+    # materials = await anki_builder.get_materials(52)
 
     return {
-        "message": "Card rendered",
-        "materials": materials
+        "message": "Test endpoint - not implemented",
+        "materials": None
     }

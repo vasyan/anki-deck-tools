@@ -163,7 +163,7 @@ class LearningContentService:
             query = query.filter(or_(
                 LearningContent.title.like(search_term),
                 LearningContent.native_text.like(search_term),
-                LearningContent.back_template.like(search_term),
+                LearningContent.translation.like(search_term),
                 # LearningContent.example_template.like(search_term)
             ))
 

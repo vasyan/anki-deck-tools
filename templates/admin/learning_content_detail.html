@@ -56,7 +56,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark py-0">
         <div class="container">
             <a class="navbar-brand" href="/admin">
                 <i class="fas fa-brain"></i> Anki Vector Admin
@@ -69,22 +69,22 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="row mb-4">
+    <div class="container mt-2">
+        <div class="row mb-1">
             <div class="col-12">
-                <a href="/admin/learning-content" class="btn btn-outline-secondary mb-3">
+                <a href="/admin/learning-content" class="btn btn-outline-secondary mb-2">
                     <i class="fas fa-arrow-left"></i> Back to Learning Content
                 </a>
-                <button class="btn btn-outline-secondary mb-3" type="button" onclick="navigateToPrevious()">
+                <button class="btn btn-outline-secondary mb-2" type="button" onclick="navigateToPrevious()">
                     <i class="fas fa-arrow-left"></i> Previous
                 </button>
-                <button class="btn btn-outline-secondary mb-3" type="button" onclick="navigateToNext()">
+                <button class="btn btn-outline-secondary mb-2" type="button" onclick="navigateToNext()">
                     <i class="fas fa-arrow-right"></i> Next
                 </button>
                 <div class="card">
                     <div class="card-header bg-light">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 id="contentTitle">Learning Content Details</h4>
+                            <h4 id="contentTitle" class="mb-0">Learning Content Details</h4>
                             <div class="loading-spinner">
                                 <div class="spinner-border text-primary" role="status">
                                     <span class="visually-hidden">Loading...</span>
@@ -92,7 +92,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body" id="contentDetails">
+                    <div class="card-body py-1" id="contentDetails">
                         <!-- Content details will be loaded here -->
                     </div>
                 </div>
@@ -104,7 +104,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5><i class="fas fa-puzzle-piece text-primary"></i> Related Fragments</h5>
+                        <h5 class="mb-0"><i class="fas fa-puzzle-piece text-primary"></i> Related Fragments</h5>
                     </div>
                     <div class="card-body">
                         <div id="fragmentsList">
@@ -223,30 +223,26 @@
                 '<em class="text-muted">None</em>';
 
             let html = `
-                <div class="row mb-3">
+                <div class="row mb-1">
                     <div class="col-md-6">
-                        <div class="mb-3">
+                        <div class="mb-1">
                             <span class="badge bg-primary">${content.content_type}</span>
                             ${content.difficulty_level ?
                               `<span class="badge bg-warning ms-1">Level ${content.difficulty_level}</span>` : ''}
                             <span class="badge bg-secondary ms-1">${content.language}</span>
                         </div>
-                        <p><strong>Tags:</strong> ${tagsHtml}</p>
+                        <p class="mb-0"><strong>Tags:</strong> ${tagsHtml}</p>
                     </div>
                     <div class="col-md-6 text-md-end">
-                        <p class="mb-1"><small class="text-muted">Created: ${new Date(content.created_at).toLocaleDateString()}</small></p>
-                        <p><small class="text-muted">Last Updated: ${new Date(content.updated_at).toLocaleDateString()}</small></p>
+                        <p class="mb-0"><small class="text-muted">Created: ${new Date(content.created_at).toLocaleDateString()}</small></p>
+                        <p class="mb-0"><small class="text-muted">Last Updated: ${new Date(content.updated_at).toLocaleDateString()}</small></p>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12 mb-3">
-                        <h6>Native Text:</h6>
-                        <div class="p-3 bg-light rounded">${content.native_text || '<em class="text-muted">Not set</em>'}</div>
-                    </div>
-                    <div class="col-md-12">
-                        <h6>Back Template:</h6>
-                        <div class="p-3 bg-light rounded">${content.back_template || '<em class="text-muted">Not set</em>'}</div>
+                    <div class="col-md-12 mb-1">
+                        <h6>Thai / translation:</h6>
+                        <div class="p-1 px-3 bg-light rounded">${content.native_text} / ${content.translation}</div>
                     </div>
                 </div>
             `;

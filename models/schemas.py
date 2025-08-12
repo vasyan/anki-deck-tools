@@ -12,7 +12,7 @@ import base64
 Metadata = Optional[Dict[str, Any]]
 Tags = Optional[List[str]]
 # Define type alias for allowed fragment types
-FragmentType = Literal["basic_meaning", "pronunciation_and_tone", "real_life_example", "usage_tip"]
+FragmentType = Literal["basic_meaning", "pronunciation_and_tone", "real_life_example", "usage_tip", "target_learning_item"]
 
 class FragmentAssetRowSchema(BaseModel):
     """Schema representing an asset (audio/image/video) attached to a content fragment."""
@@ -132,7 +132,8 @@ class LearningContentRowSchema(BaseModel):
     content_type: str
     language: str
     native_text: Optional[str] = None
-    back_template: Optional[str] = None
+    translation: Optional[str] = None
+    ipa: Optional[str] = None
     difficulty_level: Optional[int] = None
     tags: Tags = None
     content_metadata: Metadata = None
@@ -180,3 +181,41 @@ class LearningContentWebExportDTO(BaseModel):
     front: str
     back: str
     examples: Optional[List[ContentFragmentRowSchema]] = None
+
+class AssetRankingInput(BaseModel):
+    """Request model for ranking assets"""
+    rank_score: float
+    assessment_notes: Optional[str] = None
+    assessed_by: str = "admin"
+
+class RenderCardInputSchema(BaseModel):
+    """Input schema for rendering cards"""
+    native_text: str
+    translation: str
+    ipa: str
+    fragments: List[ContentFragmentRowSchema]
+
+class RenderCardOutputSchema(BaseModel):
+    """Output schema for rendered cards"""
+    front: str
+    back: str
+    examples: List[ContentFragmentRowSchema]
+
+class SyncLearningContentToAnkiInputSchema(BaseModel):
+    """Input schema for syncing learning content to Anki"""
+    learning_content_id: int
+    front: str
+    back: str
+    content_hash: str
+    assets_to_sync: List[FragmentAssetRowSchema]
+
+class SyncLearningContentToAnkiOutputSchema(BaseModel):
+    """Output schema for Anki sync results"""
+    anki_card_id: Optional[int]
+    anki_note_id: Optional[int]
+    status: Literal["created", "updated", "skipped", "failed"]
+
+class SynthesizeOutput(BaseModel):
+    """Output schema for text-to-speech synthesis"""
+    audio: bytes
+    tts_model: str

@@ -30,8 +30,9 @@ class LearningContent(Base):
     content_type = Column(String(50), nullable=False)        # 'vocabulary', 'grammar', 'phrase'
     language = Column(String(10), nullable=False)            # 'thai', 'english', etc.
 
-    native_text = Column(Text)
-    back_template = Column(Text)
+    native_text = Column(Text, nullable=False)
+    translation = Column(Text, nullable=False)
+    ipa = Column(Text, nullable=False)
 
     # Metadata and classification
     difficulty_level = Column(Integer)        # 1-5 scale

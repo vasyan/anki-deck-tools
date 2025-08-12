@@ -6,15 +6,24 @@ import traceback
 from typing import Any, Dict, List
 import logging
 import uuid
-from models.schemas import ContentFragmentCreate, ContentFragmentRowSchema, ContentFragmentSearchRow, LearningContentRowSchema, LearningContentWebExportDTO
-from services.card_service import CardService, SyncLearningContentToAnkiInputSchema
-from services.card_template_service import CardTemplateService, RenderCardInputSchema
+from models.schemas import (
+    ContentFragmentCreate,
+    ContentFragmentRowSchema,
+    ContentFragmentSearchRow,
+    LearningContentRowSchema,
+    LearningContentWebExportDTO,
+    SyncLearningContentToAnkiInputSchema,
+    RenderCardInputSchema
+)
+from services.card_service import CardService
+from services.card_template_service import CardTemplateService
 from services.learning_content_service import LearningContentService
 from services.fragment_service import FragmentService
 from services.fragment_asset_manager import FragmentAssetManager
 from services.llm_service import LLMService
 import asyncio
 from config import settings
+from utils.logging import log_json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -48,33 +57,52 @@ class AnkiBuilder:
         return hashlib.md5(hash_string.encode()).hexdigest()
 
     async def get_rendered_content(self, learning_content_id: int, format: str = "anki") -> LearningContentWebExportDTO | None:
+        # logger.debug(f"get_rendered_content: {learning_content_id}")
         try:
             lc_data= self.lc_service.get_content(learning_content_id)
-            related_fragments = self.fragment_service.get_top_rated_fragments_by_learning_content_id(learning_content_id, limit=2)
+            top_rated_fragments = self.fragment_service.get_top_rated_fragments_by_learning_content_id(learning_content_id, limit=3, min_rank_score=None, fragment_type='real_life_example')
+            target_item_fragment = self.fragment_service.get_top_rated_fragments_by_learning_content_id(learning_content_id, limit=1, fragment_type='target_learning_item')
 
-            if not lc_data or not related_fragments:
-                raise ValueError("Learning content or related fragments not found")
+            if not lc_data:
+                raise ValueError("Learning content not found")
+
+            if not lc_data.native_text:
+                raise ValueError("Learning content native text not found")
+            if not lc_data.translation:
+                raise ValueError("Learning content translation not found")
+            if not lc_data.ipa:
+                raise ValueError("Learning content ipa not found")
 
             # TODO: join table right in `get_top_fragments`
             fragments_with_assets: List[ContentFragmentRowSchema] = []
 
-            for fragment in related_fragments:
-                audio_asset = await self.fragment_asset_service.get_asset_by_fragment_id(fragment.id, 'audio', generate_if_not_found=False)
+            # logger.debug(f"related_fragments: {related_fragments}")
+            # log_json(logger, fragments_with_assets, max_str=80, max_items=10)
+
+            for fragment in top_rated_fragments:
+                # audio_asset = await self.fragment_asset_service.get_asset_by_fragment_id(fragment.id, 'audio', generate_if_not_found=False)
                 fragments_with_assets.append(ContentFragmentRowSchema(
                     **fragment.model_dump(),
-                    audio_asset=audio_asset
+                    # audio_asset=audio_asset
                 ))
+
+            if len(target_item_fragment) > 0:
+                # audio_asset = await self.fragment_asset_service.get_asset_by_fragment_id(target_item_fragment[0].id, 'audio', generate_if_not_found=False)
+                fragments_with_assets.append(ContentFragmentRowSchema(
+                    **target_item_fragment[0].model_dump(),
+                    # audio_asset=audio_asset
+                ))
+
+            # logger.debug(f"fragments_with_assets: {target_item_fragment}")
 
             render_results = self.card_template_service.render_card(RenderCardInputSchema(
                 native_text=lc_data.native_text,
-                back_template=lc_data.back_template,
+                translation=lc_data.translation,
+                ipa=lc_data.ipa,
                 fragments=fragments_with_assets
             ), format=format)
 
             # print(f"render_results: {render_results}")
-
-            content_hash = self._calculate_content_hash(render_results.model_dump())
-            assets_to_sync = [asset.assets for asset in fragments_with_assets if asset.assets]
 
             return LearningContentWebExportDTO(
                 front=render_results.front,
@@ -82,44 +110,56 @@ class AnkiBuilder:
                 examples=render_results.examples
             )
 
-            # await self.card_service.sync_learning_content_to_anki(SyncLearningContentToAnkiInputSchema(
-            #     learning_content_id=learning_content_id,
-            #     front=render_results.front,
-            #     back=render_results.back,
-            #     content_hash=content_hash,
-            #     assets_to_sync=assets_to_sync
-            # ), force_update=True)
-            # return {
-            #     "learning_content": lc_data,
-            #     # "fragments": [frag.model_dump(mode="json") for frag in fragments_with_assets],
-            #     # "fragments": [frag.id for frag in fragments_with_assets],
-            #     "render_results": render_results,
-            #     "content_hash": content_hash,
-            #     # "sync_result": sync_result
-            # }
         except Exception as e:
             logger.error(f"Error uploading content {learning_content_id}: {e}")
             logger.error(traceback.format_exc())
             return None
 
-    async def process_sync(self, input: SyncLearningContentToAnkiInputSchema):
+    async def process_sync(self, learning_content_id: int):
         # Get rendered content with proper typing
-        result = await self.get_rendered_content(input.learning_content_id)
-        if not result:
-            logger.error(f"Failed to get rendered content for learning_content_id: {input.learning_content_id}")
+        rendered_content = await self.get_rendered_content(learning_content_id)
+        if not rendered_content:
+            logger.error(f"Failed to get rendered content for learning_content_id: {learning_content_id}")
             return
 
-        # Now we know result is a properly typed dictionary
+        content_hash = self._calculate_content_hash(rendered_content.model_dump())
+        assets_to_sync = [fragment.assets[0] for fragment in rendered_content.examples if fragment.assets] if rendered_content.examples else []
+
+        # logger.debug(f"result: {rendered_content}")
+        # log_json(logger, rendered_content.model_dump(), max_str=80, max_items=10)
+        # logger.debug(f"assets_to_sync: {assets_to_sync}")
+        # log_json(logger, len(assets_to_sync), max_str=80, max_items=10)
+        # return
+
         await self.card_service.sync_learning_content_to_anki(
             SyncLearningContentToAnkiInputSchema(
-                learning_content_id=input.learning_content_id,
-                front=result["front"],
-                back=result["back"],
-                content_hash=result["content_hash"],
-                assets_to_sync=result["assets_to_sync"]
+                learning_content_id=learning_content_id,
+                front=rendered_content.front,
+                back=rendered_content.back,
+                content_hash=content_hash,
+                assets_to_sync=assets_to_sync
             ),
             force_update=True
         )
+
+    def populate_content_with_target_learning_fragment(self, learning_content_id: int):
+        lc_data = LearningContentRowSchema.model_validate(
+            self.lc_service.get_content(learning_content_id),
+            from_attributes=True
+        )
+        if not lc_data or not lc_data.native_text:
+            raise ValueError("Learning content not found")
+
+        self.fragment_service.create_fragment(
+            learning_content_id=learning_content_id,
+            input=ContentFragmentCreate(
+                native_text=lc_data.native_text,
+                body_text=lc_data.title,
+                fragment_type='target_learning_item',
+                fragment_metadata={
+                    'job_id': self.job_id
+                }
+            ))
 
     def populate_content_with_example(self, learning_content_id: int):
         try:
@@ -185,8 +225,13 @@ class AnkiBuilder:
     def process_contents(self):
         # for i in range(65, 80):
         #     self.populate_content_with_example(i)
-        for i in range(1, 25):
-            self.populate_content_with_example(i)
+        for i in range(100, 1200):
+            try:
+                self.populate_content_with_target_learning_fragment(i)
+            except Exception as e:
+                logger.error(f"Error populating content with target learning fragment: {e}")
+                logger.error(traceback.format_exc())
+                continue
         return
         contents = self.lc_service.find_content(filters={'has_fragments': False})['content']
         ids = [content['id'] for content in contents]
@@ -221,10 +266,22 @@ class AnkiBuilder:
         # Wait for all tasks to complete
         await asyncio.gather(*tasks, return_exceptions=True)
 
-    async def process_uploading(self):
-        # for i in range(15, 100):
-        #     await self.updload_content(i)
-        await self.updload_content(100)
+    async def sync_to_anki(self):
+        logger.info(f"syncing to anki")
+
+        contents = self.lc_service.find_content(page_size=50, filters={
+            # 'text_search': 'doctor'
+        })
+
+        ids = [content["id"]  for content in contents["content"]]
+        # ids = [11]
+
+        logger.info(f"syncing to anki: {len(ids)} contents")
+
+        # return
+
+        for i in ids:
+            await self.process_sync(i)
 
     def clean_json_like_string(self, raw_text: str) -> str:
         text = raw_text.replace("```json", "")

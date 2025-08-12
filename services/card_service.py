@@ -1,37 +1,27 @@
 """
 Service for managing Anki card operations
 """
+from datetime import UTC
+import datetime
 import logging
-from typing import Dict, Any, List, Optional, Literal, cast
-
-from pydantic import BaseModel
+from typing import Dict, Any, List, Optional, cast
 
 from anki.client import AnkiConnectClient
 from models.database import AnkiCard
-from models.schemas import LearningContentRowSchema
+from models.schemas import (
+    FragmentAssetRowSchema,
+    SyncLearningContentToAnkiInputSchema,
+    SyncLearningContentToAnkiOutputSchema
+)
 from database.manager import DatabaseManager
 import base64
 import asyncio
-
-from services.fragment_asset_manager import FragmentAssetRowSchema
 
 # Default deck name used across the service
 DEFAULT_DECK = "top-thai-2000"
 
 logger = logging.getLogger(__name__)
 
-# TODO: extract to separate file to prevent cycle imports
-class SyncLearningContentToAnkiInputSchema(BaseModel):
-    learning_content_id: int
-    front: str
-    back: str
-    content_hash: str
-    assets_to_sync: List[FragmentAssetRowSchema]
-
-class SyncLearningContentToAnkiOutputSchema(BaseModel):
-    anki_card_id: Optional[int]
-    anki_note_id: Optional[int]
-    status: Literal["created", "updated", "skipped", "failed"]
 
 class CardService:
     def __init__(self, db_manager: Optional[DatabaseManager] = None):
@@ -147,17 +137,16 @@ class CardService:
                 ).first()
                 if existing_card:
                     if cast(str, existing_card.export_hash) == input.content_hash and not force_update:
+                        setattr(existing_card, "tags", ["sync::success", "sync::skipped"])
+                        setattr(existing_card, "updated_at", datetime.datetime.now(UTC))
+                        session.commit()
+
                         return SyncLearningContentToAnkiOutputSchema(
                             anki_card_id=cast(int, existing_card.id),
                             anki_note_id=cast(int, existing_card.anki_note_id),
                             status="skipped",
                         )
                     else:
-                        setattr(existing_card, "export_hash", input.content_hash)
-                        setattr(existing_card, "front_text", input.front)
-                        setattr(existing_card, "back_text", input.back)
-                        session.commit()
-
                         async with AnkiConnectClient() as anki_client:
                             await self._upload_audio_assets_with_replace(anki_client, input.assets_to_sync)
                             await anki_client.update_note(  # type: ignore[reportUnknownMemberType]
@@ -168,20 +157,51 @@ class CardService:
                                 },
                                 tags=["sync::success"],
                             )
+                        setattr(existing_card, "export_hash", input.content_hash)
+                        setattr(existing_card, "tags", ["sync::success", "sync::updated"])
+                        setattr(existing_card, "updated_at", datetime.datetime.now(UTC))
+
+                        session.commit()
 
                         return SyncLearningContentToAnkiOutputSchema(
                             anki_card_id=cast(int, existing_card.id),
                             anki_note_id=cast(int, existing_card.anki_note_id),
                             status="updated",
                         )
+                # create new card
+                else:
+                    logger.info(f"Creating new card for learning content {input.learning_content_id}")
 
-            # If we reach this point, either no existing card was found or the creation path
-            # is not yet implemented. Return a descriptive failure so the caller can handle it.
-            return SyncLearningContentToAnkiOutputSchema(
-                anki_card_id=None,
-                anki_note_id=None,
-                status="failed",
-            )
+                    async with AnkiConnectClient() as anki_client:
+                        await self._upload_audio_assets_with_replace(anki_client, input.assets_to_sync)
+                        note_id = await anki_client.add_note(  # type: ignore[reportUnknownMemberType]
+                            note={
+                                "deckName": DEFAULT_DECK,
+                                "fields": {
+                                    "Front": input.front,
+                                    "Back": input.back,
+                                },
+                                "modelName": "Basic",
+                                "tags": ["sync::success", "sync::new"],
+                            }
+                        )
+                    logger.info(f"New card created with note_id: {note_id}")
+                    new_card = AnkiCard(
+                        learning_content_id=input.learning_content_id,
+                        export_hash=input.content_hash,
+                        deck_name=DEFAULT_DECK,
+                        tags=["sync::success", "sync::new"],
+                        anki_note_id=note_id,
+                    )
+                    session.add(new_card)
+                    session.commit()
+
+                    return SyncLearningContentToAnkiOutputSchema(
+                        anki_card_id=cast(int, new_card.id),
+                        anki_note_id=cast(int, new_card.anki_note_id),
+                        status="created",
+                    )
+
         except Exception as e:
             logger.error(f"Error syncing learning content {input.learning_content_id}: {e}")
             return SyncLearningContentToAnkiOutputSchema(

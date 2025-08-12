@@ -33,6 +33,8 @@ class FragmentAssetManager:
                 FragmentAsset.asset_type == type
             ).order_by(FragmentAsset.created_at.desc()).first()
 
+            # logger.info(f"asset: {asset}")
+
             # If an asset already exists, verify it is still up to date with the fragment text.
             # We treat the asset as stale when the owning fragment was updated after the asset was generated.
             if asset:

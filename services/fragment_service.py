@@ -23,7 +23,7 @@ class FragmentService:
     def __init__(self):
         self.db_manager = DatabaseManager()
 
-    def get_fragment(self, fragment_id: int) -> Optional[Dict[str, Any]]:
+    def get_fragment(self, fragment_id: int, fragment_type: Optional[str] = 'real_life_example') -> Optional[Dict[str, Any]]:
         with self.db_manager.get_session() as session:
             # Query with ranking aggregation
             result = session.query(
@@ -34,7 +34,8 @@ class FragmentService:
                 Ranking,
                 (ContentFragment.id == Ranking.fragment_id) & (Ranking.asset_id.is_(None))
             ).filter(
-                ContentFragment.id == fragment_id
+                ContentFragment.id == fragment_id,
+                ContentFragment.fragment_type == fragment_type
             ).group_by(ContentFragment).first()
 
             if not result:
@@ -59,9 +60,29 @@ class FragmentService:
 
             return fragment_dict
 
-    def get_top_rated_fragments_by_learning_content_id(self, learning_content_id: int, limit: int = 10) -> List[ContentFragmentRowSchema]:
+    def get_top_rated_fragments_by_learning_content_id(self, learning_content_id: int, limit: int = 10, min_rank_score: Optional[float] = None, fragment_type: Optional[str] = None) -> List[ContentFragmentRowSchema]:
         with self.db_manager.get_session() as session:
-            fragments = session.query(ContentFragment).filter(ContentFragment.learning_content_id == learning_content_id).order_by(ContentFragment.created_at.desc()).limit(limit)
+            # Query with ranking aggregation (same pattern as find_fragments)
+            query = session.query(
+                ContentFragment,
+                func.avg(Ranking.rank_score).label("avg_rank_score")
+            ).outerjoin(
+                Ranking,
+                (ContentFragment.id == Ranking.fragment_id) & (Ranking.asset_id.is_(None))
+            ).filter(
+                ContentFragment.learning_content_id == learning_content_id,
+                ContentFragment.fragment_type == fragment_type
+            ).group_by(ContentFragment).having(
+                func.avg(Ranking.rank_score) >= min_rank_score if min_rank_score else True
+            ).order_by(
+                func.avg(Ranking.rank_score).desc(),
+                ContentFragment.created_at.desc()
+            ).limit(limit)
+
+            results = query.all()
+
+            # Extract just the ContentFragment objects from the query results
+            fragments = [fragment for fragment, _ in results]
             return [ContentFragmentRowSchema.model_validate(fragment, from_attributes=True) for fragment in fragments]
 
     def update_fragment(self, fragment_id: int, input: ContentFragmentUpdate) -> bool:
@@ -238,7 +259,8 @@ class FragmentService:
                 "language": learning_content.language,
                 "tags": learning_content.tags,
                 "native_text": learning_content.native_text,
-                "back_template": learning_content.back_template,
+                "translation": learning_content.translation,
+                "ipa": learning_content.ipa,
                 "created_at": learning_content.created_at,
                 "updated_at": learning_content.updated_at
             }]

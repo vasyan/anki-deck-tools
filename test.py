@@ -8,6 +8,13 @@ sys.path.append(str(Path(__file__).parent))
 
 from workflows.anki_builder import AnkiBuilder
 
+import logging
+
+logging.basicConfig(
+    level=logging.ERROR,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s"
+)
+
 async def main():
     parser = argparse.ArgumentParser(description="Test populate_content_with_example function")
     parser.add_argument('mode', type=str, help='mode to run', default='fragments')
@@ -16,20 +23,18 @@ async def main():
 
     # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
-    ID = 52
-
     builder = AnkiBuilder()
     try:
         if args.mode == 'contents':
             builder.process_contents()
         elif args.mode == 'fragments':
             await builder.process_fragments()
-        elif args.mode == 'upload':
-            await builder.process_uploading()
+        elif args.mode == 'anki':
+            await builder.sync_to_anki()
         else:
             raise ValueError(f"Invalid mode: {args.mode}")
 
-        print(f"✅ Successfully processed learning content ID {ID}")
+        print(f"✅ Finished")
     except Exception as e:
         print(f"❌ Error: {e}")
         print(traceback.format_exc())

@@ -1,11 +1,10 @@
 import logging
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
-from pydantic import BaseModel
-from typing import Optional
 
 from database.manager import DatabaseManager
 from models.database import FragmentAsset, Ranking
+from models.schemas import AssetRankingInput
 from services.fragment_asset_manager import FragmentAssetManager
 
 logger = logging.getLogger(__name__)
@@ -25,10 +24,6 @@ async def get_asset(asset_id: int):
 			raise HTTPException(status_code=404, detail="Asset not found")
 		return Response(asset.asset_data, media_type="audio/mpeg")
 
-class AssetRankingInput(BaseModel):
-    rank_score: float
-    assessment_notes: Optional[str] = None
-    assessed_by: str = "admin"
 
 @router.post("/assets/{asset_id}/ranking")
 async def set_asset_ranking(asset_id: int, ranking_data: AssetRankingInput):

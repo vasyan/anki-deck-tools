@@ -197,12 +197,14 @@ async def add_fragment_asset(
 @router.get("/fragments/{fragment_id}/assets")
 async def get_fragment_assets(
     fragment_id: int,
-    asset_type: str | None = None
+    asset_type: str | None = "audio"
 ):
     """Get assets for a fragment"""
     try:
         asset_manager = FragmentAssetManager()
         assets = asset_manager.get_fragment_assets_with_rankings(fragment_id, asset_type)
+
+        # print(f"assets: {assets}")
 
         # Remove binary data from response for JSON serialization
         for asset in assets:

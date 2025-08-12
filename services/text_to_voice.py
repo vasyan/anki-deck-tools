@@ -1,15 +1,11 @@
 import logging
-from pydantic import BaseModel
 from config import settings
 from litellm import speech
+from models.schemas import SynthesizeOutput
 
 logger = logging.getLogger(__name__)
 
 instructions_file = "instructions/pronounce-teacher-thai.txt"
-
-class SynthesizeOutput(BaseModel):
-	audio: bytes
-	tts_model: str
 
 class TextToSpeechService:
 	def __init__(
