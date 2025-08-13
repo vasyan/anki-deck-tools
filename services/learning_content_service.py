@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta, UTC
 from typing import Dict, List, Optional, Any, cast, TypeVar
 
 from database.manager import DatabaseManager
@@ -274,3 +275,90 @@ class LearningContentService:
                 {'language': row[0], 'count': row[1]}
                 for row in result
             ]
+
+    def get_next_review_content(self) -> Optional[LearningContentRowSchema]:
+        """
+        Get the next most suitable content for review based on:
+        1. Not reviewed in last 5 minutes
+        2. Content with no rated fragments (highest priority)
+        3. Content with lowest percentage of rated fragments
+        4. Content with oldest last_review_at
+        5. Lowest ID as fallback
+        
+        Also updates the selected content's last_review_at timestamp.
+        """
+        with self.db_manager.get_session() as session:
+            # Calculate threshold for recent reviews (5 minutes ago)
+            review_threshold = datetime.now(UTC) - timedelta(minutes=5)
+            
+            # Complex query to find the best content for review
+            result = session.execute(text("""
+                WITH fragment_stats AS (
+                    SELECT 
+                        lc.id,
+                        lc.title,
+                        lc.content_type,
+                        lc.language,
+                        lc.native_text,
+                        lc.translation,
+                        lc.ipa,
+                        lc.difficulty_level,
+                        lc.tags,
+                        lc.content_metadata,
+                        lc.created_at,
+                        lc.updated_at,
+                        lc.last_review_at,
+                        COUNT(cf.id) as total_fragments,
+                        COUNT(CASE WHEN r.id IS NOT NULL THEN 1 END) as rated_fragments
+                    FROM learning_content lc
+                    LEFT JOIN content_fragments cf ON lc.id = cf.learning_content_id
+                    LEFT JOIN rankings r ON cf.id = r.fragment_id
+                    WHERE lc.last_review_at IS NULL 
+                       OR lc.last_review_at < :review_threshold
+                    GROUP BY lc.id
+                )
+                SELECT *,
+                    CASE 
+                        WHEN total_fragments = 0 THEN 999  -- Content with no fragments gets lowest priority
+                        WHEN rated_fragments = 0 THEN 0     -- Highest priority: has fragments but none rated
+                        ELSE CAST(rated_fragments AS FLOAT) / total_fragments
+                    END as rating_percentage
+                FROM fragment_stats
+                WHERE total_fragments > 0  -- Must have at least one fragment
+                ORDER BY 
+                    rating_percentage ASC,      -- Prioritize lower percentage of rated fragments
+                    last_review_at ASC NULLS FIRST,  -- Then oldest reviewed (NULL first)
+                    id ASC                      -- Finally by ID
+                LIMIT 1
+            """), {"review_threshold": review_threshold}).fetchone()
+            
+            if not result:
+                return None
+            
+            # Convert row to dict for LearningContent object creation
+            import json
+            content_dict = {
+                'id': result[0],
+                'title': result[1],
+                'content_type': result[2],
+                'language': result[3],
+                'native_text': result[4],
+                'translation': result[5],
+                'ipa': result[6],
+                'difficulty_level': result[7],
+                'tags': json.loads(result[8]) if result[8] else None,
+                'content_metadata': json.loads(result[9]) if result[9] else None,
+                'created_at': result[10],
+                'updated_at': result[11],
+                'last_review_at': result[12]
+            }
+            
+            # Update the last_review_at timestamp for this content
+            session.execute(
+                text("UPDATE learning_content SET last_review_at = :now WHERE id = :id"),
+                {"now": datetime.now(UTC), "id": content_dict['id']}
+            )
+            session.commit()
+            
+            # Return as schema object
+            return LearningContentRowSchema(**content_dict)

@@ -75,11 +75,14 @@
                 <a href="/admin/learning-content" class="btn btn-outline-secondary mb-2">
                     <i class="fas fa-arrow-left"></i> Back to Learning Content
                 </a>
-                <button class="btn btn-outline-secondary mb-2" type="button" onclick="navigateToPrevious()">
+                <button class="btn btn-outline-secondary mb-2" type="button" onclick="navigateToPrevious()" id="prevBtn" style="display: none;">
                     <i class="fas fa-arrow-left"></i> Previous
                 </button>
-                <button class="btn btn-outline-secondary mb-2" type="button" onclick="navigateToNext()">
+                <button class="btn btn-outline-secondary mb-2" type="button" onclick="navigateToNext()" id="nextBtn" style="display: none;">
                     <i class="fas fa-arrow-right"></i> Next
+                </button>
+                <button class="btn btn-primary mb-2" type="button" onclick="finishReview()" id="finishReviewBtn" style="display: none;">
+                    <i class="fas fa-check-circle"></i> Finish Review
                 </button>
                 <div class="card">
                     <div class="card-header bg-light">
@@ -118,20 +121,40 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Get content ID from URL
-        // url looks like /learning-content/52/detail
-        const contentId = window.location.pathname.split('/').filter(v => /^\d+$/.test(v))[0];
+        // Check if we're in review mode
+        const isReviewMode = window.location.pathname.includes('/review');
+        let contentId = null;
+        
+        if (!isReviewMode) {
+            // Get content ID from URL for detail mode
+            // url looks like /learning-content/52/detail
+            contentId = window.location.pathname.split('/').filter(v => /^\d+$/.test(v))[0];
+        }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadContentDetails();
-            loadContentFragments();
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (isReviewMode) {
+                // In review mode, first get the next content to review
+                await loadNextReviewContent();
+            } else {
+                // In detail mode, load the specific content
+                loadContentDetails();
+                loadContentFragments();
+            }
         });
 
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'ArrowLeft') {
-                navigateToPrevious();
-            } else if (event.key === 'ArrowRight') {
-                navigateToNext();
+            if (isReviewMode) {
+                // In review mode, only handle Enter key to finish review
+                if (event.key === 'Enter') {
+                    finishReview();
+                }
+            } else {
+                // In detail mode, handle arrow keys for navigation
+                if (event.key === 'ArrowLeft') {
+                    navigateToPrevious();
+                } else if (event.key === 'ArrowRight') {
+                    navigateToNext();
+                }
             }
         });
 
@@ -142,6 +165,13 @@
         }
 
         async function loadContentDetails() {
+            if (isReviewMode) return;  // Skip in review mode
+            
+            // Show navigation buttons in detail mode
+            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('finishReviewBtn').style.display = 'none';
+            
             showLoading(true);
             try {
                 const response = await fetch(`/learning-content/${contentId}`);
@@ -460,6 +490,60 @@
 
         function navigateToPrevious() {
             window.location.href = `/admin/learning-content/${getCurrentContentId() - 1}/detail`;
+        }
+        
+        function finishReview() {
+            // Reload the page to get the next review item
+            window.location.reload();
+        }
+        
+        async function loadNextReviewContent() {
+            showLoading(true);
+            try {
+                const response = await fetch('/learning-content/next-review');
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        document.getElementById('contentDetails').innerHTML =
+                            '<div class="alert alert-info">' +
+                            '<h4><i class="fas fa-check-circle"></i> Review Complete</h4>' +
+                            '<p>Great job! All available content has been reviewed.</p>' +
+                            '<p>No more content needs review at this time.</p>' +
+                            '<a href="/admin/learning-content" class="btn btn-primary">Back to Learning Content</a>' +
+                            '</div>';
+                        document.getElementById('fragmentsList').innerHTML = '';
+                    } else {
+                        document.getElementById('contentDetails').innerHTML =
+                            '<div class="alert alert-danger">' +
+                            `<h4><i class="fas fa-exclamation-circle"></i> Error (${response.status})</h4>` +
+                            '<p>There was a problem loading the next review content.</p>' +
+                            '</div>';
+                    }
+                    return;
+                }
+                
+                const content = await response.json();
+                contentId = content.id;  // Set the content ID for this review item
+                
+                // Show review mode buttons
+                document.getElementById('prevBtn').style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('finishReviewBtn').style.display = 'inline-block';
+                
+                // Display the content
+                displayContentDetails(content);
+                loadContentFragments();
+            } catch (error) {
+                console.error('Error loading next review content:', error);
+                document.getElementById('contentDetails').innerHTML =
+                    '<div class="alert alert-danger">' +
+                    '<h4><i class="fas fa-exclamation-circle"></i> Error</h4>' +
+                    '<p>There was a problem loading the next review content:</p>' +
+                    `<pre class="text-danger">${error.message}</pre>` +
+                    '</div>';
+            } finally {
+                showLoading(false);
+            }
         }
     </script>
 </body>

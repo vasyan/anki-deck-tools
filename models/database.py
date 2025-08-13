@@ -42,6 +42,7 @@ class LearningContent(Base):
     # Timestamps
     created_at = Column(DateTime, default=lambda: datetime.now(UTC))
     updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    last_review_at = Column(DateTime, nullable=True)  # Track when last served for review
 
     # Relationships
     anki_cards = relationship("AnkiCard", back_populates="learning_content")

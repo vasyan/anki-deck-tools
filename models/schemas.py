@@ -111,6 +111,7 @@ class ContentFragmentSearchRow(BaseModel):
     limit: int = 50
     offset: int = 0
     min_rating: Optional[float] = None
+    max_rating: Optional[float] = None
 
 class FragmentRankingInput(BaseModel):
     rank_score: float
@@ -143,6 +144,7 @@ class LearningContentRowSchema(BaseModel):
     content_metadata: Metadata = None
     created_at: datetime
     updated_at: datetime
+    last_review_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -221,6 +221,11 @@ async def admin_learning_content_detail(request: Request, content_id: int) -> HT
     """Learning content detail page"""
     return templates.TemplateResponse("admin/learning_content_detail.html", {"request": request})
 
+@router.get("/admin/learning-content/review", response_class=HTMLResponse)
+async def admin_learning_content_review(request: Request) -> HTMLResponse:
+    """Learning content review page - automatically selects next content to review"""
+    return templates.TemplateResponse("admin/learning_content_detail.html", {"request": request, "review_mode": True})
+
 @router.get("/admin/fragments/{fragment_id}/detail", response_class=HTMLResponse)
 async def admin_fragment_detail(request: Request, fragment_id: int) -> HTMLResponse:
     """Fragment detail page"""

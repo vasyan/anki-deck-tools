@@ -94,6 +94,23 @@ async def get_learning_content(
         logger.error(f"Error getting learning content: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/learning-content/next-review")
+async def get_next_review_content():
+    """Get the next most suitable learning content for review"""
+    try:
+        learning_service = LearningContentService()
+        content = learning_service.get_next_review_content()
+        
+        if not content:
+            raise HTTPException(status_code=404, detail="No content available for review")
+        
+        return content
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting next review content: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/learning-content/{content_id}")
 async def get_learning_content_by_id(content_id: int):
     """Get specific learning content by ID"""
