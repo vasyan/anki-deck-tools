@@ -110,6 +110,7 @@ class ContentFragmentSearchRow(BaseModel):
     has_assets: Optional[bool] = Field(default=None)
     limit: int = 50
     offset: int = 0
+    min_rating: Optional[float] = None
 
 class FragmentRankingInput(BaseModel):
     rank_score: float
@@ -124,6 +125,9 @@ class LearningContentFilter(BaseModel):
     tags: Optional[List[str]] = None
     text_search: Optional[str] = None
     has_fragments: Optional[bool] = None
+    min_fragments_count: Optional[int] = None
+    max_fragments_count: Optional[int] = None
+    cursor: Optional[int] = None
     model_config = ConfigDict(extra='ignore')
 
 class LearningContentRowSchema(BaseModel):

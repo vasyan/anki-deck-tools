@@ -111,7 +111,7 @@ class FragmentService:
                        input: ContentFragmentSearchRow,
                        with_assets: bool = False,
                        with_rankings: bool = True,
-                       order_by: str = "avg_rank_score"
+                       order_by: str = "avg_rank_score",
                        ) -> List[Dict[str, Any]]:
         with self.db_manager.get_session() as session:
             # Build query with ranking aggregations
@@ -139,7 +139,10 @@ class FragmentService:
                 else:
                     query = query.filter(~ContentFragment.assets.any())
 
-            logger.debug(f"filters: {input.model_dump()}")
+            if input.min_rating is not None:
+                query = query.having(func.avg(Ranking.rank_score) >= input.min_rating)
+
+            # logger.debug(f"filters: {input.model_dump()}")
 
             # Group by fragment to get aggregates
             query = query.group_by(ContentFragment)

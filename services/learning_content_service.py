@@ -2,11 +2,11 @@ import logging
 from typing import Dict, List, Optional, Any, cast, TypeVar
 
 from database.manager import DatabaseManager
-from models.database import LearningContent
+from models.database import LearningContent, ContentFragment
 from models.schemas import LearningContentRowSchema, LearningContentUpdate
 from models.schemas import LearningContentCreate
 from models.schemas import LearningContentSearchRow, LearningContentFilter
-from sqlalchemy import text, or_
+from sqlalchemy import text, or_, func
 from sqlalchemy.orm import Query
 
 # Define type variable for LearningContent
@@ -172,6 +172,19 @@ class LearningContentService:
                 query = query.filter(LearningContent.fragments.any())
             else:
                 query = query.filter(~LearningContent.fragments.any())
+
+        if 'min_fragments_count' in filter_data:
+            query = query.join(ContentFragment, LearningContent.id == ContentFragment.learning_content_id)\
+                         .group_by(LearningContent.id)\
+                         .having(func.count(ContentFragment.id) >= filter_data['min_fragments_count'])
+
+        if 'max_fragments_count' in filter_data:
+            query = query.join(ContentFragment, LearningContent.id == ContentFragment.learning_content_id)\
+                         .group_by(LearningContent.id)\
+                         .having(func.count(ContentFragment.id) <= filter_data['max_fragments_count'])
+
+        if 'cursor' in filter_data:
+            query = query.filter(LearningContent.id > filter_data['cursor'])
 
         return query
 

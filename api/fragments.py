@@ -72,9 +72,9 @@ async def search_fragments(
     fragment_type: FragmentType | None = None,
     has_assets: bool | None = None,
     limit: int = 50,
-    offset: int = 0
+    offset: int = 0,
+    min_rating: float | None = None
 ):
-    """Search fragments"""
     try:
         fragment_manager = FragmentService()
         fragments = fragment_manager.find_fragments(ContentFragmentSearchRow(
@@ -82,7 +82,8 @@ async def search_fragments(
             fragment_type=fragment_type,
             has_assets=has_assets,
             limit=limit,
-            offset=offset
+            offset=offset,
+            min_rating=min_rating
         ))
 
         return {

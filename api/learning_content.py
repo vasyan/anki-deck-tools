@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from database.manager import DatabaseManager
 import logging
 
 from services.learning_content_service import LearningContentService
 from services.fragment_service import FragmentService
-from models.schemas import ContentFragmentSearchRow, ContentFragmentRowSchema
+from models.schemas import ContentFragmentSearchRow, LearningContentFilter
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -47,22 +47,31 @@ async def get_learning_content(
     page_size: int = 20,
     content_type: Optional[str] = None,
     language: Optional[str] = None,
-    search: Optional[str] = None
+    search: Optional[str] = None,
+    min_fragments_count: Optional[int] = None,
+    max_fragments_count: Optional[int] = None,
+    cursor: Optional[int] = None
 ):
     """Get learning content with filtering and pagination"""
     try:
         learning_service = LearningContentService()
 
-        filters = {}
+        filters = LearningContentFilter()
         if content_type:
-            filters['content_type'] = content_type
+            filters.content_type = content_type
         if language:
-            filters['language'] = language
+            filters.language = language
         if search:
-            filters['text_search'] = search
+            filters.text_search = search
+        if min_fragments_count:
+            filters.min_fragments_count = min_fragments_count
+        if max_fragments_count:
+            filters.max_fragments_count = max_fragments_count
+        if cursor:
+            filters.cursor = cursor
 
         try:
-            result = learning_service.find_content(filters, page, page_size)
+            result = learning_service.find_content(filters=filters, page=page, page_size=page_size)
             return result
         except Exception as db_error:
             # If there's a database error (e.g., table doesn't exist), return empty results
