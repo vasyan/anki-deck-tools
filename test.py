@@ -11,7 +11,7 @@ from workflows.anki_builder import AnkiBuilder
 import logging
 
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s"
 )
 

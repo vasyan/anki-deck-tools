@@ -1,5 +1,5 @@
-{{ native_text }}
-[{{ ipa }}]
+<span class="text-thai">{{ native_text }}</span>
+[<span class="text-ipa">{{ ipa }}</span>]
 {% for fragment in fragments %}
     {% if fragment.fragment_type == 'target_learning_item' %}
         [sound:asset_{{fragment.assets[0].id}}.mp3]

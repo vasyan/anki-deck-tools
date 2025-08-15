@@ -59,6 +59,7 @@ class SyncLearningContentRequest(BaseModel):
     """Request model for syncing learning content to Anki"""
     learning_content_id: int
     deck_name: str = "top-thai-2000"
+    force_update: bool = False
 
 class BatchSyncLearningContentRequest(BaseModel):
     """Request model for batch syncing learning content to Anki"""
@@ -214,6 +215,7 @@ class SyncLearningContentToAnkiInputSchema(BaseModel):
     back: str
     content_hash: str
     assets_to_sync: List[FragmentAssetRowSchema]
+    force_update: bool = False
 
 class SyncLearningContentToAnkiOutputSchema(BaseModel):
     """Output schema for Anki sync results"""

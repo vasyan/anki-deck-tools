@@ -113,35 +113,39 @@ class CardService:
         self,
         anki_note_id: int,
         expected_fields: Dict[str, str],
-        expected_user_tags: List[str] = None
+        expected_anki_user_tags: List[str] = None
     ) -> Dict[str, Any]:
         """
         Analyze what changes would be made to an Anki note
-        
+
+        This compares expected content (from database) with actual content (in Anki)
+        to detect modifications made by the Anki user (learner).
+
         Returns:
             Dictionary with change analysis and recommendations
         """
         async with AnkiConnectClient() as anki_client:
             notes_info = await anki_client.notes_info([anki_note_id])
-            
+
             if not notes_info:
                 return {"error": f"Note {anki_note_id} not found"}
-            
+
             note_info = notes_info[0]
-            expected_user_tags = expected_user_tags or []
-            
-            changes = self.change_detector.detect_user_modifications(
+            expected_anki_user_tags = expected_anki_user_tags or []
+
+            # Detect modifications made by Anki user (learner)
+            changes = self.change_detector.detect_anki_user_modifications(
                 expected_fields,
-                expected_user_tags,
+                expected_anki_user_tags,
                 note_info
             )
-            
+
             return {
                 "note_id": anki_note_id,
                 "changes": changes,
                 "current_fields": note_info.get("fields", {}),
                 "current_tags": note_info.get("tags", []),
-                "recommendation": "skip" if changes.user_modified_fields and settings.preserve_user_modifications else "proceed"
+                "recommendation": "skip" if changes.anki_user_modified_fields and settings.preserve_user_modifications else "proceed"
             }
 
     async def smart_update_note(
@@ -152,87 +156,94 @@ class CardService:
         force_update: bool = False
     ) -> Dict[str, Any]:
         """
-        Smart update of Anki note that preserves user modifications
-        
+        Smart update of Anki note that preserves Anki user (learner) modifications
+
+        This method respects customizations made by the Anki user while applying
+        content updates from the database.
+
         Args:
             anki_note_id: Anki note ID to update
-            new_fields: New field values to set
+            new_fields: New field values from database content
             sync_status: Sync status tag to add
-            force_update: Whether to force update despite user modifications
-            
+            force_update: Whether to force update despite anki user modifications
+
         Returns:
             Update result with details about what was changed
         """
         async with AnkiConnectClient() as anki_client:
             # Get current note state
             notes_info = await anki_client.notes_info([anki_note_id])
-            
+
             if not notes_info:
                 return {"success": False, "error": f"Note {anki_note_id} not found"}
-            
+
             current_note = notes_info[0]
             current_fields = current_note.get("fields", {})
             current_tags = current_note.get("tags", [])
-            
-            # Detect what would change
-            changes = self.change_detector.detect_user_modifications(
+
+            # Detect what would change - check for Anki user modifications
+            changes = self.change_detector.detect_anki_user_modifications(
                 new_fields,
-                [],  # We don't expect specific user tags
+                [],  # We don't expect specific anki user tags
                 current_note
             )
-            
-            # Decide whether to proceed
+
+            # print(f"changes: {changes}")
+
+            # Decide whether to proceed - check if we should preserve Anki user modifications
             should_skip = self.change_detector.should_skip_update(
-                changes, 
-                force_update, 
-                settings.preserve_user_modifications
+                changes,
+                force_update,
+                settings.preserve_user_modifications  # Setting controls preserving Anki user changes
             )
-            
+
+            print(f"should_skip: {should_skip}")
+
             if should_skip:
-                logger.info(f"Skipping update of note {anki_note_id} due to user modifications")
+                logger.info(f"Skipping update of note {anki_note_id} due to Anki user modifications")
                 # Still update tags to reflect skip status
                 new_tags = self.tag_manager.merge_tags(current_tags, "skipped")
                 await anki_client.update_note(anki_note_id, tags=new_tags)
-                
+
                 return {
                     "success": True,
                     "action": "skipped",
-                    "reason": "user_modifications_detected",
-                    "user_modified_fields": changes.user_modified_fields,
+                    "reason": "anki_user_modifications_detected",
+                    "anki_user_modified_fields": changes.anki_user_modified_fields,
                     "tags_updated": new_tags
                 }
-            
+
             # Proceed with smart update
             fields_to_update = {}
-            
-            if settings.merge_strategy == "conservative":
-                # Only update fields that weren't modified by user
+
+            if settings.merge_strategy == "conservative" and not force_update:
+                # Only update fields that weren't modified by Anki user (learner)
                 for field_name, new_value in new_fields.items():
-                    if field_name not in changes.user_modified_fields:
+                    if field_name not in changes.anki_user_modified_fields:
                         fields_to_update[field_name] = new_value
             else:  # aggressive
-                # Update all fields, potentially overwriting user changes
+                # Update all fields, potentially overwriting Anki user changes
                 fields_to_update = new_fields.copy()
-            
+
             # Smart tag merge
             new_tags = self.tag_manager.merge_tags(current_tags, sync_status)
-            
+
             # Perform the update
             await anki_client.update_note(
                 anki_note_id,
                 fields=fields_to_update,
                 tags=new_tags
             )
-            
+
             logger.info(f"Smart updated note {anki_note_id}: fields={list(fields_to_update.keys())}, tags={new_tags}")
-            
+
             return {
                 "success": True,
                 "action": "updated",
                 "fields_updated": list(fields_to_update.keys()),
                 "fields_skipped": [f for f in new_fields.keys() if f not in fields_to_update],
                 "tags_updated": new_tags,
-                "user_modifications_preserved": len(changes.user_modified_fields) > 0
+                "anki_user_modifications_preserved": len(changes.anki_user_modified_fields) > 0
             }
 
     ## TODO: fix it, can be useful
@@ -260,7 +271,6 @@ class CardService:
     async def sync_learning_content_to_anki(
             self,
             input: SyncLearningContentToAnkiInputSchema,
-            force_update: bool = False,
         ) -> SyncLearningContentToAnkiOutputSchema:
         try:
             with self.db_manager.get_session() as session:
@@ -268,10 +278,10 @@ class CardService:
                     learning_content_id=input.learning_content_id
                 ).first()
                 if existing_card:
-                    if cast(str, existing_card.export_hash) == input.content_hash and not force_update:
+                    if cast(str, existing_card.export_hash) == input.content_hash and not input.force_update:
                         # Content unchanged, just update sync tag
                         new_tags = self.tag_manager.merge_tags(
-                            getattr(existing_card, "tags", []) or [], 
+                            getattr(existing_card, "tags", []) or [],
                             "skipped"
                         )
                         setattr(existing_card, "tags", new_tags)
@@ -287,7 +297,7 @@ class CardService:
                         # Content changed, perform smart update
                         async with AnkiConnectClient() as anki_client:
                             await self._upload_audio_assets_with_replace(anki_client, input.assets_to_sync)
-                        
+
                         # Use smart update system
                         update_result = await self.smart_update_note(
                             cast(int, existing_card.anki_note_id),
@@ -296,9 +306,11 @@ class CardService:
                                 "Back": input.back,
                             },
                             sync_status="success",
-                            force_update=force_update
+                            force_update=input.force_update
                         )
-                        
+
+                        # print(f"update_result: {update_result}")
+
                         if not update_result["success"]:
                             logger.error(f"Smart update failed for note {existing_card.anki_note_id}: {update_result}")
                             return SyncLearningContentToAnkiOutputSchema(
@@ -306,18 +318,18 @@ class CardService:
                                 anki_note_id=cast(int, existing_card.anki_note_id),
                                 status="failed",
                             )
-                        
+
                         # Update database record
                         setattr(existing_card, "export_hash", input.content_hash)
                         setattr(existing_card, "tags", update_result["tags_updated"])
                         setattr(existing_card, "updated_at", datetime.datetime.now(UTC))
                         session.commit()
-                        
+
                         # Determine status based on what actually happened
                         if update_result["action"] == "skipped":
                             status = "skipped"
-                        elif update_result.get("user_modifications_preserved", False):
-                            status = "updated"  # partial update preserving user changes
+                        elif update_result.get("anki_user_modifications_preserved", False):
+                            status = "updated"  # partial update preserving anki user changes
                         else:
                             status = "updated"
 
@@ -332,10 +344,10 @@ class CardService:
 
                     async with AnkiConnectClient() as anki_client:
                         await self._upload_audio_assets_with_replace(anki_client, input.assets_to_sync)
-                        
+
                         # Create new tags using tag manager
                         new_tags = self.tag_manager.create_sync_tags(["success", "new"])
-                        
+
                         note_id = await anki_client.add_note(  # type: ignore[reportUnknownMemberType]
                             note={
                                 "deckName": DEFAULT_DECK,

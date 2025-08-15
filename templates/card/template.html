@@ -1,0 +1,100 @@
+## Front Template
+```html
+{{Front}}
+
+<div class="ctrls">
+	<button onclick="onToggleFont()">&&</button>
+    <button onclick="onToggleIpa()">++</button>
+</div>
+
+<script>
+function onToggleFont() {
+	var els = document.querySelectorAll('.text-thai');
+	for (el in els) {
+		els[el].classList.toggle('text-thai-classic')
+	}
+}
+
+function onToggleIpa() {
+	var els = document.querySelectorAll('.text-ipa');
+	for (el in els) {
+		els[el].classList.toggle('text-ipa-shown')
+	}
+}
+</script>
+```
+## Back Template
+```html
+{{FrontSide}}
+
+<hr id=answer>
+
+<div class="an-card">
+{{Back}}
+</div>
+```
+## Styling
+```css
+@import url('https://fonts.googleapis.com/css2?family=Mitr&family=Noto+Sans+Thai&family=Sarabun&display=swap');
+
+html {
+	// height: 100dvh;
+}
+
+:root, body {
+	height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+ font-size: 20px;
+ text-align: center;
+ color: black;
+ background-color: white;
+}
+
+.text-thai {
+    font-family:
+    'Noto Sans Thai',
+    'Sarabun',
+    'Mitr',
+    'Roboto',
+    'Helvetica Neue',
+    'Arial',
+    sans-serif;
+}
+
+.text-thai-classic {
+	font-family: initial;
+}
+
+.text-ipa {
+    position: relative;
+    background-color: #f0f0f0;
+    color: #f0f0f0;
+}
+
+.text-ipa-shown {
+    background-color: initial;
+    color: initial;
+}
+
+.an-card {
+	position: relative;
+}
+
+.ctrls {
+	position: fixed;
+    top: 10px;
+	right: 20px;
+    display: flex;
+    // width: 100%;
+    justify-content: center;
+}
+
+.ctrls button {
+	height: 2rem;
+	widht: 2rem;
+}
+```

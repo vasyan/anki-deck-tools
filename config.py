@@ -47,6 +47,11 @@ class Settings(BaseSettings):
 
     # Local models
     local_model_thai: str = Field(default="lm_studio/typhoon2.1-gemma3-4b-mlx", env="LOCAL_MODEL_THAI")  # type: ignore
+    
+    # Smart Anki Update Configuration
+    preserve_user_modifications: bool = Field(default=True)
+    sync_tag_prefix: str = Field(default="sync::")
+    merge_strategy: str = Field(default="conservative")  # conservative or aggressive
 
     class Config:
         env_file = ".env"

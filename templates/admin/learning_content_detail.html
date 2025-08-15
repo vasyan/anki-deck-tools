@@ -88,9 +88,12 @@
                     <div class="card-header bg-light">
                         <div class="d-flex justify-content-between align-items-center">
                             <h4 id="contentTitle" class="mb-0">Learning Content Details</h4>
-                            <div class="loading-spinner">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="d-flex align-items-center">
+                                <span id="contentIdDisplay" class="badge bg-secondary me-2" style="display: none;">ID: </span>
+                                <div class="loading-spinner">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -246,6 +249,11 @@
             // Update page title
             document.title = `${content.title} - Learning Content Details`;
             document.getElementById('contentTitle').textContent = content.title;
+
+            // Show and update content ID display
+            const idDisplay = document.getElementById('contentIdDisplay');
+            idDisplay.textContent = `ID: ${content.id}`;
+            idDisplay.style.display = 'inline-block';
 
             // Format tags for display
             const tagsHtml = content.tags ?

@@ -46,7 +46,7 @@ class AnkiBuilder:
         self.llm_service = LLMService(model=settings.local_model_thai)
         self.job_id = uuid.uuid4().hex
 
-    def _calculate_content_hash(self, content: Dict[str, Any]) -> str:
+    def calculate_content_hash(self, content: Dict[str, Any]) -> str:
         hash_data = {
             'title': content.get('title', ''),
             'front': content.get('front', ''),
@@ -122,7 +122,7 @@ class AnkiBuilder:
             logger.error(f"Failed to get rendered content for learning_content_id: {learning_content_id}")
             return
 
-        content_hash = self._calculate_content_hash(rendered_content.model_dump())
+        content_hash = self.calculate_content_hash(rendered_content.model_dump())
         assets_to_sync = [fragment.assets[0] for fragment in rendered_content.examples if fragment.assets] if rendered_content.examples else []
 
         # logger.debug(f"result: {rendered_content}")
@@ -137,9 +137,9 @@ class AnkiBuilder:
                 front=rendered_content.front,
                 back=rendered_content.back,
                 content_hash=content_hash,
-                assets_to_sync=assets_to_sync
+                assets_to_sync=assets_to_sync,
+                force_update=True
             ),
-            force_update=True
         )
 
     def populate_content_with_target_learning_fragment(self, learning_content_id: int):
@@ -225,16 +225,24 @@ class AnkiBuilder:
     def process_contents(self):
         # for i in range(65, 80):
         #     self.populate_content_with_example(i)
-        for i in range(100, 1200):
-            try:
-                self.populate_content_with_target_learning_fragment(i)
-            except Exception as e:
-                logger.error(f"Error populating content with target learning fragment: {e}")
-                logger.error(traceback.format_exc())
-                continue
-        return
-        contents = self.lc_service.find_content(filters={'has_fragments': False})['content']
+        # for i in range(270, 350):
+        #     try:
+        #         self.populate_content_with_target_learning_fragment(i)
+        #     except Exception as e:
+        #         logger.error(f"Error populating content with target learning fragment: {e}")
+        #         logger.error(traceback.format_exc())
+        #         continue
+        # return
+        contents = self.lc_service.find_content(filters={
+            # 'has_fragments': False
+            'max_fragments_count': 3,
+            # 'cursor': 270,
+        },
+        page=1,
+        page_size=100
+        )['content']
         ids = [content['id'] for content in contents]
+        # ids = range(270, 350)
         print(f"ids: {ids}")
         for i in ids:
             self.populate_content_with_example(i)

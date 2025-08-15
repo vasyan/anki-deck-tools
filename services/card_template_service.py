@@ -1,6 +1,6 @@
 from fastapi.templating import Jinja2Templates
 from database.manager import DatabaseManager
-from typing import Any, Dict, cast
+from typing import cast
 from jinja2 import Template as JinjaTemplate
 import logging
 
@@ -23,6 +23,7 @@ class CardTemplateService:
             front_template = cast(JinjaTemplate, templates.get_template("front.jinja"))  # type: ignore[no-any-return]
             back_template = cast(JinjaTemplate, templates.get_template("back.jinja"))  # type: ignore[no-any-return]
 
+            # logger.info(f"front: {front_template.render(context)}")
             # log_json(logger, context, max_str=80, max_items=10)
 
             return RenderCardOutputSchema(
