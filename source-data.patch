@@ -1,0 +1,2799 @@
+Index: inserts/0-200.csv
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inserts/0-200.csv b/inserts/0-200.csv
+new file mode 100644
+--- /dev/null	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
++++ b/inserts/0-200.csv	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
+@@ -0,0 +1,174 @@
++I,ผม/ฉัน,pǒm/chǎn
++you (singular),คุณ,kun
++he,เขา,kǎo
++she,เธอ,təə
++it,มัน,man
++we,เรา,rao
++you (plural),พวกคุณ,pûak kun
++they,พวกเขา,pûak kǎo
++what,อะไร,à rai
++who,ใคร,krai
++where,ที่ไหน,tîi nǎi
++why,ทำไม,tam mai
++how,อย่างไร,yàang rai
++which,อันไหน,an nǎi
++when,เมื่อ,mʉ̂a
++then,ต่อจากนั้น,dtɔ̀ɔ jàak nán
++if,ถ้า,tâa
++really,จริง ๆ,jing jing
++but,แต่,dtɛ̀ɛ
++because,เพราะว่า,prɔ́ wâa
++not,ไม่,mâi
++this,นี่,nîi
++I need this,ฉันต้องการสิ่งนี้,chǎn dtɔ̂ɔng gaan sìng níi
++How much is this?,นี่ราคาเท่าไหร่,nîi raa kaa tâo rài
++that,นั่น,nân
++all,ทั้งหมด,táng mòt
++or,หรือ,rʉ̌ʉ
++and,และ,lɛ́
++to know,รู้,rúu
++I know,ฉันรู้,chǎn rúu
++I don't know,ฉันไม่รู้,chǎn mâi rúu
++to think,คิด,kít
++to come,มา,maa
++to put,วาง,waang
++to take,เอา,ao
++to find,ค้นหา,kón hǎa
++to listen,ฟัง,fang
++to work,ทำงาน,tam ngaan
++to talk,พูดคุย,pûut kui
++to give (somebody something),ให้,hâi
++to like,ชอบ,chɔ̂ɔp
++to help,ช่วยเหลือ,chûai lʉ̌a
++to love,รัก,rák
++to call,โทร,too
++to wait,รอ,rɔɔ
++I like you,ฉันชอบคุณ,chǎn chɔ̂ɔp kun
++I don't like this,ฉันไม่ชอบสิ่งนี้,chǎn mâi chɔ̂ɔp sìng níi
++Do you love me?,คุณรักฉันไหม,kun rák chǎn mǎi
++I love you,ฉันรักคุณ,chǎn rák kun
++0,ศูนย์,sǔun
++new,ใหม่,mài
++old (not new),เก่า,gào
++few,น้อย,nɔ́ɔi
++many,มาก,mâak
++how much?,เท่าไหร่,tâo rài
++how many?,กี่อัน,gìi an
++wrong,ผิด,pìt
++correct,ถูกต้อง,tùuk dtɔ̂ng
++bad,แย่,yɛ̂ɛ
++good,ดี,dii
++happy,มีความสุข,mii kwaam sùk
++short (length),สั้น,sân
++long,ยาว,yaao
++small,เล็ก,lék
++big,ใหญ่,yài
++there,ที่นั่น,tîi nân
++here,ที่นี่,tîi nîi
++right,ขวา,kwǎa
++left,ซ้าย,sáai
++beautiful,สวย,sǔai
++young,หนุ่ม,nùm
++old (not young),แก่,gɛ̀ɛ
++hello,สวัสดี,sà wàt dii
++see you later,แล้วเจอกัน,lɛ́ɛo jəə gan
++ok,ตกลง,dtòk long
++take care,ดูแลตัวเองนะ,duu lɛɛ dtua eeng ná
++don't worry,อย่ากังวล,à yâa gang won
++of course,แน่นอน,nɛ̂ɛ nɔɔn
++good day,สวัสดี,sà wàt dii
++hi,หวัดดี,wàt dii
++bye bye,ไปก่อนนะ,bpai gɔ̀ɔn ná
++good bye,ลาก่อน,laa gɔ̀ɔn
++excuse me,ขออภัย,kɔ̌ɔ à pai
++sorry,ขอโทษ,kɔ̌ɔ tôot
++thank you,ขอบคุณ,kɔ̀ɔp kun
++please,กรุณา,gà rú naa
++I want this,ฉันต้องการสิ่งนี้,chǎn dtɔ̂ɔng gaan sìng níi
++now,ตอนนี้,dtɔɔn níi
++afternoon,ตอนบ่าย,dtɔɔn bàai
++morning (9:00-11:00),ตอนเช้า,dtɔɔn cháao
++night,กลางคืน,glaang kʉʉn
++morning (6:00-9:00),เช้า,cháao
++evening,ตอนเย็น,dtɔɔn yen
++noon,เที่ยงวัน,tîang wan
++midnight,เที่ยงคืน,tîang kʉʉn
++hour,ชั่วโมง,chûa moong
++minute,นาที,naa tii
++second (time),วินาที,wí naa tii
++day,วัน,wan
++week,สัปดาห์,sàp daa
++month,เดือน,dʉan
++year,ปี,bpii
++time,เวลา,wee laa
++date (time),วันที่,wan tîi
++the day before yesterday,เมื่อวานซืน,mʉ̂a waan sʉʉn
++yesterday,เมื่อวาน,mʉ̂a waan
++today,วันนี้,wan níi
++tomorrow,พรุ่งนี้,prûng níi
++the day after tomorrow,วันมะรืน,wan má rʉʉn
++Monday,วันจันทร์,wan jan
++Tuesday,วันอังคาร,wan ang kaan
++Wednesday,วันพุธ,wan pút
++Thursday,วันพฤหัสบดี,wan prʉ́ hàt sà bɔɔ dii
++Friday,วันศุกร์,wan sùk
++Saturday,วันเสาร์,wan sǎo
++Sunday,วันอาทิตย์,wan aa tít
++Tomorrow is Saturday,พรุ่งนี้เป็นวันเสาร์,prûng níi bpen wan sǎo
++life,ชีวิต,chii wít
++woman,ผู้หญิง,pûu yǐng
++man,ผู้ชาย,pûu chaai
++love,ความรัก,kwaam rák
++baby,ทารก,taa rók
++girl,เด็กผู้หญิง,dèk pûu yǐng
++boy,เด็กผู้ชาย,dèk pûu chaai
++mum,แม่,mɛ̂ɛ
++dad,พ่อ,pɔ̂ɔ
++mother,แม่,mɛ̂ɛ
++father,พ่อ,pɔ̂ɔ
++parents,พ่อแม่,pɔ̂ɔ mɛ̂ɛ
++son,ลูกชาย,lûuk chaai
++daughter,ลูกสาว,lûuk sǎao
++little sister,น้องสาว,nɔ́ɔng sǎao
++little brother,น้องชาย,nɔ́ɔng chaai
++big sister,พี่สาว,pîi sǎao
++big brother,พี่ชาย,pîi chaai
++to stand,ยืน,yʉʉn
++to sit,นั่ง,nâng
++to lie,นอน,nɔɔn
++to close,ปิด,bpìt
++to open (e.g. a door),เปิด,bpə̀ət
++to lose,แพ้,pɛ́ɛ
++to win,ชนะ,chá ná
++to die,ตาย,dtaai
++to live,มีชีวิต,mii chii wít
++to turn on,เปิด,bpə̀ət
++to turn off,ปิด,bpìt
++to kill,ฆ่า,kâa
++to injure,ทำให้บาดเจ็บ,tam hâi bàat jèp
++to touch,สัมผัส,sǎm pàt
++to watch,ดู,duu
++to drink,ดื่ม,dʉ̀ʉm
++to eat,กิน,gin
++to walk,เดิน,dəən
++to meet,พบ,póp
++to bet,เดิมพัน,dəəm pan
++to kiss,จูบ,jùup
++to follow,ติดตาม,dtìt dtaam
++to marry,แต่งงาน,dtɛ̀ng ngaan
++to answer,ตอบ,dtɔ̀ɔp
++to ask,ถาม,tǎam
++question,คำถาม,kam tǎam
++company,บริษัท,bɔɔ rí sàt
++business,ธุรกิจ,tú rá gìt
++job,งาน,ngaan
++money,เงิน,ngən
++telephone,โทรศัพท์,too rá sàp
++office,สำนักงาน,sǎm nák ngaan
++doctor,นายแพทย์,naai pɛ̂ɛt
++hospital,โรงพยาบาล,roong pá yaa baan
++nurse,นางพยาบาล,naang pá yaa baan
++policeman,ตำรวจ,dtam rùat
++president (of a state),ประธานาธิบดี,bprà taa naa típ bɔɔ dii
++white,สีขาว,sǐi kǎao
++black,สีดำ,sǐi dam
+Index: inserts/201-600.csv
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inserts/201-600.csv b/inserts/201-600.csv
+new file mode 100644
+--- /dev/null	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
++++ b/inserts/201-600.csv	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
+@@ -0,0 +1,364 @@
++สีแดง,sǐi dɛɛng,red
++สีน้ำเงิน,sǐi nám ngən,blue
++สีเขียว,sǐi kǐao,green
++สีเหลือง,sǐi lʉ̌ang,yellow
++ช้า,cháa,slow
++เร็ว,reo,quick
++ตลก,dtà lòk,funny
++ไม่ยุติธรรม,mâi yút dtì tam,unfair
++ยุติธรรม,yút dtì tam,fair
++ยาก,yâak,difficult
++ง่าย,ngâai,easy
++นี่เป็นเรื่องยาก,nîi bpen rʉ̂ang yâak,This is difficult
++รวย,ruai,rich
++ยากจน,yâak jon,poor
++แข็งแรง,kɛ̌ng rɛɛng,strong
++อ่อนแอ,ɔ̀ɔn ɛɛ,weak
++ปลอดภัย,bplɔ̀ɔt pai,safe (adjective)
++เหนื่อย,nʉ̀ai,tired
++ภูมิใจ,puum jai,proud
++อิ่ม,ìm,full (from eating)
++ป่วย,bpùai,sick
++สุขภาพดี,sùk kà pâap dii,healthy
++โกรธ,gròot,angry
++ต่ำ,dtàm,low
++สูง,sǔung,high
++ตรง,dtrong,straight (line)
++ทุก,túk,every
++เสมอ,sà mə̌ə,always
++แท้จริงแล้ว,tɛ́ɛ jing lɛ́ɛo,actually
++อีกครั้ง,ìik kráng,again
++แล้ว,lɛ́ɛo,already
++น้อยกว่า,nɔ́ɔi gwàa,less
++มากที่สุด,mâak tîi sùt,most
++มากกว่า,mâak gwàa,more
++ฉันอยากได้อีก,chǎn à yâak dâi ìik,I want more
++ไม่มี,mâi mii,none
++มาก,mâak,very
++สัตว์,sàt,animal
++หมู,mǔu,pig
++วัว,wua,cow
++ม้า,máa,horse
++สุนัข,sù nák,dog
++แกะ,gɛ̀,sheep
++ลิง,ling,monkey
++แมว,mɛɛo,cat
++หมี,mǐi,bear
++ไก่,gài,chicken (animal)
++เป็ด,bpèt,duck
++ผีเสื้อ,pǐi sʉ̂a,butterfly
++ผึ้ง,pʉ̂ng,bee
++ปลา,bplaa,fish (animal)
++แมงมุม,mɛɛng mum,spider
++งู,nguu,snake
++ด้านนอก,dâan nɔ̂ɔk,outside
++ด้านใน,dâan nai,inside
++ไกล,glai,far
++ใกล้,glâi,close
++ด้านล่าง,dâan lâang,below
++ด้านบน,dâan bon,above
++ด้านข้าง,dâan kâang,beside
++ด้านหน้า,dâan nâa,front
++ด้านหลัง,dâan lǎng,back (position)
++หวาน,wǎan,sweet
++เปรี้ยว,bprîao,sour
++แปลก,bplɛ̀ɛk,strange
++อ่อน,ɔ̀ɔn,soft
++แข็ง,kɛ̌ng,hard
++น่ารัก,nâa rák,cute
++โง่,ngôo,stupid
++บ้า,bâa,crazy
++ยุ่ง,yûng,busy
++สูง,sǔung,tall
++เตี้ย,dtîa,short (height)
++วิตกกังวล,wí dtòk gang won,worried
++ประหลาดใจ,bprà làat jai,surprised
++เจ๋ง,jěng,cool
++สุภาพ,sù pâap,well-behaved
++ชั่วร้าย,chûa ráai,evil
++ฉลาด,chà làat,clever
++หนาว,nǎao,cold (adjective)
++ร้อน,rɔ́ɔn,hot (temperature)
++ศีรษะ,sǐi sà,head
++จมูก,jà mùuk,nose
++ผม,pǒm,hair
++ปาก,bpàak,mouth
++หู,hǔu,ear
++ดวงตา,duang dtaa,eye
++มือ,mʉʉ,hand
++เท้า,táao,foot
++หัวใจ,hǔa jai,heart
++สมอง,sà mɔ̌ɔng,brain
++ดึง,dʉng,to pull (... open)
++ผลัก,plàk,to push (... open)
++กด,gòt,to press (a button)
++ตี,dtii,to hit
++จับ,jàp,to catch
++ต่อสู้,dtɔ̀ɔ sûu,to fight
++ขว้าง,kwâang,to throw
++วิ่ง,wîng,to run
++อ่าน,àan,to read
++เขียน,kǐan,to write
++แก้ไข,gɛ̂ɛ kǎi,to fix
++นับ,náp,to count
++ตัด,dtàt,to cut
++ขาย,kǎai,to sell
++ซื้อ,sʉ́ʉ,to buy
++จ่าย,jàai,to pay
++เรียน,rian,to study
++ฝัน,fǎn,to dream
++นอน,nɔɔn,to sleep
++เล่น,lên,to play
++ฉลอง,chà lɔ̌ɔng,to celebrate
++พักผ่อน,pák pɔ̀ɔn,to rest
++เพลิดเพลิน,plə̂ət pləən,to enjoy
++ทำความสะอาด,tam kwaam sà àat,to clean
++โรงเรียน,roong rian,school
++บ้าน,bâan,house
++ประตู,bprà dtuu,door
++สามี,sǎa mii,husband
++ภรรยา,pan rá yaa,wife
++งานแต่งงาน,ngaan dtɛ̀ng ngaan,wedding
++บุคคล,bùk kon,person
++รถยนต์,rót yon,car
++บ้าน,bâan,home
++เมือง,mʉang,city
++ตัวเลข,dtua lêek,number
++สุนัขของฉัน,sù nák kɔ̌ɔng chǎn,my dog
++แมวของคุณ,mɛɛo kɔ̌ɔng kun,your cat
++ชุดของเธอ,chút kɔ̌ɔng təə,her dress
++รถของเขา,rót kɔ̌ɔng kǎo,his car
++ลูกบอลของมัน,lûuk bɔɔn kɔ̌ɔng man,its ball
++บ้านของพวกเรา,bâan kɔ̌ɔng pûak rao,our home
++ทีมของพวกคุณ,tiim kɔ̌ɔng pûak kun,your team
++บริษัทของพวกเขา,bɔ̀ rí sàt kɔ̌ɔng pûak kǎo,their company
++ทุกคน,túk kon,everybody
++ด้วยกัน,dûai gan,together
++อื่น ๆ,ʉ̀ʉn ʉ̀ʉn,other
++ไม่เป็นไรหรอก,mâi bpen rai rɔ̀ɔk,doesn't matter
++ไชโย,chai yoo,cheers
++ผ่อนคลาย,pɔ̀ɔn klaai,relax
++ฉันเห็นด้วย,chǎn hěn dûai,I agree
++ยินดีต้อนรับ,yin dii dtɔ̂ɔn ráp,welcome
++ไม่เป็นไร,mâi bpen rai,no worries
++เลี้ยวขวา,líao kwǎa,turn right
++เลี้ยวซ้าย,líao sáai,turn left
++ตรงไป,dtrong bpai,go straight
++มากับฉัน,maa gàp chǎn,Come with me
++ไข่,kài,egg
++ชีส,chîit,cheese
++นม,nom,milk
++ปลา,bplaa,fish (to eat)
++เนื้อสัตว์,nʉ́a sàt,meat
++ผัก,pàk,vegetable
++ผลไม้,pǒn lá mái,fruit
++กระดูก,grà dùuk,bone (food)
++น้ำมัน,nám man,oil
++ขนมปัง,kà nǒm bpang,bread
++น้ำตาล,nám dtaan,sugar
++ช็อกโกแลต,chɔ́k goo lɛ̂ɛt,chocolate
++ลูกกวาด,lûuk gwàat,candy
++เค้ก,kék,cake
++เครื่องดื่ม,krʉ̂ang dʉ̀ʉm,drink
++น้ำ,náam,water
++น้ำโซดา,náam soo daa,soda
++กาแฟ,gaa fɛɛ,coffee
++ชา,chaa,tea
++เบียร์,bia,beer
++ไวน์,wai,wine
++สลัด,sà làt,salad
++ซุป,súp,soup
++ของหวาน,kɔ̌ɔng wǎan,dessert
++อาหารเช้า,aa hǎan cháao,breakfast
++อาหารกลางวัน,aa hǎan glaang wan,lunch
++อาหารเย็น,aa hǎan yen,dinner
++พิซซ่า,pís sâa,pizza
++รถบัส,rót bàt,bus
++รถไฟ,rót fai,train
++สถานีรถไฟ,sà tǎa nii rót fai,train station
++ป้ายรถเมล์,bpâai rót mee,bus stop
++เครื่องบิน,krʉ̂ang bin,plane
++เรือ,rʉa,ship
++รถบรรทุก,rót ban túk,lorry
++รถจักรยาน,rót jàk grà yaan,bicycle
++รถมอเตอร์ไซค์,rót mɔɔ dtəə sai,motorcycle
++รถแท็กซี่,rót tɛ́k sîi,taxi
++ไฟจราจร,fai jà raa jɔɔn,traffic light
++ที่จอดรถ,tîi jɔ̀ɔt rót,car park
++ถนน,tà nǒn,road
++เสื้อผ้า,sʉ̂a pâa,clothing
++รองเท้า,rɔɔng táao,shoe
++เสื้อคลุม,sʉ̂a klum,coat
++เสื้อสเวตเตอร์,sʉ̂a sà wêet dtəə,sweater
++เสื้อเชิ้ต,sʉ̂a chə́ət,shirt
++เสื้อแจ็กเกต,sʉ̂a jɛ̀k gèet,jacket
++สูท,sùut,suit
++กางเกงขายาว,gaang geeng kǎa yaao,trousers
++ชุดกระโปรง,chút grà bproong,dress
++เสื้อยืด,sʉ̂a yʉ̂ʉt,T-shirt
++ถุงเท้า,tǔng táao,sock
++ยกทรง,yók song,bra
++กางเกงใน,gaang geeng nai,underpants
++แว่นตา,wɛ̂ɛn dtaa,glasses
++กระเป๋าถือ,grà bpǎo tʉ̌ʉ,handbag
++กระเป๋าสตางค์ผู้หญิง,grà bpǎo sà dtaang pûu yǐng,purse
++กระเป๋าสตางค์,grà bpǎo sà dtaang,wallet
++แหวน,wɛ̌ɛn,ring
++หมวก,mùak,hat
++นาฬิกาข้อมือ,naa lí gaa kɔ̂ɔ mʉʉ,watch
++กระเป๋าเสื้อหรือกางเกง,grà bpǎo sʉ̂a rʉ̌ʉ gaang geeng,pocket
++คุณชื่ออะไร,kun chʉ̂ʉ à rai,What's your name?
++ผมชื่อเดวิด,pǒm chʉ̂ʉ dee wít,My name is David
++ผมอายุ 22 ปี,pǒm aa yú 22 bpii,I'm 22 years old
++เป็นอย่างไรบ้าง,bpen yàang rai bâang,How are you?
++เป็นอะไรไหม,bpen à rai mǎi,Are you ok?
++ห้องน้ำอยู่ที่ไหน,hɔ̂ɔng náam yùu tîi nǎi,Where is the toilet?
++ฉันคิดถึงคุณ,chǎn kít tʉ̌ng kun,I miss you
++ฤดูใบไม้ผลิ,rʉ́ duu bai mái plì,spring
++ฤดูร้อน,rʉ́ duu rɔ́ɔn,summer
++ฤดูใบไม้ร่วง,rʉ́ duu bai mái rûang,autumn
++ฤดูหนาว,rʉ́ duu nǎao,winter
++มกราคม,mók gà raa kom,January
++กุมภาพันธ์,gum paa pan,February
++มีนาคม,mii naa kom,March
++เมษายน,mee sǎa yon,April
++พฤษภาคม,prʉ́t sà paa kom,May
++มิถุนายน,mí tù naa yon,June
++กรกฎาคม,gà rá gà daa kom,July
++สิงหาคม,sǐng hǎa kom,August
++กันยายน,gan yaa yon,September
++ตุลาคม,dtù laa kom,October
++พฤศจิกายน,prʉ́t sà jì gaa yon,November
++ธันวาคม,tan waa kom,December
++ช้อปปิ้ง,chɔ́ɔp bpîng,shopping
++บิล,bin,bill
++ตลาด,dtà làat,market
++ซูเปอร์มาร์เก็ต,suu bpəə maa gèt,supermarket
++อาคาร,aa kaan,building
++อพาร์ทเม้นท์,à pâat mén,apartment
++มหาวิทยาลัย,má hǎa wít tá yaa lai,university
++ฟาร์ม,faam,farm
++โบสถ์,bòot,church
++ร้านอาหาร,ráan aa hǎan,restaurant
++บาร์,baa,bar
++ยิม,yim,gym
++สวนสาธารณะ,sǔan sǎa taa rá ná,park
++ห้องน้ำ,hɔ̂ɔng náam,toilet (public)
++แผนที่,pɛ̌ɛn tîi,map
++รถพยาบาล,rót pá yaa baan,ambulance
++ตำรวจ,dtam rùat,police
++ปืน,bpʉʉn,gun
++นักดับเพลิง,nák dàp pləəng,firefighters
++ประเทศ,bprà têet,country
++ชานเมือง,chaan mʉang,suburb
++หมู่บ้าน,mùu bâan,village
++สุขภาพ,sùk kà pâap,health
++ยา,yaa,medicine
++อุบัติเหตุ,ù bàt dtì hèet,accident
++ผู้ป่วย,pûu bpùai,patient
++การผ่าตัด,gaan pàa dtàt,surgery
++ยาเม็ด,yaa mét,pill
++ไข้,kâi,fever
++หวัด,wàt,cold (sickness)
++บาดแผล,bàat plɛ̌ɛ,wound
++การนัดหมาย,gaan nát mǎai,appointment
++ไอ,ai,cough
++คอ,kɔɔ,neck
++ก้น,gôn,bottom
++ไหล่,lài,shoulder
++เข่า,kào,knee
++ขา,kǎa,leg
++แขน,kɛ̌ɛn,arm
++ท้อง,tɔ́ɔng,belly
++เต้านม,dtâo nom,bosom
++หลัง,lǎng,back (part of body)
++ฟัน,fan,tooth
++ลิ้น,lín,tongue
++ริมฝีปาก,rim fǐi bpàak,lip
++นิ้วมือ,níu mʉʉ,finger
++นิ้วเท้า,níu táao,toe
++กระเพาะอาหาร,grà pɔ́ aa hǎan,stomach
++ปอด,bpɔ̀ɔt,lung
++ตับ,dtàp,liver
++เส้นประสาท,sên bprà sàat,nerve
++ไต,dtai,kidney
++ลำไส้,lam sâi,intestine
++สี,sǐi,colour
++สีส้ม,sǐi sôm,orange (colour)
++สีเทา,sǐi tao,grey
++สีน้ำตาล,sǐi nám dtaan,brown
++สีชมพู,sǐi chom puu,pink
++น่าเบื่อ,nâa bʉ̀a,boring
++หนัก,nàk,heavy
++เบา,bao,light (weight)
++เหงา,ngǎo,lonely
++หิว,hǐu,hungry
++กระหายน้ำ,grà hǎai náam,thirsty
++เศร้า,sâo,sad
++สูงชัน,sǔung chan,steep
++แบน,bɛɛn,flat
++กลม,glom,round
++สี่เหลี่ยม,sìi lìam,square (adjective)
++แคบ,kɛ̂ɛp,narrow
++กว้าง,gwâang,broad
++ลึก,lʉ́k,deep
++ตื้น,dtʉ̂ʉn,shallow
++ใหญ่โต,yài dtoo,huge
++ทิศเหนือ,tít nʉ̌a,north
++ทิศตะวันออก,tít dtà wan ɔ̀ɔk,east
++ทิศใต้,tít dtâi,south
++ทิศตะวันตก,tít dtà wan dtòk,west
++สกปรก,sòk gà bpròk,dirty
++สะอาด,sà àat,clean
++เต็ม,dtem,full (not empty)
++ว่างเปล่า,wâang bplàao,empty
++แพง,pɛɛng,expensive
++ถูก,tùuk,cheap
++มืด,mʉ̂ʉt,dark
++สว่าง,sà wàang,light (colour)
++เซ็กซี่,sék sîi,sexy
++ขี้เกียจ,kîi gìat,lazy
++กล้าหาญ,glâa hǎan,brave
++ใจกว้าง,jai gwâang,generous
++หล่อ,lɔ̀ɔ,handsome
++น่าเกลียด,nâa glìat,ugly
++ทึ่ม,tʉ̂m,silly
++เป็นมิตร,bpen mít,friendly
++มีความผิด,mii kwaam pìt,guilty
++ตาบอด,dtaa bɔ̀ɔt,blind
++เมา,mao,drunk
++เปียก,bpìak,wet
++แห้ง,hɛ̂ɛng,dry
++อบอุ่น,òp ùn,warm
++ดัง,dang,loud
++เงียบ,ngîap,quiet
++เงียบสงบ,ngîap sà ngòp,silent
++ห้องครัว,hɔ̂ɔng krua,kitchen
++ห้องอาบน้ำ,hɔ̂ɔng àap náam,bathroom
++ห้องนั่งเล่น,hɔ̂ɔng nâng lên,living room
++ห้องนอน,hɔ̂ɔng nɔɔn,bedroom
++สวน,sǔan,garden
++โรงรถ,roong rót,garage
++ผนัง,pà nǎng,wall
++ชั้นใต้ดิน,chán dtâi din,basement
++ห้องน้ำ,hɔ̂ɔng náam,toilet (at home)
++บันได,ban dai,stairs
++หลังคา,lǎng kaa,roof
++หน้าต่าง,nâa dtàang,window (building)
++มีด,mîit,knife
++ถ้วย,tûai,cup (for hot drinks)
++แก้ว,gɛ̂ɛo,glass
++จาน,jaan,plate
++ถ้วย,tûai,cup (for cold drinks)
++ถังขยะ,tǎng kà yà,garbage bin
++ชาม,chaam,bowl
++ชุดทีวี,chút tii wii,TV set
++โต๊ะทำงาน,dtó tam ngaan,desk
++เตียง,dtiang,bed
++กระจก,grà jòk,mirror
++ฝักบัว,fàk bua,shower
++โซฟา,soo faa,sofa
++รูปภาพ,rûup pâap,picture
++นาฬิกา,naa lí gaa,clock
++โต๊ะ,dtó,table
++เก้าอี้,gâo îi,chair
+Index: inserts/601-1400.csv
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inserts/601-1400.csv b/inserts/601-1400.csv
+new file mode 100644
+--- /dev/null	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
++++ b/inserts/601-1400.csv	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
+@@ -0,0 +1,693 @@
++สระว่ายน้ำ,sà wâai náam,swimming pool (garden)
++กระดิ่ง,grà dìng,bell
++เพื่อนบ้าน,pʉ̂an bâan,neighbour
++ล้มเหลว,lóm lěeo,to fail
++เลือก,lʉ̂ak,to choose
++ยิง,ying,to shoot
++ลงคะแนนเสียง,long ká nɛɛn sǐang,to vote
++ล้มลง,lóm long,to fall
++ป้องกัน,bpɔ̂ɔng gan,to defend
++โจมตี,joom dtii,to attack
++ขโมย,kà mooi,to steal
++เผา,pǎo,to burn
++ช่วยชีวิต,chûai chii wít,to rescue
++สูบบุหรี่,sùup bù rìi,to smoke
++บิน,bin,to fly
++หิ้ว,hîu,to carry
++ถ่มน้ำลาย,tòm náam laai,to spit
++เตะ,dtè,to kick
++กัด,gàt,to bite
++หายใจ,hǎai jai,to breathe
++ดม,dom,to smell
++ร้องไห้,rɔ́ɔng hâi,to cry
++ร้องเพลง,rɔ́ɔng pleeng,to sing
++ยิ้ม,yím,to smile
++หัวเราะ,hǔa rɔ́,to laugh
++เติบโต,dtə̀əp dtoo,to grow
++หด,hòt,to shrink
++โต้เถียง,dtôo tǐang,to argue
++ข่มขู่,kòm kùu,to threaten
++แบ่งปัน,bɛ̀ng bpan,to share
++ให้อาหาร,hâi aa hǎan,to feed
++ซ่อน,sɔ̂ɔn,to hide
++เตือน,dtʉan,to warn
++ว่ายน้ำ,wâai náam,to swim
++กระโดด,grà dòot,to jump
++กลิ้ง,glîng,to roll
++ยก,yók,to lift
++ขุด,kùt,to dig
++ถ่ายสำเนา,tàai sǎm nao,to copy
++ส่งมอบ,sòng mɔ̂ɔp,to deliver
++มองหา,mɔɔng hǎa,to look for
++ฝึกฝน,fʉ̀k fǒn,to practice
++เดินทาง,dəən taang,to travel
++ทาสี,taa sǐi,to paint
++อาบน้ำ,àap náam,to take a shower
++เปิด,bpə̀ət,to open (unlock)
++ล็อค,lɔ́k,to lock
++ล้าง,láang,to wash
++อธิษฐาน,à tít tǎan,to pray
++ทำอาหาร,tam aa hǎan,to cook
++หนังสือ,nǎng sʉ̌ʉ,book
++ห้องสมุด,hɔ̂ɔng sà mùt,library
++การบ้าน,gaan bâan,homework
++การสอบ,gaan sɔ̀ɔp,exam
++บทเรียน,bòt rian,lesson
++วิทยาศาสตร์,wít tá yaa sàat,science
++ประวัติศาสตร์,bprà wàt sàat,history
++ศิลปะ,sǐn lá bpà,art
++ภาษาอังกฤษ,paa sǎa ang grìt,English
++ภาษาฝรั่งเศส,paa sǎa fà ràng sèet,French
++ปากกา,bpàak gaa,pen
++ดินสอ,din sɔ̌ɔ,pencil
++สามเปอร์เซ็นต์,sǎam bpəə sen,3%
++ที่หนึ่ง,tîi nʉ̀ng,first
++ที่สอง,tîi sɔ̌ɔng,second (2nd)
++ที่สาม,tîi sǎam,third
++ที่สี่,tîi sìi,fourth
++ผลลัพธ์,pǒn láp,result
++สี่เหลี่ยมจตุรัส,sìi lìa mót dtù rát,square (shape)
++วงกลม,wong glom,circle
++พื้นที่,pʉ́ʉn tîi,area
++วิจัย,wí jai,research
++ปริญญา,bpà rin yaa,degree
++ปริญญาตรี,bpà rin yaa dtrii,bachelor
++ปริญญาโท,bpà rin yaa too,master
++x น้อยกว่า y,x nɔ́ɔi gwàa y,x < y
++x มากกว่า y,x mâak gwàa y,x > y
++ความเครียด,kwaam krîat,stress
++ประกันภัย,bprà gan pai,insurance
++เจ้าหน้าที่,jâo nâa tîi,staff
++แผนก,pà nɛ̀ɛk,department
++เงินเดือน,ngən dʉan,salary
++ที่อยู่,tîi yùu,address
++จดหมาย,jòt mǎai,letter (post)
++กัปตัน,gàp dtan,captain
++นักสืบ,nák sʉ̀ʉp,detective
++นักบิน,nák bin,pilot
++ศาสตราจารย์,sàat sà dtraa jaan,professor
++ครู,kruu,teacher
++ทนายความ,tá naai kwaam,lawyer
++เลขานุการ,lee kǎa nú gaan,secretary
++ผู้ช่วย,pûu chûai,assistant
++ผู้พิพากษา,pûu pí pâak sǎa,judge
++ผู้อำนวยการ,pûu am nuai gaan,director (business)
++ผู้จัดการ,pûu jàt gaan,manager
++พ่อครัว,pɔ̂ɔ krua,cook
++คนขับแท็กซี่,kon kàp tɛ́k sîi,taxi driver
++คนขับรถบัส,kon kàp rót bàt,bus driver
++อาชญากร,àat chá yaa gɔɔn,criminal
++นางแบบ,naang bɛ̀ɛp,model
++ศิลปิน,sì lá bpin,artist
++หมายเลขโทรศัพท์,mǎai lêek too rá sàp,telephone number
++สัญญาณ,sǎn yaan,signal (of phone)
++แอป,ɛ̀ɛp,app
++แชท,chɛ̂ɛt,chat
++ไฟล์,fai,file
++ยูอาร์แอล,yuu aa ɛɛn,url
++ที่อยู่อีเมล,tîi yùu ii meen,e-mail address
++เว็บไซต์,wép sai,website
++อีเมล,ii meen,e-mail
++โทรศัพท์มือถือ,too rá sàp mʉʉ tʉ̌ʉ,mobile phone
++กฎหมาย,gòt mǎai,law
++คุก,kúk,prison
++หลักฐาน,làk tǎan,evidence
++ค่าปรับ,kâa bpràp,fine
++พยาน,pá yaan,witness
++ศาล,sǎan,court
++ลายเซ็น,laai sen,signature
++ขาดทุน,kàat tun,loss
++กำไร,gam rai,profit
++ลูกค้า,lûuk káa,customer
++จำนวนเงิน,jam nuan ngəən,amount
++บัตรเครดิต,bàt kree dìt,credit card
++รหัสผ่าน,rá hàt pàan,password
++ตู้เอทีเอ็ม,dtûu ee tii em,cash machine
++สระว่ายน้ำ,sà wâai náam,swimming pool (competition)
++ไฟฟ้า,fai fáa,power
++กล้องถ่ายรูป,glɔ̂ɔng tàai rûup,camera
++วิทยุ,wít tá yú,radio
++ของขวัญ,kɔ̌ɔng kwǎn,present (gift)
++ขวด,kùat,bottle
++ถุง,tǔng,bag
++กุญแจ,gun jɛɛ,key
++ตุ๊กตา,dtúk gà dtaa,doll
++เทวดา,tee wá daa,angel
++หวี,wǐi,comb
++ยาสีฟัน,yaa sǐi fan,toothpaste
++แปรงสีฟัน,bprɛɛng sǐi fan,toothbrush
++แชมพูสระผม,chɛɛm pûu sà pǒm,shampoo
++ครีม,kriim,cream (pharmaceutical)
++ทิชชู่,tít chûu,tissue
++ลิปสติก,líp sà dtìk,lipstick
++โทรทัศน์,too rá tát,TV
++โรงภาพยนตร์,roong pâap pá yon,cinema
++ข่าว,kàao,news
++ที่นั่ง,tîi nâng,seat
++ตั๋ว,dtǔa,ticket
++จอภาพยนตร์,jɔɔ pâap yon,screen (cinema)
++ดนตรี,don dtrii,music
++เวที,wee tii,stage
++ผู้ชม,pûu chom,audience
++จิตรกรรม,jìt dtrà gam,painting
++เรื่องตลก,rʉ̂ang dtà lòk,joke
++บทความ,bòt kwaam,article
++หนังสือพิมพ์,nǎng sʉ̌ʉ pim,newspaper
++นิตยสาร,nít dtà yá sǎan,magazine
++โฆษณา,kôot sà naa,advertisement
++ธรรมชาติ,tam má châat,nature
++เถ้าถ่าน,tâo tàan,ash
++ไฟ,fai,fire (general)
++เพชร,pét,diamond
++ดวงจันทร์,duang jan,moon
++โลก,lôok,earth
++ดวงอาทิตย์,duang aa tít,sun
++ดาว,daao,star
++ดาวเคราะห์,daao krɔ́,planet
++จักรวาล,jàk grà waan,universe
++ชายฝั่ง,chaai fàng,coast
++ทะเลสาบ,tá lee sàap,lake
++ป่า,bpàa,forest
++ทะเลทราย,tá lee saai,desert (dry place)
++เนินเขา,nəən kǎo,hill
++หิน,hǐn,rock (stone)
++แม่น้ำ,mɛ̂ɛ náam,river
++หุบเขา,hùp kǎo,valley
++ภูเขา,puu kǎo,mountain
++เกาะ,gɔ̀,island
++มหาสมุทร,má hǎa sà mùt,ocean
++ทะเล,tá lee,sea
++สภาพอากาศ,sà pâap aa gàat,weather
++น้ำแข็ง,nám kɛ̌ng,ice
++หิมะ,hì má,snow
++พายุ,paa yú,storm
++ฝน,fǒn,rain
++ลม,lom,wind
++พืช,pʉ̂ʉt,plant
++ต้นไม้,dtôn mái,tree
++หญ้า,yâa,grass
++ดอกกุหลาบ,dɔ̀ɔk gù làap,rose
++ดอกไม้,dɔ̀ɔk mái,flower
++ก๊าซ,gáas,gas
++โลหะ,loo hà,metal
++ทอง,tɔɔng,gold
++ธาตุเงิน,taa dtù ngəən,silver
++เงินถูกกว่าทองคำ,ngəən tùuk gwàa tɔɔng kam,Silver is cheaper than gold
++ทองคำมีราคาแพงกว่าเงิน,tɔɔng kam mii raa kaa pɛɛng gwàa ngəən,Gold is more expensive than silver
++วันหยุด,wan yùt,holiday
++สมาชิก,sà maa chík,member
++โรงแรม,roong rɛɛm,hotel
++ชายหาด,chaai hàat,beach
++แขก,kɛ̀ɛk,guest
++วันเกิด,wan gə̀ət,birthday
++คริสต์มาส,krít mâat,Christmas
++ปีใหม่,bpii mài,New Year
++อีสเตอร์,ìit dtəə,Easter
++ลุง/อา,lung/aa,uncle
++ป้า/น้า,bpâa/náa,aunt
++ย่า,yâa,grandmother (paternal)
++ปู่,bpùu,grandfather (paternal)
++ยาย,yaai,grandmother (maternal)
++ตา,dtaa,grandfather (maternal)
++ความตาย,kwaam dtaai,death
++หลุมฝังศพ,lǔm fǎng sòp,grave
++การหย่าร้าง,gaan yàa ráang,divorce
++เจ้าสาว,jâo sǎao,bride
++เจ้าบ่าว,jâo bàao,groom
++เสือ,sʉ̌a,tiger
++หนูขนาดเล็ก,nùu kà nàat lék,mouse (animal)
++หนูขนาดใหญ่,nùu kà nàat yài,rat
++กระต่าย,grà dtàai,rabbit
++สิงโต,sǐng dtoo,lion
++ลา,laa,donkey
++ช้าง,cháang,elephant
++นก,nók,bird
++ไก่ตัวผู้,gài dtua pûu,cockerel
++นกพิราบ,nók pí râap,pigeon
++ห่าน,hàan,goose
++แมลง,má lɛɛng,insect
++แมลง,má lɛɛng,bug
++ยุง,yung,mosquito
++แมลงวัน,má lɛɛng wan,fly
++มด,mót,ant
++ปลาวาฬ,bplaa waan,whale
++ปลาฉลาม,bplaa chà lǎam,shark
++ปลาโลมา,bplaa loo maa,dolphin
++หอยทาก,hɔ̌ɔi tâak,snail
++กบ,gòp,frog
++บ่อย,bɔ̀ɔi,often
++ทันที,tan tii,immediately
++ทันใดนั้น,tan dai nán,suddenly
++ถึงแม้ว่า,tʉ̌ng mɛ́ɛ wâa,although
++ยิมนาสติก,yim nâat dtìk,gymnastics
++เทนนิส,teen nít,tennis
++วิ่ง,wîng,running
++ปั่นจักรยาน,bpàn jàk grà yaan,cycling
++กอล์ฟ,gɔ́ɔp,golf
++สเกตน้ำแข็ง,sà gét nám kɛ̌ng,ice skating
++ฟุตบอล,fút bɔɔn,football
++บาสเกตบอล,bàat gèet bɔɔn,basketball
++ว่ายน้ำ,wâai náam,swimming
++การดำน้ำ,gaan dam náam,diving (under the water)
++การเดินป่า,gaan dəən bpàa,hiking
++สหราชอาณาจักร,sà hà râat chá aa naa jàk,United Kingdom
++สเปน,sà bpeen,Spain
++สวิตเซอร์แลนด์,sà wít səə lɛɛn,Switzerland
++อิตาลี,ì dtaa lii,Italy
++ฝรั่งเศส,fà ràng sèet,France
++เยอรมนี,yəə rá má nii,Germany
++ไทย,tai,Thailand
++สิงคโปร์,sǐng ká bpoo,Singapore
++รัสเซีย,rát sia,Russia
++ญี่ปุ่น,yîi bpùn,Japan
++อิสราเอล,ìt sà raa een,Israel
++อินเดีย,in dia,India
++จีน,jiin,China
++สหรัฐอเมริกา,sà hà rát à mee rí gaa,The United States of America
++เม็กซิโก,mék sí goo,Mexico
++แคนาดา,kɛɛ naa daa,Canada
++ชิลี,chí lii,Chile
++บราซิล,braa sin,Brazil
++อาร์เจนตินา,aa jeen dtì naa,Argentina
++แอฟริกาใต้,ɛ̀ɛf rí gaa dtâai,South Africa
++ไนจีเรีย,nai jii ria,Nigeria
++โมร็อกโก,moo rɔ́k goo,Morocco
++ลิเบีย,lí bia,Libya
++เคนยา,keen yaa,Kenya
++แอลจีเรีย,ɛɛn jii ria,Algeria
++อียิปต์,ii yíp,Egypt
++นิวซีแลนด์,niu sii lɛɛn,New Zealand
++ออสเตรเลีย,ɔ̀ɔt dtree lia,Australia
++แอฟริกา,ɛ̀ɛf rí gaa,Africa
++ยุโรป,yú ròop,Europe
++เอเชีย,ee chia,Asia
++อเมริกา,à mee rí gaa,America
++สิบห้านาที,sìp hâa naa tii,quarter of an hour
++ครึ่งชั่วโมง,krʉ̂ng chûa moong,half an hour
++สี่สิบห้านาที,sìi sìp hâa naa tii,three quarters of an hour
++หนึ่งนาฬิกา,nʉ̀ng naa lí gaa,1:00
++สองนาฬิกาห้านาที,sɔ̌ɔng naa lí gaa hâa naa tii,2:05
++สามนาฬิกาสิบนาที,sǎam naa lí gaa sìp naa tii,3:10
++สี่นาฬิกาสิบห้านาที,sìi naa lí gaa sìp hâa naa tii,4:15
++ห้านาฬิกายี่สิบนาที,hâa naa lí gaa yîi sìp naa tii,5:20
++หกนาฬิกายี่สิบห้านาที,hòk naa lí gaa yîi sìp hâa naa tii,6:25
++เจ็ดนาฬิกาสามสิบนาที,jèt naa lí gaa sǎam sìp naa tii,7:30
++แปดนาฬิกาสามสิบห้านาที,bpɛ̀ɛt naa lí gaa sǎam sìp hâa naa tii,8:35
++เก้านาฬิกาสี่สิบนาที,gâo naa lí gaa sìi sìp naa tii,9:40
++สิบนาฬิกาสี่สิบห้านาที,sìp naa lí gaa sìi sìp hâa naa tii,10:45
++สิบเอ็ดนาฬิกาห้าสิบนาที,sìp èt naa lí gaa hâa sìp naa tii,11:50
++ปีหน้า,bpii nâa,next year
++เดือนที่แล้ว,dʉan tîi lɛ́ɛw,last month
++เดือนนี้,dʉan níi,this month
++เดือนหน้า,dʉan nâa,next month
++วันที่หนึ่ง เดือนมกราคม ปีสองพันสิบสี่,wan tîi nʉ̀ng dʉan mók raa kom bpii sɔ̌ɔng pan sìp sìi,2014-01-01
++วันที่ยี่สิบห้า เดือนกุมภาพันธ์ ปีสองพันสาม,wan tîi yîi sìp hâa dʉan gum paa pan bpii sɔ̌ɔng pan sǎam,2003-02-25
++วันที่สิบสอง เดือนเมษายน ปีหนึ่งพันเก้าร้อยแปดสิบแปด,wan tîi sìp sɔ̌ɔng dʉan mee sǎa yon bpii nʉ̀ng pan gâo rɔ́ɔi bpɛ̀ɛt sìp bpɛ̀ɛt,1988-04-12
++วันที่สิบสาม เดือนตุลาคม ปีหนึ่งพันแปดร้อยเก้าสิบเก้า,wan tîi sìp sǎam dʉan dtù laa kom bpii nʉ̀ng pan bpɛ̀ɛt rɔ́ɔi gâo sìp gâo,1899-10-13
++วันที่สามสิบ เดือนกันยายน ปีหนึ่งพันเก้าร้อยเจ็ด,wan tîi sǎam sìp dʉan gan yaa yon bpii nʉ̀ng pan gâo rɔ́ɔi jèt,1907-09-30
++วันที่สิบสอง เดือนธันวาคม ปีสองพัน,wan tîi sìp sɔ̌ɔng dʉan tan waa kom bpii sɔ̌ɔng pan,2000-12-12
++หน้าผาก,nâa pàak,forehead
++ริ้วรอย,ríu rɔɔi,wrinkle
++คาง,kaang,chin
++แก้ม,gɛ̂ɛm,cheek
++กระดูกซี่โครง,grà dùuk sîi kroong,rib
++กระดูกสันหลัง,grà dùuk sǎn lǎng,vertebra
++กระเพาะปัสสาวะ,grà pɔ́ bpàt sǎa wá,bladder
++หลอดเลือดดำ,lɔ̀ɔt lʉ̂at dam,vein
++หลอดเลือดแดง,lɔ̀ɔt lʉ̂at dɛɛng,artery
++ช่องคลอด,chɔ̂ɔng klɔ̂ɔt,vagina
++อสุจิ,à sù jì,sperm
++องคชาต,ong ká châat,penis
++ลูกอัณฑะ,lûuk an tá,testicle
++ฉ่ำ,chàm,juicy
++เผ็ด,pèt,hot (spicy)
++เค็ม,kem,salty
++ดิบ,dìp,raw
++ต้ม,dtôm,boiled
++ขี้อาย,kîi aai,shy
++โลภมาก,lôop mâak,greedy
++เข้มงวด,kêm ngûat,strict
++หูหนวก,hǔu nùak,deaf
++เป็นใบ้,bpen bâi,mute
++จ้ำม่ำ,jâm mâm,chubby
++ผอมแห้ง,pɔ̌ɔm hɛ̂ɛng,skinny
++ท้วม,túam,plump
++ผอมเพรียว,pɔ̌ɔm priao,slim
++แดดจ้า,dɛ̀ɛt jâa,sunny
++ฝนตก,fǒn dtòk,rainy
++มีหมอก,mii mɔ̀ɔk,foggy
++มีเมฆ,mii mêek,cloudy
++ลมแรง,lom rɛɛng,windy
++หมีแพนด้า,mǐi pɛɛn dâa,panda
++แพะ,pɛ́,goat
++หมีขั้วโลก,mǐi kûa lôok,polar bear
++หมาป่า,mǎa bpàa,wolf
++แรด,rɛ̂ɛt,rhino
++โคอาลา,koo aa laa,koala
++จิงโจ้,jing jôo,kangaroo
++อูฐ,ùut,camel
++หนูแฮมสเตอร์,nǔu hɛɛm sà dtəə,hamster
++ยีราฟ,yii ráap,giraffe
++กระรอก,grà rɔ̂ɔk,squirrel
++สุนัขจิ้งจอก,sù nák jîng jɔ̀ɔk,fox
++เสือดาว,sʉ̌a daao,leopard
++ฮิปโป,híp bpoo,hippo
++กวาง,gwaang,deer
++ค้างคาว,káang kaao,bat
++นกเรเวน,nók ree ween,raven
++นกกระสา,nók grà sǎa,stork
++หงส์,hǒng,swan
++นกนางนวล,nók naang nuan,seagull
++นกฮูก,nók hûuk,owl
++นกอินทรี,nók in sii,eagle
++เพนกวิน,peen gwin,penguin
++นกแก้ว,nók gɛ̂ɛw,parrot
++ปลวก,bplùak,termite
++ผีเสื้อกลางคืน,pǐi sʉ̂a glaang kʉʉn,moth
++หนอนผีเสื้อ,nɔ̌ɔn pǐi sʉ̂a,caterpillar
++แมลงปอ,má lɛɛng bpɔɔ,dragonfly
++ตั๊กแตน,dták gà dtɛɛn,grasshopper
++ปลาหมึก,bplaa mʉ̀k,squid
++ปลาหมึกยักษ์,bplaa mʉ̀k yák,octopus
++ม้าน้ำ,máa náam,sea horse
++เต่า,dtào,turtle
++เปลือกหอย,bplʉ̀ak hɔ̌ɔi,shell
++แมวน้ำ,mɛɛw náam,seal
++แมงกะพรุน,mɛɛng gà prun,jellyfish
++ปู,bpuu,crab
++ไดโนเสาร์,dai noo sǎo,dinosaur
++เต่าบก,dtào bòk,tortoise
++จระเข้,jɔɔ rá kêe,crocodile
++วิ่งมาราธอน,wîng maa raa tɔɔn,marathon
++ไตรกีฬา,dtrai gii laa,triathlon
++ปิงปอง,bping bpɔɔng,table tennis
++ยกน้ำหนัก,yók nám nàk,weightlifting
++ชกมวย,chók muai,boxing
++แบดมินตัน,bɛ̀ɛt min dtan,badminton
++สเกตลีลา,sà gèet lii laa,figure skating
++สโนว์บอร์ด,sà nôo bɔ̀ɔt,snowboarding
++สกี,sà gii,skiing
++สกีครอสคันทรี,sà gii krɔ̂ɔt kan tá rii,cross-country skiing
++ฮอกกี้น้ำแข็ง,hɔ̂ɔk gîi nám kɛ̌ng,ice hockey
++วอลเลย์บอล,wɔɔn lee bɔɔn,volleyball
++แฮนด์บอล,hɛɛn bɔɔn,handball
++วอลเลย์บอลชายหาด,wɔɔn lee bɔɔn chaai hàat,beach volleyball
++รักบี้,rák bîi,rugby
++คริกเกต,krík gèet,cricket
++เบสบอล,bèet bɔɔn,baseball
++อเมริกันฟุตบอล,à mee rí gan fút bɔɔn,American football
++โปโลน้ำ,bpoo loo náam,water polo
++กีฬากระโดดน้ำ,gii laa grà dòot náam,diving (into the water)
++กีฬาโต้คลื่น,gii laa dtôo klʉ̂ʉn,surfing
++แข่งเรือใบ,kɛ̀ng rʉa bai,sailing
++แข่งพายเรือ,kɛ̀ng paai rʉa,rowing
++การแข่งรถ,gaan kɛ̀ng rót,car racing
++การแข่งแรลลี่,gaan kɛ̀ng rɛɛn lîi,rally racing
++การแข่งรถมอเตอร์ไซค์,gaan kɛ̀ng rót mɔɔ dtəə sai,motorcycle racing
++โยคะ,yoo ká,yoga
++เต้นรำ,dtên ram,dancing
++การไต่เขา,gaan dtài kǎo,mountaineering
++การกระโดดร่ม,gaan grà dòot rôm,parachuting
++สเก็ตบอร์ด,sà gèt bɔ̀ɔt,skateboarding
++หมากรุก,màak rúk,chess
++โป๊กเกอร์,bpóok gəə,poker
++ซิทอัพ,sít àp,sit-ups
++วิดพื้น,wít pʉ́ʉn,push-ups
++ซาวน่า,saao nâa,sauna
++จักรยานออกกำลังกาย,jàk rá yaan ɔ̀ɔk gam lang gaai,exercise bike
++ลู่วิ่ง,lûu wîng,treadmill
++หนึ่งพันหนึ่ง,nʉ̀ng pan nʉ̀ng,1001
++หนึ่งพันสิบสอง,nʉ̀ng pan sìp sɔ̌ɔng,1012
++หนึ่งพันสองร้อยสามสิบสี่,nʉ̀ng pan sɔ̌ɔng rɔ́ɔi sǎam sìp sìi,1234
++สองพัน,sɔ̌ɔng pan,2000
++สองพันสอง,sɔ̌ɔng pan sɔ̌ɔng,2002
++สองพันยี่สิบสาม,sɔ̌ɔng pan yîi sìp sǎam,2023
++เดิมพัน,dəəm pan,to gamble
++เพิ่มน้ำหนัก,pə̂əm náam nàk,to gain weight
++ลดน้ำหนัก,lót nám nàk,to lose weight
++อาเจียน,aa jian,to vomit
++ตะโกน,dtà goon,to shout
++จ้องมอง,jɔ̂ɔng mɔɔng,to stare
++เป็นลม,bpen lom,to faint
++กลืน,glʉʉn,to swallow
++สั่น,sàn,to shiver
++นวด,nûat,to give a massage
++ปีน,bpiin,to climb
++อ้าง,âang,to quote
++พิมพ์,pim,to print
++สแกน,sà gɛɛn,to scan
++คำนวณ,kam nuan,to calculate
++หาได้,hǎa dâi,to earn
++วัด,wát,to measure
++ดูดฝุ่น,dùut fùn,to vacuum
++ทำให้แห้ง,tam hâi hɛ̂ɛng,to dry
++ต้ม,dtôm,to boil
++ทอด,tɔ̂ɔt,to fry
++ลิฟต์,líf,elevator
++ระเบียง,rá biang,balcony
++พื้น,pʉ́ʉn,floor
++ห้องใต้หลังคา,hɔ̂ɔng dtâi lǎng kaa,attic
++ประตูหน้าบ้าน,bprà dtuu nâa bâan,front door
++ทางเดิน,taang dəən,corridor
++ชั้นใต้ดินชั้นสอง,chán dtâi din chán sɔ̌ɔng,second basement floor
++ชั้นใต้ดินชั้นแรก,chán dtâi din chán rɛ̂ɛk,first basement floor
++ชั้นล่าง,chán lâang,ground floor
++ชั้นหนึ่ง,chán nʉ̀ng,first floor
++ชั้นห้า,chán hâa,fifth floor
++ปล่องไฟ,bplɔ̀ɔng fai,chimney
++พัดลม,pát lom,fan
++เครื่องปรับอากาศ,krʉ̂ang bpràp aa gàat,air conditioner
++เครื่องชงกาแฟ,krʉ̂ang chong gaa fɛɛ,coffee machine
++เครื่องปิ้งขนมปัง,krʉ̂ang bpîng kà nǒm bpang,toaster
++เครื่องดูดฝุ่น,krʉ̂ang dùut fùn,vacuum cleaner
++เครื่องเป่าผม,krʉ̂ang bpào pǒm,hairdryer
++กาต้มน้ำ,gaa dtôm náam,kettle
++เครื่องล้างจาน,krʉ̂ang láang jaan,dishwasher
++เตาปรุงอาหาร,dtao bprung aa hǎan,cooker
++เตาอบ,dtao òp,oven
++ไมโครเวฟ,mai kroo wép,microwave
++ตู้เย็น,dtûu yen,fridge
++เครื่องซักผ้า,krʉ̂ang sák pâa,washing machine
++เครื่องทำความร้อน,krʉ̂ang tam kwaam rɔ́ɔn,heating
++รีโมทคอนโทรล,rii môot kɔɔn troon,remote control
++ฟองน้ำ,fɔɔng náam,sponge
++ช้อนไม้,chɔ́ɔn mái,wooden spoon
++ตะเกียบ,dtà gìap,chopstick
++ชุดมีดช้อนส้อม,chút mîit chɔ́ɔn sɔ̂ɔm,cutlery
++ช้อน,chɔ́ɔn,spoon
++ส้อม,sɔ̂ɔm,fork
++ทัพพี,táp pii,ladle
++หม้อ,mɔ̂ɔ,pot
++กระทะ,grà tá,pan
++หลอดไฟ,lɔ̀ɔt fai,light bulb
++นาฬิกาปลุก,naa lí gaa bplùk,alarm clock
++ตู้เซฟ,dtûu séf,safe (for money)
++ชั้นวางหนังสือ,chán waang nǎng sʉ̌ʉ,bookshelf
++ผ้าม่าน,pâa mâan,curtain
++ฟูก,fûuk,mattress
++ชั้นวางของ,chán waang kɔ̌ɔng,shelf
++ลิ้นชัก,lín chák,drawer
++ตู้เสื้อผ้า,dtûu sʉ̂a pâa,wardrobe
++ถัง,tǎng,bucket
++ไม้กวาด,mái gwàat,broom
++ผงซักฟอก,pǒng sák fɔ̂ɔk,washing powder
++เครื่องชั่งน้ำหนัก,krʉ̂ang châng náam nàk,scale
++ตะกร้าซักผ้า,dtà grâa sák pâa,laundry basket
++อ่างอาบน้ำ,àang àap náam,bathtub
++ผ้าเช็ดตัว,pâa chét dtua,bath towel
++สบู่,sà bùu,soap
++กระดาษชำระ,grà dàat cham rá,toilet paper
++ผ้าขนหนู,pâa kǒn nǔu,towel
++อ่างล้างหน้า,àang láang nâa,basin
++ม้านั่งเดี่ยว,máa nâng dìao,stool
++สวิตช์ไฟ,sà wít fai,light switch
++ปฏิทิน,bpà dtì tin,calendar
++ปลั๊กไฟ,bplák fai,power outlet
++พรม,prom,carpet
++เลื่อย,lʉ̂ai,saw
++ขวาน,kwǎan,axe
++บันได,ban dai,ladder
++สายยาง,sǎai yaang,hose
++พลั่ว,plûa,shovel
++โรงเก็บของ,roong gèp kɔ̌ɔng,shed
++บ่อน้ำ,bɔ̀ɔ náam,pond
++กล่องจดหมาย,glɔ̀ɔng jòt mǎai,mailbox (for letters)
++รั้ว,rúa,fence
++เก้าอี้อาบแดด,gâo îi àap dɛ̀ɛt,deck chair
++ไอศกรีม,ai sà griim,ice cream
++ครีม,kriim,cream (food)
++เนย,nəəi,butter
++โยเกิร์ต,yoo gə̀ət,yoghurt
++ก้างปลา,gâang bplaa,fishbone
++ทูน่า,tuu nâa,tuna
++แซลมอน,sɛɛn mɔɔn,salmon
++เนื้อไม่ติดมัน,nʉ́a mâi dtìt man,lean meat
++เนื้อติดมัน,nʉ́a dtìt man,fat meat
++แฮม,hɛɛm,ham
++ซาลามี่,saa laa mîi,salami
++เบคอน,bee kɔ̂ɔn,bacon
++สเต๊ก,sà dték,steak
++ไส้กรอก,sâi grɔ̀ɔk,sausage
++เนื้อไก่งวง,nʉ́a gài nguang,turkey
++เนื้อไก่,nʉ́a gài,chicken (meat)
++เนื้อวัว,nʉ́a wua,beef
++เนื้อหมู,nʉ́a mǔu,pork
++เนื้อแกะ,nʉ́a gɛ̀,lamb
++ฟักทอง,fák tɔɔng,pumpkin
++เห็ด,hèt,mushroom
++เห็ดทรัฟเฟิล,hèt tá ráf fəən,truffle
++กระเทียม,grà tiam,garlic
++กระเทียมต้น,grà tiam dtôn,leek
++ขิง,kǐng,ginger
++มะเขือยาว,má kʉ̌a yaao,aubergine
++มันเทศ,man têet,sweet potato
++แครอท,kɛɛ rɔ̀ɔt,carrot
++แตงกวา,dtɛɛng gwaa,cucumber
++พริก,prík,chili
++พริกหยวก,prík yùak,pepper (vegetable)
++หัวหอม,hǔa hɔ̌ɔm,onion
++มันฝรั่ง,man fà ràng,potato
++กะหล่ำดอก,gà làm dɔ̀ɔk,cauliflower
++กะหล่ำปลี,gà làm bplii,cabbage
++บรอกโคลี,brɔ̀ɔk koo lii,broccoli
++ผักกาดหอม,pàk gàat hɔ̌ɔm,lettuce
++ปวยเล้ง,bpuai léng,spinach
++ไม้ไผ่,mái pài,bamboo (food)
++ข้าวโพด,kâao pôot,corn
++ขึ้นฉ่ายฝรั่ง,kʉ̂n chàai fà râng,celery
++ถั่วลันเตา,tùa lan dtao,pea
++ถั่ว,tùa,bean
++ลูกแพร์,lûuk pɛɛ,pear
++แอปเปิล,ɛ̀ɛp bpəən,apple
++เปลือก,bplʉ̀ak,peel
++เม็ด,mét,pit
++มะกอก,má gɔ̀ɔk,olive
++อินทผลัม,in tá pà lam,date (food)
++มะเดื่อฝรั่ง,má dʉ̀a fà râng,fig
++มะพร้าว,má práao,coconut
++อัลมอนด์,an mɔɔn,almond
++เฮเซลนัท,hee seen nát,hazelnut
++ถั่วลิสง,tùa lí sǒng,peanut
++กล้วย,glûai,banana
++มะม่วง,má mûang,mango
++กีวี,gii wii,kiwi
++อโวคาโด,à woo kaa doo,avocado
++สับปะรด,sàp bpà rót,pineapple
++แตงโม,dtɛɛng moo,water melon
++องุ่น,à ngùn,grape
++เมลอนหวาน,mee lɔɔn wǎan,sugar melon
++ราสเบอร์รี่,râat bəə rîi,raspberry
++บลูเบอร์รี่,bluu bəə rîi,blueberry
++สตรอเบอร์รี่,sà dtrɔɔ bəə rîi,strawberry
++เชอร์รี่,chəə rîi,cherry
++ลูกพลัม,lûuk plam,plum
++แอปริคอต,ɛ̀ɛp rí kɔ̂ɔt,apricot
++ลูกพีช,lûuk pîit,peach
++เลมอน,lee mɔɔn,lemon
++เกรปฟรุต,grèep frút,grapefruit
++ส้ม,sôm,orange (food)
++มะเขือเทศ,má kʉ̌a têet,tomato
++สะระแหน่,sà rá nɛ̀ɛ,mint
++ตะไคร้,dtà krái,lemongrass
++อบเชย,òp chəəi,cinnamon
++วานิลลา,waa nin laa,vanilla
++ผงกะหรี่,pǒng gà rìi,curry
++ยาสูบ,yaa sùup,tobacco
++เต้าหู้,dtâo hûu,tofu
++น้ำส้มสายชู,nám sôm sǎai chuu,vinegar
++ก๋วยเตี๋ยว,gǔai dtǐao,noodle
++นมถั่วเหลือง,nom tùa lʉ̌ang,soy milk
++แป้ง,bpɛ̂ɛng,flour
++ข้าว,kâao,rice
++ข้าวโอ๊ต,kâao óot,oat
++ข้าวสาลี,kâao sǎa lii,wheat
++ถั่วเหลือง,tùa lʉ̌ang,soy
++ถั่ว,tùa,nut
++ไข่คน,kài kon,scrambled eggs
++ข้าวต้มข้าวโอ๊ต,kâao dtôm kâao óot,porridge
++ธัญพืช,tan yá pʉ̂ʉt,cereal
++น้ำผึ้ง,nám pʉ̂ng,honey
++แยม,yɛɛm,jam
++หมากฝรั่ง,màak fà ràng,chewing gum
++พายแอปเปิ้ล,paai ɛ̀ɛp bpə̂ən,apple pie
++วาฟเฟิล,wâaf fəən,waffle
++แพนเค้ก,pɛɛn kék,pancake
++คุกกี้,kúk gîi,cookie
++พุดดิ้ง,pút dîng,pudding
++มัฟฟิน,máf fin,muffin
++โดนัท,doo nát,doughnut
++เครื่องดื่มชูกำลัง,krʉ̂ang dʉ̀ʉm chuu gam lang,energy drink
++น้ำส้ม,nám sôm,orange juice
++น้ำแอปเปิ้ล,náam ɛ̀ɛp bpə̂ən,apple juice
++มิลค์เชค,min chêek,milkshake
++โค้ก,kóok,coke
++น้ำมะนาว,náam má naao,lemonade
++ช็อกโกแลตร้อน,chɔ́k goo lɛ̂ɛt rɔ́ɔn,hot chocolate
++ชานม,chaa nom,milk tea
++ชาเขียว,chaa kǐao,green tea
++ชาดำ,chaa dam,black tea
++น้ำประปา,náam bprà bpaa,tap water
++ค็อกเทล,kɔ́k teen,cocktail
++แชมเปญ,chɛɛm bpeen,champagne
++รัม,ram,rum
++วิสกี้,wít sà gîi,whiskey
++วอดก้า,wɔ̂ɔt gâa,vodka
++บุฟเฟ่ต์,bùf fê,buffet
++ทิป,típ,tip
++รายการอาหาร,raai gaan aa hǎan,menu
++อาหารทะเล,aa hǎan tá lee,seafood
++อาหารว่าง,aa hǎan wâang,snack
++เครื่องเคียง,krʉ̂ang kiang,side dish
++สปาเกตตี,sà bpaa gèet dtii,spaghetti
++ไก่อบ,gài òp,roast chicken
++สลัดมันฝรั่ง,sà lát man fà râng,potato salad
++มัสตาร์ด,mát dtàad,mustard
++ซูชิ,suu chí,sushi
++ป๊อปคอร์น,bpɔ́ɔp kɔɔn,popcorn
++นาโชส์,naa choo,nachos
++มันฝรั่งทอดกรอบ,man fà râng tɔ̂ɔt grɔ̀ɔp,chips
++เฟรนช์ฟรายส์,freen fraai,French fries
++ปีกไก่ทอด,bpìik gài tɔ̂ɔt,chicken wings
++มายองเนส,maa yɔɔng nêet,mayonnaise
++ซอสมะเขือเทศ,sɔ́ɔt má kʉ̌a têet,tomato sauce
++แซนด์วิช,sɛɛn wít,sandwich
++ฮอตดอก,hɔ̂ɔt dɔ̀ɔk,hot dog
++เบอร์เกอร์,bəə gəə,burger
++การจอง,gaan jɔɔng,booking
++โฮสเทล,hôot teen,hostel
++วีซ่า,wii sâa,visa
++หนังสือเดินทาง,nǎng sʉ̌ʉ dəən taang,passport
++สมุดจดบันทึก,sà mút jòt ban tʉ́k,diary
++โปสต์การ์ด,bpòot gàad,postcard
++เป้สะพายหลัง,bpê sà paai lǎng,backpack
++แคมป์ไฟ,kɛɛm fai,campfire
++ถุงนอน,tǔng nɔɔn,sleeping bag
++เต็นท์,dten,tent
++การตั้งแคมป์,gaan dtâng kɛɛm,camping
++สมาชิกภาพ,sà maa chík pâap,membership
++การจอง,gaan jɔɔng,reservation
++ห้องรวม,hɔ̂ɔng ruam,dorm room
++ห้องคู่,hɔ̂ɔng kûu,double room
++ห้องเดี่ยว,hɔ̂ɔng dìao,single room
++กระเป๋าเดินทาง,grà bpǎo dəən taang,luggage
++ล็อบบี้,lɔ́p bîi,lobby
++ทศวรรษ,tót sà wát,decade
++ศตวรรษ,sà dtà wát,century
++สหัสวรรษ,sà hàt wát,millennium
++วันขอบคุณพระเจ้า,wan kɔ̀ɔp kun prá jâo,Thanksgiving
++ฮาโลวีน,haa loo wiin,Halloween
++รอมฎอน,rɔɔm má dɔɔn,Ramadan
++หลาน,lǎan,grandchild
++พี่น้อง,pîi nɔ́ɔng,siblings
++แม่ยาย,mɛ̂ɛ yaai,mother-in-law
++พ่อตา,pɔ̂ɔ dtaa,father-in-law
++หลานสาว,lǎan sǎao,granddaughter
++หลานชาย,lǎan chaai,grandson
++ลูกเขย,lûuk kə̌əi,son-in-law
++ลูกพี่ลูกน้องหญิง,lûuk pîi lûuk nɔ́ɔng yǐng,cousin (female)
++ลูกพี่ลูกน้องชาย,lûuk pîi lûuk nɔ́ɔng chaai,cousin (male)
++สุสาน,sù sǎan,cemetery
++เพศ,pêet,gender
++โกศ,gòot,urn
++เด็กกำพร้า,dèk gam práa,orphan
++ศพ,sòp,corpse
+Index: inserts/1401-2000.csv
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inserts/1401-2000.csv b/inserts/1401-2000.csv
+new file mode 100644
+--- /dev/null	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
++++ b/inserts/1401-2000.csv	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
+@@ -0,0 +1,577 @@
++โลงศพ,loong sòp,coffin
++เกษียณอายุ,gà sǐan aa yú,retirement
++งานศพ,ngaan sòp,funeral
++ฮันนีมูน,han nii muun,honeymoon
++แหวนแต่งงาน,wɛ̌ɛn dtɛ̀ng ngaan,wedding ring
++ไข้ใจ,kâi jai,lovesickness
++การฝึกอบรมทางอาชีพ,gaan fʉ̀k òp rom taang aa chîip,vocational training
++โรงเรียนมัธยมศึกษาตอนปลาย,roong rian mát yom sʉ̀k sàat on bplaai,high school
++โรงเรียนมัธยมศึกษาตอนต้น,roong rian mát yom sʉ̀k sàat on dtôn,junior school
++ฝาแฝด,fǎa fɛ̀ɛt,twins
++โรงเรียนประถมศึกษา,roong rian bprà tǒm sʉ̀k sǎa,primary school
++โรงเรียนอนุบาล,roong rian à nú baan,kindergarten
++การเกิด,gaan gə̀ət,birth
++สูติบัตร,sǔu dtì bàt,birth certificate
++เบรกมือ,bà rèek mʉʉ,hand brake
++แบตเตอรี่,bɛ̀ɛt dtəə rîi,battery
++เครื่องยนต์,krʉ̂ang yon,motor
++ใบปัดน้ำฝน,bai bpàt náam fǒn,windscreen wiper
++จีพีเอส,jii pii èet,GPS
++ถุงลมนิรภัย,tǔng lom nin pai,airbag
++แตร,dtrɛɛ,horn
++คลัตช์,klát,clutch
++เบรก,brèek,brake
++คันเร่ง,kan rêng,throttle
++พวงมาลัย,puang maa lai,steering wheel
++น้ำมันเบนซิน,náam man been sin,petrol
++น้ำมันดีเซล,náam man dii seen,diesel
++เข็มขัดนิรภัย,kěm kàt ní rá pai,seatbelt
++ฝากระโปรงรถยนต์,fǎa grà bproong rót yon,bonnet
++ยางรถ,yaang rót,tyre
++ท้ายรถ,táai rót,rear trunk
++รางรถไฟ,raang rót fai,railtrack
++เครื่องจำหน่ายตั๋วอัตโนมัติ,krʉ̂ang jam nàai dtǔa àt noo mát,ticket vending machine
++ห้องขายตั๋ว,hɔ̂ɔng kǎai dtǔa,ticket office
++รถไฟใต้ดิน,rót fai dtâi din,subway
++รถไฟความเร็วสูง,rót fai kwaam reo sǔung,high-speed train
++หัวรถจักร,hǔa rót jàk,locomotive
++ชานชาลา,chaan chaa laa,platform
++รถราง,rót raang,tram
++รถโรงเรียน,rót roong rian,school bus
++รถตู้,rót dtûu,minibus
++ค่าโดยสาร,kâa dooi sǎan,fare
++ตารางเวลา,dtaa raang wee laa,timetable
++สนามบิน,sà nǎam bin,airport
++ขาออก,kǎa ɔ̀ɔk,departure
++ขาเข้า,kǎa kâo,arrival
++ศุลกากร,sǔn lá gaa gɔɔn,customs
++สายการบิน,sǎai gaan bin,airline
++เฮลิคอปเตอร์,hee lí kɔ̂ɔp dtəə,helicopter
++เคาน์เตอร์เช็คอิน,kao dtəə chék in,check-in desk
++กระเป๋าถือขึ้นเครื่อง,grà bpǎo tʉ̌ʉ kʉ̂n krʉ̂ang,carry-on luggage
++ชั้นหนึ่ง,chán nʉ̀ng,first class
++ชั้นประหยัด,chán bprà yàt,economy class
++ชั้นธุรกิจ,chán tú rá gìt,business class
++ทางออกฉุกเฉิน,taang ɔ̀ɔk chùk chə̌ən,emergency exit (on plane)
++ที่นั่งริมทางเดิน,tîi nâng rim taang dəən,aisle
++ที่นั่งติดหน้าต่าง,tîi nâng dtìt nâa dtàang,window (in plane)
++แถว,tɛ̌ɛo,row
++ปีกเครื่องบิน,bpìik krʉ̂ang bin,wing
++เครื่องยนต์เครื่องบิน,krʉ̂ang yon krʉ̂ang bin,engine
++ห้องนักบิน,hɔ̂ɔng nák bin,cockpit
++เสื้อชูชีพ,sʉ̂a chuu chîip,life jacket
++ตู้คอนเทนเนอร์,dtûu kɔɔn teen nəə,container
++เรือดำน้ำ,rʉa dam náam,submarine
++เรือสำราญ,rʉa sǎm raan,cruise ship
++เรือขนตู้คอนเทนเนอร์,rʉa kǒn dtûuk on teen nəə,container ship
++เรือยอชท์,rʉa yɔ̂ɔt,yacht
++เรือเฟอร์รี่,rʉa fəə rîi,ferry
++ท่าเรือ,tâa rʉa,harbour
++เรือชูชีพ,rʉa chuu chîip,lifeboat
++เรดาร์,ree daa,radar
++สมอเรือ,sà mɔ̌ɔ rʉa,anchor
++ห่วงชูชีพ,hùang chuu chîip,life buoy
++ไฟถนน,fai tà non,street light
++ทางเท้า,taang táao,pavement
++ปั๊มน้ำมัน,bpám nám man,petrol station
++เขตก่อสร้าง,kèet gɔ̀ɔ sâang,construction site
++จำกัดความเร็ว,jam gàt kwaam reo,speed limit
++ทางม้าลาย,taang máa laai,pedestrian crossing
++ถนนเดินรถทางเดียว,tǒn ná dəən rót taang diao,one-way street
++ค่าผ่านทาง,kâa pàan taang,toll
++เครื่องสูบลม,krʉ̂ang sùup lom,air pump
++โซ่,sôo,chain
++แม่แรง,mɛ̂ɛ rɛɛng,jack
++รถพ่วง,rót pûang,trailer
++รถสกู๊ตเตอร์,rót sà gúut dtəə,motor scooter
++กระเช้าไฟฟ้า,grà cháo fai fáa,cable car
++กีตาร์,gii dtaa,guitar
++กลองชุด,glɔɔng chút,drums
++คีย์บอร์ด,kii bɔ̀ɔd,keyboard (music)
++ทรัมเป็ต,tram bpèt,trumpet
++เปียโน,bpia noo,piano
++แซกโซโฟน,sɛ̂ɛk soo foon,saxophone
++ไวโอลิน,wai oo lin,violin
++คอนเสิร์ต,kɔɔn sə̀ət,concert
++โน้ตเพลง,nóot pleeng,note (music)
++อุปรากร,ùp raa gɔɔn,opera
++วงออร์เคสตรา,wong ɔɔ kêet dtraa,orchestra
++แร็ป,rɛ́p,rap
++ดนตรีคลาสสิก,don dtrii klâat sìk,classical music
++ดนตรีโฟล์ก,don dtrii fôok,folk music
++ร็อก,rɔ́k,rock (music)
++ป๊อป,bpɔ́ɔp,pop
++แจ๊ส,jɛ́ɛt,jazz
++โรงละคร,roong lá kɔɔn,theatre
++พู่กัน,pûu gan,brush (to paint)
++แซมบ้า,sɛɛm bâa,samba
++ร็อกแอนด์โรล,rɔ́k ɛɛn roon,rock 'n' roll
++เวียนนีสวอลซ์,wian nîit wɔɔn,Viennese waltz
++แทงโก,tɛɛng goo,tango
++ซัลซ่า,san sâa,salsa
++ตัวอักษร,dtua àk sɔ̌ɔn,alphabet
++นวนิยาย,ná wá ní yaai,novel
++ข้อความ,kɔ̂ɔ kwaam,text
++หัวเรื่อง,hǔa rʉ̂ang,heading
++อักขระ,àk kà rà,character
++ตัวอักษร,dtua àk sɔ̌ɔn,letter (like a b c)
++เนื้อหา,nʉ́a hǎa,content
++อัลบั้มรูปภาพ,an bâm rûup pâap,photo album
++หนังสือการ์ตูน,nǎng sʉ̌ʉ gaa dtuun,comic book
++สนามกีฬา,sà nǎam gii laa,sports ground
++พจนานุกรม,pót jà naa nú grom,dictionary
++ภาคเรียน,pâak rian,term
++สมุดบันทึก,sà mùt ban tʉ́k,notebook
++กระดานดำ,grà daan dam,blackboard
++กระเป๋านักเรียน,grà bpǎo nák rian,schoolbag
++ชุดนักเรียน,chút nák rian,school uniform
++เรขาคณิต,ree kǎa ká nít,geometry
++การเมือง,gaan mʉang,politics
++ปรัชญา,bpràt yaa,philosophy
++เศรษฐศาสตร์,sèet tà sàat,economics
++พลศึกษา,pá lá sʉ̀k sǎa,physical education
++ชีววิทยา,chii wá wít tá yaa,biology
++คณิตศาสตร์,ká nít dtà sàat,mathematics
++ภูมิศาสตร์,puu mí sàat,geography
++วรรณกรรม,wan ná gam,literature
++ภาษาอาหรับ,paa sǎa aa ràp,Arabic
++ภาษาเยอรมัน,paa sǎa yəə rá man,German
++ภาษาญี่ปุ่น,paa sǎa yîi bpùn,Japanese
++ภาษาจีนกลาง,paa sǎa jiin glaang,Mandarin
++ภาษาสเปน,paa sǎa sà bpeen,Spanish
++เคมี,kee mii,chemistry
++ฟิสิกส์,fí sìk,physics
++ไม้บรรทัด,mái ban tát,ruler
++ยางลบ,yaang lóp,rubber
++กรรไกร,gan grai,scissors
++เทปกาว,têep gaao,adhesive tape
++กาว,gaao,glue
++ปากกาลูกลื่น,bpàak gaa lûuk lʉ̂ʉn,ball pen
++คลิปหนีบกระดาษ,klíp nìip grà dàat,paperclip
++หนึ่งร้อยเปอร์เซ็นต์,nʉ̀ng rɔ́ɔi bpəə sen,100%
++ศูนย์เปอร์เซ็นต์,sǔun bpəə sen,0%
++ลูกบาศก์เมตร,lûuk bàat mét,cubic meter
++ตารางเมตร,dtaa raang mét,square meter
++ไมล์,mai,mile
++เมตร,mét,meter
++เดซิเมตร,dee sí mêet,decimeter
++เซนติเมตร,seen dtì mêet,centimeter
++มิลลิเมตร,min lí mêet,millimeter
++การบวก,gaan bùak,addition
++การลบ,gaan lóp,subtraction
++การคูณ,gaan kuun,multiplication
++การหาร,gaan hǎan,division
++เศษส่วน,sèet sùan,fraction
++ทรงกลม,song glom,sphere
++ความกว้าง,kwaam gwâang,width
++ความสูง,kwaam sǔung,height
++ปริมาตร,bpà rí mâat,volume
++เส้นโค้ง,sên kóong,curve
++มุม,mum,angle
++เส้นตรง,sên dtrong,straight line
++ทรงปิรามิด,tɔɔn ngá bpì raa mít,pyramid
++ทรงลูกบาศก์,tɔɔn ngá lûuk bàat,cube
++สี่เหลี่ยมผืนผ้า,sìi lìam pʉ̌ʉn pâa,rectangle
++สามเหลี่ยม,sǎam lìam,triangle
++รัศมี,rát sà mǐi,radius
++วัตต์,wát,watt
++แอมแปร์,ɛɛm bpɛɛ,ampere
++โวลต์,woon,volt
++แรง,rɛɛng,force
++ลิตร,lít,liter
++มิลลิลิตร,min lí lít,milliliter
++ตัน,dtan,ton
++กิโลกรัม,gì loo gram,kilogram
++กรัม,gram,gram
++แม่เหล็ก,mɛ̂ɛ lèk,magnet
++กรวย,gruai,funnel
++ห้องปฏิบัติการ,hɔ̂ɔng bpà dtì bàt gaan,laboratory
++โรงอาหาร,roong aa hǎan,canteen
++การบรรยาย,gaan ban yaai,lecture
++ทุนการศึกษา,tun gaan sʉ̀k sǎa,scholarship
++ประกาศนียบัตร,bprà gàat sà nii yá bàt,diploma
++สามจุดสี่,sǎam jùt sìi,3.4
++สามยกกำลังห้า,sǎam yók gam lang hâa,3 to the power of 5
++สี่หารด้วยสอง,sìi hǎan dûai sɔ̌ɔng,4 / 2
++หนึ่งบวกหนึ่งเท่ากับสอง,nʉ̀ng bùak nʉ̀ng tâo gàp sɔ̌ɔng,1 + 1 = 2
++มหัพภาค,má hàp pâak,full stop
++หกยกกำลังสาม,hòk yók gam lang sǎam,6³
++สี่ยกกำลังสอง,sìi yók gam lang sɔ̌ɔng,4²
++ติดต่อที่ พินฮอก ดอต คอม,dtìt dtɔ̀ɔ tîi pin hɔ̂ɔk dɔ̀ɔt kɔɔm,contact@pinhok.com
++และ,lɛ́,&
++ทับ,táp,/
++เครื่องหมายวงเล็บ,krʉ̂ang mǎa yuang lép,()
++เครื่องหมายอัฒภาค,krʉ̂ang mǎai àt pâak,semicolon
++เครื่องหมายจุลภาค,krʉ̂ang mǎai jun pâak,comma
++เครื่องหมายทวิภาค,krʉ̂ang mǎa yót wí pâak,colon
++ขีดเส้นใต้,kìit sên dtâi,underscore
++เครื่องหมายยัติภังค์,krʉ̂ang mǎai yát dtì pang,hyphen
++สามลบสอง,sǎam lóp sɔ̌ɔng,3 - 2
++เครื่องหมายอะพอสทรอฟี,krʉ̂ang mǎai à pɔɔ sòt rɔɔ fii,apostrophe
++สองคูณสาม,sɔ̌ɔng kuun sǎam,2 x 3
++หนึ่งบวกสอง,nʉ̀ng bùak sɔ̌ɔng,1 + 2
++เครื่องหมายอัศเจรีย์,krʉ̂ang mǎai àt jee rii,exclamation mark
++เครื่องหมายคำถาม,krʉ̂ang mǎai kam tǎam,question mark
++เว้นวรรค,wén wák,space
++ดิน,din,soil
++ลาวา,laa waa,lava
++ถ่านหิน,tàan hǐn,coal
++ทราย,saai,sand
++ดินเหนียว,din nǐao,clay
++จรวด,jà rùat,rocket
++ดาวเทียม,daao tiam,satellite
++กาแล็กซี,gaa lɛ́k sii,galaxy
++ดาวเคราะห์น้อย,daao krɔ́ nɔ́ɔi,asteroid
++ทวีป,tá wîip,continent
++เส้นศูนย์สูตร,sên sǔun sùut,equator
++ขั้วโลกใต้,kûa lôok dtâai,South Pole
++ขั้วโลกเหนือ,kûa lôok nʉ̌a,North Pole
++ลำธาร,lam taan,stream
++ป่าดิบชื้น,bpàa dìp chʉ́ʉn,rainforest
++ถ้ำ,tâm,cave
++น้ำตก,nám dtòk,waterfall
++ชายฝั่ง,chaai fàng,shore
++ธารน้ำแข็ง,taan nám kɛ̌ng,glacier
++แผ่นดินไหว,pɛ̀n din wǎi,earthquake
++ปล่องภูเขาไฟ,bplɔ̀ɔng puu kǎo fai,crater
++ภูเขาไฟ,puu kǎo fai,volcano
++หุบเขาลึก,hùp kǎo lʉ́k,canyon
++บรรยากาศ,ban yaa gàat,atmosphere
++ขั้วโลก,kûa lôok,pole
++สิบสององศาเซลเซียส,sìp sɔ̌ɔ ngɔɔng sǎa seen sîat,12 °C
++ศูนย์องศาเซลเซียส,sǔun ong sǎa seen sîat,0 °C
++ลบสององศาเซลเซียส,lóp sɔ̌ɔng ong sǎa seen sîat,-2 °C
++องศาฟาเรนไฮต์,ong sǎa faa reen hai,Fahrenheit
++องศาเซลเซียส,ong sǎa seen sîat,centigrade
++พายุทอร์นาโด,paa yú tɔɔ naa doo,tornado
++น้ำท่วม,náam tûam,flood
++หมอก,mɔ̀ɔk,fog
++รุ้งกินน้ำ,rúng gin náam,rainbow
++ฟ้าร้อง,fáa rɔ́ɔng,thunder
++ฟ้าแลบ,fáa lɛ̂ɛp,lightning
++พายุฝนฟ้าคะนอง,paa yú fǒn fáa ká nɔɔng,thunderstorm
++อุณหภูมิ,un hà puum,temperature
++พายุไต้ฝุ่น,paa yú dtâi fùn,typhoon
++พายุเฮอริเคน,paa yú həə rí keen,hurricane
++เมฆ,mêek,cloud
++แสงแดด,sɛ̌ɛng dɛ̀ɛt,sunshine
++ไม้ไผ่,mái pài,bamboo (plant)
++ต้นปาล์ม,dtôn bpaam,palm tree
++กิ่งไม้,gìng mái,branch
++ใบไม้,bai mái,leaf
++ราก,râak,root
++ลำต้น,lam dtôn,trunk
++กระบองเพชร,grà bɔɔng pét,cactus
++ดอกทานตะวัน,dɔ̀ɔk taan dtà wan,sunflower
++เมล็ดพันธุ์,má lét pan,seed
++เบ่งบาน,bèng baan,blossom
++ลำต้น,lam dtôn,stalk
++พลาสติก,plâat dtìk,plastic
++คาร์บอนไดออกไซด์,kaa bɔɔn dai ɔ̀ɔk sai,carbon dioxide
++ของแข็ง,kɔ̌ɔng kɛ̌ng,solid
++ของเหลว,kɔ̌ɔng lěeo,fluid
++อะตอม,à dtɔɔm,atom
++เหล็ก,lèk,iron
++ออกซิเจน,ɔ̀ɔk sí jeen,oxygen
++รองเท้าแตะแบบคีบ,rɔɔng táao dtɛ̀ bɛ̀ɛp kîip,flip-flops
++รองเท้าหนัง,rɔɔng táao nǎng,leather shoes
++รองเท้าส้นสูง,rɔɔng táao sôn sǔung,high heels
++รองเท้ากีฬา,rɔɔng táao gii laa,trainers
++กระโปรง,grà bproong,skirt
++กางเกงขาสั้น,gaang geeng kǎa sân,shorts
++ถุงน่องเต็มตัว,tǔng nɔ̂ɔng dtem dtua,pantyhose
++กางเกงในตอง,gaang geeng nai dtɔɔng,thong
++กางเกงใน,gaang geeng nai,panties
++มงกุฎ,mong gùt,crown
++รอยสัก,rɔɔi sàk,tattoo
++แว่นตากันแดด,wɛ̂ɛn dtaa gan dɛ̀ɛt,sunglasses
++ร่ม,rôm,umbrella
++ต่างหู,dtàang hǔu,earring
++สร้อยคอ,sɔ̂ɔi kɔɔ,necklace
++หมวกเบสบอล,mùak bèet bɔɔn,baseball cap
++เข็มขัด,kěm kàt,belt
++เน็กไท,nék tai,tie
++หมวกไหมพรม,mùak mǎi prom,knit cap
++ผ้าพันคอ,pâa pan kɔɔ,scarf
++ถุงมือ,tǔng mʉʉ,glove
++ชุดว่ายน้ำ,chút wâai náam,swimsuit
++บิกินี่,bì gì nîi,bikini
++กางเกงว่ายน้ำ,gaang geeng wâai náam,swim trunks
++แว่นตาว่ายน้ำ,wɛ̂ɛn dtaa wâai náam,swim goggles
++กิ๊บหนีบผม,gíp nìip pǒm,barrette
++สีน้ำตาลเข้ม,sǐi náam dtaan kêm,brunette
++สีบลอนด์,sìip lɔɔn,blond
++ศีรษะล้าน,sǐin sà láan,bald head
++ผมตรง,pǒm dtrong,straight (hair)
++ผมหยักโศก,pǒm yàk sòok,curly
++กระดุม,grà dum,button
++ซิป,síp,zipper
++แขนเสื้อ,kɛ̌ɛn sʉ̂a,sleeve
++ปกเสื้อ,bpòk sʉ̂a,collar
++โพลีเอสเตอร์,poo lii èet dtəə,polyester
++ผ้าไหม,pâa mǎi,silk
++ผ้าฝ้าย,pâa fâai,cotton
++ขนแกะ,kǒn gɛ̀,wool
++ห้องลองเสื้อผ้า,hɔ̂ɔng lɔɔng sʉ̂a pâa,changing room
++มาสก์หน้า,mâat nâa,face mask
++น้ำหอม,nám hɔ̌ɔm,perfume
++ผ้าอนามัยแบบสอด,pâa à naa mai bɛ̀ɛp sɔ̀ɔt,tampon
++กรรไกรตัดเล็บ,gan grai dtàt lép,nail scissors
++กรรไกรตัดเล็บ,gan grai dtàt lép,nail clipper
++เจลใส่ผม,jeeo sài pǒm,hair gel
++เจลอาบน้ำ,jeen àap náam,shower gel
++ถุงยางอนามัย,tǔng yaang à naa mai,condom
++เครื่องโกนหนวด,krʉ̂ang goon nùat,shaver
++มีดโกน,mîit goon,razor
++ครีมกันแดด,kriim gan dɛ̀ɛt,sunscreen
++ครีมทาหน้า,kriim taa nâa,face cream
++แปรงขัด,bprɛɛng kàt,brush (for cleaning)
++ยาทาเล็บ,yaa taa lép,nail polish
++ลิปกลอส,líp glɔ̀ɔt,lip gloss
++ตะไบเล็บ,dtà bai lép,nail file
++รองพื้น,rɔɔng pʉ́ʉn,foundation
++มาสคาร่า,mâat kaa râa,mascara
++อายแชโดว์,aai chɛɛ doo,eye shadow
++การรับประกัน,gaan ráp bprà gan,warranty
++ราคาถูก,raa kaa tùuk,bargain
++เครื่องคิดเงิน,krʉ̂ang kít ngən,cash register
++ตะกร้า,dtà grâa,basket
++ห้างสรรพสินค้า,hâang sàp pá sǐn káa,shopping mall
++ร้านขายยา,ráan kǎai yaa,pharmacy
++ตึกระฟ้า,dtʉ̀k rá fáa,skyscraper
++ปราสาท,bpraa sàat,castle
++สถานเอกอัครราชทูต,sà tǎan èek àk krá râat chá tûut,embassy
++โบสถ์ยิว,bòot yiu,synagogue
++วัด,wát,temple
++โรงงาน,roong ngaan,factory
++มัสยิด,mát sà yít,mosque
++ศาลากลางจังหวัด,sǎa lâak laang jang wàt,town hall
++ที่ทำการไปรษณีย์,tîi tam gaan bprai sà nii,post office
++น้ำพุ,náam pú,fountain
++ไนท์คลับ,nai kláp,night club
++ม้านั่ง,máa nâng,bench
++สนามกอล์ฟ,sà nǎam gɔ́ɔp,golf course
++สนามฟุตบอล,sà nǎam fút bɔɔn,football stadium
++สระว่ายน้ำ,sà wâai náam,swimming pool (building)
++สนามเทนนิส,sà naam teen nít,tennis court
++ศูนย์บริการข้อมูลการท่องเที่ยว,sǔun bɔ̀ rí gaan kɔ̂ɔ muun gaan tɔ̂ɔng tîao,tourist information
++คาสิโน,kaa sì noo,casino
++หอศิลป์,hɔ̌ɔ sǐn,art gallery
++พิพิธภัณฑ์,pí pít tá pan,museum
++อุทยานแห่งชาติ,ùt tá yaan hɛ̀ng châat,national park
++มัคคุเทศก์,mák kú têet,tourist guide
++ของที่ระลึก,kɔ̌ɔng tîi rá lʉ́k,souvenir
++ซอย,sɔɔi,alley
++เขื่อน,kʉ̀an,dam
++เหล็ก,lèk,steel
++เครน,kreen,crane
++คอนกรีต,kɔɔn grìit,concrete
++นั่งร้าน,nâng ráan,scaffolding
++อิฐ,ìt,brick
++สีทา,sǐi taa,paint
++ตะปู,dtà bpuu,nail
++ไขควง,kǎi kuang,screwdriver
++ตลับเมตร,dtà làp mét,tape measure
++คีมปากนกแก้ว,kiim bpàak nók gɛ̂ɛo,pincers
++ค้อน,kɔ́ɔn,hammer
++สไลด์น้ำ,sà lai náam,water slide
++รถไฟเหาะตีลังกา,rót fai hɔ̀ dtii lang gaa,roller coaster
++สวนน้ำ,sǔan náam,water park
++สวนสัตว์,sǔan sàt,zoo
++สนามเด็กเล่น,sà nǎam dèk lên,playground
++สไลด์,sà lai,slide
++ชิงช้า,ching cháa,swing
++กระบะทราย,grà bà saai,sandbox
++หมวกนิรภัย,mùak nin pai,helmet
++เครื่องแบบ,krʉ̂ang bɛ̀ɛp,uniform
++ไฟไหม้,fai mâi,fire (emergency)
++ทางออกฉุกเฉิน,taang ɔ̀ɔk chùk chə̌ən,emergency exit (in building)
++สัญญาณเตือนไฟไหม้,sǎn yaan dtʉan fai mâi,fire alarm
++ถังดับเพลิง,tǎng dàp pləəng,fire extinguisher
++สถานีตำรวจ,sà tǎa nii dtam rùat,police station
++รัฐ,rát,state
++ภูมิภาค,puu mí pâak,region
++เมืองหลวง,mʉang lǔang,capital
++ผู้มาเยี่ยม,pûu maa yîam,visitor
++ห้องฉุกเฉิน,hɔ̂ɔng chùk chə̌ən,emergency room
++แผนกดูแลผู้ป่วยหนัก,pɛ̌ɛ nók duu lɛɛ pûu bpùai nàk,intensive care unit
++ผู้ป่วยนอก,pûu bpùai nɔ̂ɔk,outpatient
++ห้องนั่งรอ,hɔ̂ɔng nâng rɔɔ,waiting room
++แอสไพริน,ɛ̀ɛt pai rin,aspirin
++ยานอนหลับ,yaa nɔɔn làp,sleeping pill
++วันหมดอายุ,wan mòt aa yú,expiry date
++ยาแก้ไอ,yaa gɛ̂ɛ ai,cough syrup
++ผลข้างเคียง,pǒn kâang kiang,side effect
++อินซูลิน,in suu lin,insulin
++ยาผง,yaa pǒng,powder
++แคปซูล,kɛ́ɛp suun,capsule
++วิตามิน,wí dtaa min,vitamin
++การฉีดยาเข้าเส้นเลือด,gaan chìit yaa kâo sên lʉ̂at,infusion
++ยาแก้ปวด,yaa gɛ̂ɛ bpùat,painkiller
++ยาปฏิชีวนะ,yaa bpà dtì chii wá ná,antibiotics
++ยาพ่น,yaa pôn,inhaler
++แบคทีเรีย,bɛ̀ɛk tii ria,bacterium
++ไวรัส,wai rát,virus
++หัวใจวาย,hǔa jai waai,heart attack
++โรคท้องร่วง,rôok tɔ́ɔng rûang,diarrhea
++โรคเบาหวาน,rôok bao wǎan,diabetes
++โรคหลอดเลือดสมอง,rôok lɔ̀ɔt lʉ̂at sǒm ong,stroke
++โรคหอบหืด,rôok hɔ̀ɔp hʉ̀ʉt,asthma
++โรคมะเร็ง,rôok má reng,cancer
++อาการคลื่นไส้,aa gaan klʉ̂ʉn sâi,nausea
++ไข้หวัดใหญ่,kâi wàt yài,flu
++ปวดฟัน,bpùat fan,toothache
++ผิวไหม้แดด,pǐu mâi dɛ̀ɛt,sunburn
++อาหารเป็นพิษ,aa hǎan bpen pít,poisoning
++เจ็บคอ,jèp kɔɔ,sore throat
++ไข้ละอองฟาง,kâi lá ɔɔng faang,hay fever
++ปวดท้อง,bpùat tɔ́ɔng,stomach ache
++การติดเชื้อ,gaan dtìt chʉ́a,infection
++ภูมิแพ้,puum pɛ́ɛ,allergy
++ตะคริว,dtà kriu,cramp
++เลือดกำเดาไหล,lʉ̂at gam dao lǎi,nosebleed
++ปวดหัว,bpùat hǔa,headache
++สเปรย์,sà bpree,spray
++เข็มฉีดยา,kěm chìit yaa,syringe (tool)
++เข็ม,kěm,needle
++การจัดฟัน,gaan jàt fan,dental brace
++ไม้ค้ำยันรักแร้,mái káam yan rák rɛ́ɛ,crutch
++ภาพถ่ายเอ็กซ์เรย์,pâap tàai èk ree,X-ray photograph
++เครื่องอัลตร้าซาวด์,krʉ̂ang an dtrâa saao,ultrasound machine
++พลาสเตอร์ปิดแผล,plâat dtəə bpìt plɛ̌ɛ,plaster
++ผ้าพันแผล,pâa pan plɛ̌ɛ,bandage
++เก้าอี้รถเข็น,gâo îi rót kěn,wheelchair
++การตรวจเลือด,gaan dtrùat lʉ̂at,blood test
++เฝือก,fʉ̀ak,cast
++ปรอทวัดไข้,bpà rɔ̀ɔt wát kâi,fever thermometer
++ชีพจร,chîip pá jɔɔn,pulse
++การบาดเจ็บ,gaan bàat jèp,injury
++ฉุกเฉิน,chùk chə̌ən,emergency
++การกระทบกระเทือนทางสมอง,gaan grà tóp grà tʉan taang sǒm ong,concussion
++การเย็บแผล,gaan yép plɛ̌ɛ,suture
++แผลไฟไหม้,plɛ̌ɛ fai mâi,burn
++กระดูกหัก,grà dùuk hàk,fracture
++การทำสมาธิ,gaan tam sà maa tí,meditation
++การนวด,gaan nûat,massage
++ยาเม็ดคุมกำเนิด,yaa mét kum gam nə̂ət,birth control pill
++การตรวจครรภ์,gaan dtrùat kan,pregnancy test
++ภาษี,paa sǐi,tax
++ห้องประชุม,hɔ̂ɔng bprà chum,meeting room
++นามบัตร,naam bàt,business card
++เทคโนโลยีสารสนเทศ,têek noo loo yii sǎan sǒn têet,IT
++ทรัพยากรมนุษย์,tá ráp yâak rom nút,human resources
++ฝ่ายกฎหมาย,fàai gòt mǎai,legal department
++การบัญชี,gaan ban chii,accounting
++การตลาด,gaan dtà làat,marketing
++การขาย,gaan kǎai,sales
++ตรายาง,dtraa yaang,rubber stamp
++โปรเจคเตอร์,bproo jèek dtəə,projector
++ข้อความ,kɔ̂ɔ kwaam,text message
++พัสดุ,pát sà dù,parcel
++แสตมป์,sà dtɛɛm,stamp
++ซองจดหมาย,sɔɔng jòt mǎai,envelope
++นายกรัฐมนตรี,naa yók rát tà mon dtrii,prime minister
++เภสัชกร,pee sàt chá gɔɔn,pharmacist
++นักดับเพลิง,nák dàp pləəng,firefighter
++ทันตแพทย์,tan dtà pɛ̂ɛt,dentist
++ผู้ประกอบการ,pûu bprà gɔ̀ɔp gaan,entrepreneur
++นักการเมือง,nák gaan mʉang,politician
++โปรแกรมเมอร์,bproo grɛɛm məə,programmer
++แอร์โฮสเตส,ɛɛ hôot dtèet,stewardess
++นักวิทยาศาสตร์,nák wít tá yaa sàat,scientist
++คุณครูอนุบาล,kun kruu à nú baan,kindergarten teacher
++สถาปนิก,sà tǎa bpà ník,architect
++นักบัญชี,nák ban chii,accountant
++ที่ปรึกษา,tîi bprʉ̀k sǎa,consultant
++อัยการ,ai yá gaan,prosecutor
++ผู้จัดการทั่วไป,pûu jàt gaan tûa bpai,general manager
++บอดี้การ์ด,bɔɔ dîi gàad,bodyguard
++เจ้าของบ้าน,jâo kɔ̌ɔng bâan,landlord
++ผู้ควบคุมขบวนรถไฟ,pûuk wóp kum kòp won rót fai,conductor
++บริกร,bɔ̀ rí gɔɔn,waiter
++เจ้าหน้าที่รักษาความปลอดภัย,jâo nâa tîi rák sàak waam bplɔ̀ɔt pai,security guard
++ทหาร,tá hǎan,soldier
++ชาวประมง,chaao bprà mong,fisherman
++พนักงานทำความสะอาด,pá nák ngaan tam kwaam sà àat,cleaner
++ช่างไฟฟ้า,châng fai fáa,electrician
++เกษตรกร,gà sèet dtrà gɔɔn,farmer
++พนักงานต้อนรับ,pá nák ngaan dtɔ̂ɔn ráp,receptionist
++บุรุษไปรษณีย์,bù rùt bprai sà nii,postman
++พนักงานแคชเชียร์,pá nák ngaan kɛ̂ɛt chia,cashier
++ช่างทำผม,châang tam pǒm,hairdresser
++นักเขียน,nák kǐan,author
++นักข่าว,nák kàao,journalist
++ช่างภาพ,châng pâap,photographer
++ขโมย,kà mooi,thief
++ไลฟ์การ์ด,lai gàad,lifeguard
++นักร้อง,nák rɔ́ɔng,singer
++นักดนตรี,nák don dtrii,musician
++นักแสดง,nák sà dɛɛng,actor
++ผู้สื่อข่าว,pûu sʉ̀ʉ kàao,reporter
++โค้ช,kóot,coach (sport)
++กรรมการ,gam má gaan,referee
++โฟลเดอร์,floo dəə,folder (computer)
++เบราว์เซอร์,bee raa səə,browser
++เครือข่าย,krʉa kàai,network
++สมาร์ทโฟน,sà mâat foon,smartphone
++หูฟัง,hǔu fang,earphone
++เมาส์,mao,mouse (computer)
++แป้นพิมพ์,bpɛ̂ɛn pim,keyboard (computer)
++ฮาร์ดไดรฟ์,hâad dai rá,hard drive
++ยูเอสบีสติ๊ก,yuu èet bìit dtík,USB stick
++เครื่องสแกน,krʉ̂a ngót gɛɛn,scanner
++เครื่องพิมพ์,krʉ̂ang pim,printer
++จอ,jɔɔ,screen (computer)
++แล็ปท็อป,lɛ́p tɔ́p,laptop
++ลายนิ้วมือ,laai níu mʉʉ,fingerprint
++ผู้ต้องสงสัย,pûu dtɔ̂ng sǒng sǎi,suspect
++จำเลย,jam ləəi,defendant
++การลงทุน,gaan long tun,investment
++ตลาดหลักทรัพย์,dtà làat làk sáp,stock exchange
++หุ้น,hûn,share
++เงินปันผล,ngən bpan pǒn,dividend
++ปอนด์,bpɔɔn,pound
++ยูโร,yuu roo,euro
++เยน,yeen,yen
++หยวน,yǔan,yuan
++ดอลลาร์,dɔɔn laa,dollar
++ธนบัตร,tá ná bàt,note (money)
++เหรียญ,rǐan,coin
++ดอกเบี้ย,dɔ̀ɔk bîa,interest
++เงินกู้,ngən gûu,loan
++หมายเลขบัญชี,mǎai lêek ban chii,account number
++บัญชีธนาคาร,ban chîit naa kaan,bank account
++สถิติโลก,sà tì dtì lôok,world record
++นาฬิกาจับเวลา,naa lí gaa jàp wee laa,stopwatch
++เหรียญรางวัล,rǐan raang wan,medal
++ถ้วยรางวัล,tûai raang wan,cup (trophy)
++หุ่นยนต์,hùn yon,robot
++สายเคเบิล,sǎai kee bəən,cable
++ปลั๊กเสียบ,bplák sìap,plug
++ลำโพง,lam poong,loudspeaker
++แจกัน,jɛɛ gan,vase
++ไฟแช็ก,fai chɛ́k,lighter
++ซอง,sɔɔng,package
++กระป๋อง,grà bpɔ̌ɔng,tin
++ขวดน้ำ,kùat náam,water bottle
++เทียนไข,tian kǎi,candle
++ไฟฉาย,fai chǎai,torch
++บุหรี่,bù rìi,cigarette
++ซิการ์,sí gaa,cigar
++เข็มทิศ,kěm tít,compass
++โบรกเกอร์หุ้น,boo rók gəə hûn,stockbroker
++บาร์เทนเดอร์,baa teen dəə,barkeeper
++คนสวน,kon sǔan,gardener
++ช่างเครื่อง,châng krʉ̂ang,mechanic
++ช่างไม้,châng mái,carpenter
++คนขายเนื้อ,kon kǎai nʉ́a,butcher
++นักบวช,nák bùat,priest
++พระภิกษุสงฆ์,prá pík sù sǒng,monk
++แม่ชี,mɛ̂ɛ chii,nun
++นักเต้นรำ,nák dtên ram,dancer
++ผู้กำกับภาพยนตร์,pûu gam gàp pâap yon,director (movie)
++หมอตำแย,mɔ̌ɔ dtam yɛɛ,midwife
++คนขับรถบรรทุก,kon kàp rót ban túk,lorry driver
++ช่างตัดเสื้อ,châng dtàt sʉ̂a,tailor
++บรรณารักษ์,ban naa rák,librarian
++สัตวแพทย์,sàt dtà wá pɛ̂ɛt,vet
+Index: inserts/concated.csv
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/inserts/concated.csv b/inserts/concated.csv
+new file mode 100644
+--- /dev/null	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
++++ b/inserts/concated.csv	(revision 34de2bb17d1317b3bbda102113ba6eb3e0c073ad)
+@@ -0,0 +1,941 @@
++สีแดง,sǐi dɛɛng,red
++สีน้ำเงิน,sǐi nám ngən,blue
++สีเขียว,sǐi kǐao,green
++สีเหลือง,sǐi lʉ̌ang,yellow
++ช้า,cháa,slow
++เร็ว,reo,quick
++ตลก,dtà lòk,funny
++ไม่ยุติธรรม,mâi yút dtì tam,unfair
++ยุติธรรม,yút dtì tam,fair
++ยาก,yâak,difficult
++ง่าย,ngâai,easy
++นี่เป็นเรื่องยาก,nîi bpen rʉ̂ang yâak,This is difficult
++รวย,ruai,rich
++ยากจน,yâak jon,poor
++แข็งแรง,kɛ̌ng rɛɛng,strong
++อ่อนแอ,ɔ̀ɔn ɛɛ,weak
++ปลอดภัย,bplɔ̀ɔt pai,safe (adjective)
++เหนื่อย,nʉ̀ai,tired
++ภูมิใจ,puum jai,proud
++อิ่ม,ìm,full (from eating)
++ป่วย,bpùai,sick
++สุขภาพดี,sùk kà pâap dii,healthy
++โกรธ,gròot,angry
++ต่ำ,dtàm,low
++สูง,sǔung,high
++ตรง,dtrong,straight (line)
++ทุก,túk,every
++เสมอ,sà mə̌ə,always
++แท้จริงแล้ว,tɛ́ɛ jing lɛ́ɛo,actually
++อีกครั้ง,ìik kráng,again
++แล้ว,lɛ́ɛo,already
++น้อยกว่า,nɔ́ɔi gwàa,less
++มากที่สุด,mâak tîi sùt,most
++มากกว่า,mâak gwàa,more
++ฉันอยากได้อีก,chǎn à yâak dâi ìik,I want more
++ไม่มี,mâi mii,none
++มาก,mâak,very
++สัตว์,sàt,animal
++หมู,mǔu,pig
++วัว,wua,cow
++ม้า,máa,horse
++สุนัข,sù nák,dog
++แกะ,gɛ̀,sheep
++ลิง,ling,monkey
++แมว,mɛɛo,cat
++หมี,mǐi,bear
++ไก่,gài,chicken (animal)
++เป็ด,bpèt,duck
++ผีเสื้อ,pǐi sʉ̂a,butterfly
++ผึ้ง,pʉ̂ng,bee
++ปลา,bplaa,fish (animal)
++แมงมุม,mɛɛng mum,spider
++งู,nguu,snake
++ด้านนอก,dâan nɔ̂ɔk,outside
++ด้านใน,dâan nai,inside
++ไกล,glai,far
++ใกล้,glâi,close
++ด้านล่าง,dâan lâang,below
++ด้านบน,dâan bon,above
++ด้านข้าง,dâan kâang,beside
++ด้านหน้า,dâan nâa,front
++ด้านหลัง,dâan lǎng,back (position)
++หวาน,wǎan,sweet
++เปรี้ยว,bprîao,sour
++แปลก,bplɛ̀ɛk,strange
++อ่อน,ɔ̀ɔn,soft
++แข็ง,kɛ̌ng,hard
++น่ารัก,nâa rák,cute
++โง่,ngôo,stupid
++บ้า,bâa,crazy
++ยุ่ง,yûng,busy
++สูง,sǔung,tall
++เตี้ย,dtîa,short (height)
++วิตกกังวล,wí dtòk gang won,worried
++ประหลาดใจ,bprà làat jai,surprised
++เจ๋ง,jěng,cool
++สุภาพ,sù pâap,well-behaved
++ชั่วร้าย,chûa ráai,evil
++ฉลาด,chà làat,clever
++หนาว,nǎao,cold (adjective)
++ร้อน,rɔ́ɔn,hot (temperature)
++ศีรษะ,sǐi sà,head
++จมูก,jà mùuk,nose
++ผม,pǒm,hair
++ปาก,bpàak,mouth
++หู,hǔu,ear
++ดวงตา,duang dtaa,eye
++มือ,mʉʉ,hand
++เท้า,táao,foot
++หัวใจ,hǔa jai,heart
++สมอง,sà mɔ̌ɔng,brain
++ดึง,dʉng,to pull (... open)
++ผลัก,plàk,to push (... open)
++กด,gòt,to press (a button)
++ตี,dtii,to hit
++จับ,jàp,to catch
++ต่อสู้,dtɔ̀ɔ sûu,to fight
++ขว้าง,kwâang,to throw
++วิ่ง,wîng,to run
++อ่าน,àan,to read
++เขียน,kǐan,to write
++แก้ไข,gɛ̂ɛ kǎi,to fix
++นับ,náp,to count
++ตัด,dtàt,to cut
++ขาย,kǎai,to sell
++ซื้อ,sʉ́ʉ,to buy
++จ่าย,jàai,to pay
++เรียน,rian,to study
++ฝัน,fǎn,to dream
++นอน,nɔɔn,to sleep
++เล่น,lên,to play
++ฉลอง,chà lɔ̌ɔng,to celebrate
++พักผ่อน,pák pɔ̀ɔn,to rest
++เพลิดเพลิน,plə̂ət pləən,to enjoy
++ทำความสะอาด,tam kwaam sà àat,to clean
++โรงเรียน,roong rian,school
++บ้าน,bâan,house
++ประตู,bprà dtuu,door
++สามี,sǎa mii,husband
++ภรรยา,pan rá yaa,wife
++งานแต่งงาน,ngaan dtɛ̀ng ngaan,wedding
++บุคคล,bùk kon,person
++รถยนต์,rót yon,car
++บ้าน,bâan,home
++เมือง,mʉang,city
++ตัวเลข,dtua lêek,number
++สุนัขของฉัน,sù nák kɔ̌ɔng chǎn,my dog
++แมวของคุณ,mɛɛo kɔ̌ɔng kun,your cat
++ชุดของเธอ,chút kɔ̌ɔng təə,her dress
++รถของเขา,rót kɔ̌ɔng kǎo,his car
++ลูกบอลของมัน,lûuk bɔɔn kɔ̌ɔng man,its ball
++บ้านของพวกเรา,bâan kɔ̌ɔng pûak rao,our home
++ทีมของพวกคุณ,tiim kɔ̌ɔng pûak kun,your team
++บริษัทของพวกเขา,bɔ̀ rí sàt kɔ̌ɔng pûak kǎo,their company
++ทุกคน,túk kon,everybody
++ด้วยกัน,dûai gan,together
++อื่น ๆ,ʉ̀ʉn ʉ̀ʉn,other
++ไม่เป็นไรหรอก,mâi bpen rai rɔ̀ɔk,doesn't matter
++ไชโย,chai yoo,cheers
++ผ่อนคลาย,pɔ̀ɔn klaai,relax
++ฉันเห็นด้วย,chǎn hěn dûai,I agree
++ยินดีต้อนรับ,yin dii dtɔ̂ɔn ráp,welcome
++ไม่เป็นไร,mâi bpen rai,no worries
++เลี้ยวขวา,líao kwǎa,turn right
++เลี้ยวซ้าย,líao sáai,turn left
++ตรงไป,dtrong bpai,go straight
++มากับฉัน,maa gàp chǎn,Come with me
++ไข่,kài,egg
++ชีส,chîit,cheese
++นม,nom,milk
++ปลา,bplaa,fish (to eat)
++เนื้อสัตว์,nʉ́a sàt,meat
++ผัก,pàk,vegetable
++ผลไม้,pǒn lá mái,fruit
++กระดูก,grà dùuk,bone (food)
++น้ำมัน,nám man,oil
++ขนมปัง,kà nǒm bpang,bread
++น้ำตาล,nám dtaan,sugar
++ช็อกโกแลต,chɔ́k goo lɛ̂ɛt,chocolate
++ลูกกวาด,lûuk gwàat,candy
++เค้ก,kék,cake
++เครื่องดื่ม,krʉ̂ang dʉ̀ʉm,drink
++น้ำ,náam,water
++น้ำโซดา,náam soo daa,soda
++กาแฟ,gaa fɛɛ,coffee
++ชา,chaa,tea
++เบียร์,bia,beer
++ไวน์,wai,wine
++สลัด,sà làt,salad
++ซุป,súp,soup
++ของหวาน,kɔ̌ɔng wǎan,dessert
++อาหารเช้า,aa hǎan cháao,breakfast
++อาหารกลางวัน,aa hǎan glaang wan,lunch
++อาหารเย็น,aa hǎan yen,dinner
++พิซซ่า,pís sâa,pizza
++รถบัส,rót bàt,bus
++รถไฟ,rót fai,train
++สถานีรถไฟ,sà tǎa nii rót fai,train station
++ป้ายรถเมล์,bpâai rót mee,bus stop
++เครื่องบิน,krʉ̂ang bin,plane
++เรือ,rʉa,ship
++รถบรรทุก,rót ban túk,lorry
++รถจักรยาน,rót jàk grà yaan,bicycle
++รถมอเตอร์ไซค์,rót mɔɔ dtəə sai,motorcycle
++รถแท็กซี่,rót tɛ́k sîi,taxi
++ไฟจราจร,fai jà raa jɔɔn,traffic light
++ที่จอดรถ,tîi jɔ̀ɔt rót,car park
++ถนน,tà nǒn,road
++เสื้อผ้า,sʉ̂a pâa,clothing
++รองเท้า,rɔɔng táao,shoe
++เสื้อคลุม,sʉ̂a klum,coat
++เสื้อสเวตเตอร์,sʉ̂a sà wêet dtəə,sweater
++เสื้อเชิ้ต,sʉ̂a chə́ət,shirt
++เสื้อแจ็กเกต,sʉ̂a jɛ̀k gèet,jacket
++สูท,sùut,suit
++กางเกงขายาว,gaang geeng kǎa yaao,trousers
++ชุดกระโปรง,chút grà bproong,dress
++เสื้อยืด,sʉ̂a yʉ̂ʉt,T-shirt
++ถุงเท้า,tǔng táao,sock
++ยกทรง,yók song,bra
++กางเกงใน,gaang geeng nai,underpants
++แว่นตา,wɛ̂ɛn dtaa,glasses
++กระเป๋าถือ,grà bpǎo tʉ̌ʉ,handbag
++กระเป๋าสตางค์ผู้หญิง,grà bpǎo sà dtaang pûu yǐng,purse
++กระเป๋าสตางค์,grà bpǎo sà dtaang,wallet
++แหวน,wɛ̌ɛn,ring
++หมวก,mùak,hat
++นาฬิกาข้อมือ,naa lí gaa kɔ̂ɔ mʉʉ,watch
++กระเป๋าเสื้อหรือกางเกง,grà bpǎo sʉ̂a rʉ̌ʉ gaang geeng,pocket
++คุณชื่ออะไร,kun chʉ̂ʉ à rai,What's your name?
++ผมชื่อเดวิด,pǒm chʉ̂ʉ dee wít,My name is David
++ผมอายุ 22 ปี,pǒm aa yú 22 bpii,I'm 22 years old
++เป็นอย่างไรบ้าง,bpen yàang rai bâang,How are you?
++เป็นอะไรไหม,bpen à rai mǎi,Are you ok?
++ห้องน้ำอยู่ที่ไหน,hɔ̂ɔng náam yùu tîi nǎi,Where is the toilet?
++ฉันคิดถึงคุณ,chǎn kít tʉ̌ng kun,I miss you
++ฤดูใบไม้ผลิ,rʉ́ duu bai mái plì,spring
++ฤดูร้อน,rʉ́ duu rɔ́ɔn,summer
++ฤดูใบไม้ร่วง,rʉ́ duu bai mái rûang,autumn
++ฤดูหนาว,rʉ́ duu nǎao,winter
++มกราคม,mók gà raa kom,January
++กุมภาพันธ์,gum paa pan,February
++มีนาคม,mii naa kom,March
++เมษายน,mee sǎa yon,April
++พฤษภาคม,prʉ́t sà paa kom,May
++มิถุนายน,mí tù naa yon,June
++กรกฎาคม,gà rá gà daa kom,July
++สิงหาคม,sǐng hǎa kom,August
++กันยายน,gan yaa yon,September
++ตุลาคม,dtù laa kom,October
++พฤศจิกายน,prʉ́t sà jì gaa yon,November
++ธันวาคม,tan waa kom,December
++ช้อปปิ้ง,chɔ́ɔp bpîng,shopping
++บิล,bin,bill
++ตลาด,dtà làat,market
++ซูเปอร์มาร์เก็ต,suu bpəə maa gèt,supermarket
++อาคาร,aa kaan,building
++อพาร์ทเม้นท์,à pâat mén,apartment
++มหาวิทยาลัย,má hǎa wít tá yaa lai,university
++ฟาร์ม,faam,farm
++โบสถ์,bòot,church
++ร้านอาหาร,ráan aa hǎan,restaurant
++บาร์,baa,bar
++ยิม,yim,gym
++สวนสาธารณะ,sǔan sǎa taa rá ná,park
++ห้องน้ำ,hɔ̂ɔng náam,toilet (public)
++แผนที่,pɛ̌ɛn tîi,map
++รถพยาบาล,rót pá yaa baan,ambulance
++ตำรวจ,dtam rùat,police
++ปืน,bpʉʉn,gun
++นักดับเพลิง,nák dàp pləəng,firefighters
++ประเทศ,bprà têet,country
++ชานเมือง,chaan mʉang,suburb
++หมู่บ้าน,mùu bâan,village
++สุขภาพ,sùk kà pâap,health
++ยา,yaa,medicine
++อุบัติเหตุ,ù bàt dtì hèet,accident
++ผู้ป่วย,pûu bpùai,patient
++การผ่าตัด,gaan pàa dtàt,surgery
++ยาเม็ด,yaa mét,pill
++ไข้,kâi,fever
++หวัด,wàt,cold (sickness)
++บาดแผล,bàat plɛ̌ɛ,wound
++การนัดหมาย,gaan nát mǎai,appointment
++ไอ,ai,cough
++คอ,kɔɔ,neck
++ก้น,gôn,bottom
++ไหล่,lài,shoulder
++เข่า,kào,knee
++ขา,kǎa,leg
++แขน,kɛ̌ɛn,arm
++ท้อง,tɔ́ɔng,belly
++เต้านม,dtâo nom,bosom
++หลัง,lǎng,back (part of body)
++ฟัน,fan,tooth
++ลิ้น,lín,tongue
++ริมฝีปาก,rim fǐi bpàak,lip
++นิ้วมือ,níu mʉʉ,finger
++นิ้วเท้า,níu táao,toe
++กระเพาะอาหาร,grà pɔ́ aa hǎan,stomach
++ปอด,bpɔ̀ɔt,lung
++ตับ,dtàp,liver
++เส้นประสาท,sên bprà sàat,nerve
++ไต,dtai,kidney
++ลำไส้,lam sâi,intestine
++สี,sǐi,colour
++สีส้ม,sǐi sôm,orange (colour)
++สีเทา,sǐi tao,grey
++สีน้ำตาล,sǐi nám dtaan,brown
++สีชมพู,sǐi chom puu,pink
++น่าเบื่อ,nâa bʉ̀a,boring
++หนัก,nàk,heavy
++เบา,bao,light (weight)
++เหงา,ngǎo,lonely
++หิว,hǐu,hungry
++กระหายน้ำ,grà hǎai náam,thirsty
++เศร้า,sâo,sad
++สูงชัน,sǔung chan,steep
++แบน,bɛɛn,flat
++กลม,glom,round
++สี่เหลี่ยม,sìi lìam,square (adjective)
++แคบ,kɛ̂ɛp,narrow
++กว้าง,gwâang,broad
++ลึก,lʉ́k,deep
++ตื้น,dtʉ̂ʉn,shallow
++ใหญ่โต,yài dtoo,huge
++ทิศเหนือ,tít nʉ̌a,north
++ทิศตะวันออก,tít dtà wan ɔ̀ɔk,east
++ทิศใต้,tít dtâi,south
++ทิศตะวันตก,tít dtà wan dtòk,west
++สกปรก,sòk gà bpròk,dirty
++สะอาด,sà àat,clean
++เต็ม,dtem,full (not empty)
++ว่างเปล่า,wâang bplàao,empty
++แพง,pɛɛng,expensive
++ถูก,tùuk,cheap
++มืด,mʉ̂ʉt,dark
++สว่าง,sà wàang,light (colour)
++เซ็กซี่,sék sîi,sexy
++ขี้เกียจ,kîi gìat,lazy
++กล้าหาญ,glâa hǎan,brave
++ใจกว้าง,jai gwâang,generous
++หล่อ,lɔ̀ɔ,handsome
++น่าเกลียด,nâa glìat,ugly
++ทึ่ม,tʉ̂m,silly
++เป็นมิตร,bpen mít,friendly
++มีความผิด,mii kwaam pìt,guilty
++ตาบอด,dtaa bɔ̀ɔt,blind
++เมา,mao,drunk
++เปียก,bpìak,wet
++แห้ง,hɛ̂ɛng,dry
++อบอุ่น,òp ùn,warm
++ดัง,dang,loud
++เงียบ,ngîap,quiet
++เงียบสงบ,ngîap sà ngòp,silent
++ห้องครัว,hɔ̂ɔng krua,kitchen
++ห้องอาบน้ำ,hɔ̂ɔng àap náam,bathroom
++ห้องนั่งเล่น,hɔ̂ɔng nâng lên,living room
++ห้องนอน,hɔ̂ɔng nɔɔn,bedroom
++สวน,sǔan,garden
++โรงรถ,roong rót,garage
++ผนัง,pà nǎng,wall
++ชั้นใต้ดิน,chán dtâi din,basement
++ห้องน้ำ,hɔ̂ɔng náam,toilet (at home)
++บันได,ban dai,stairs
++หลังคา,lǎng kaa,roof
++หน้าต่าง,nâa dtàang,window (building)
++มีด,mîit,knife
++ถ้วย,tûai,cup (for hot drinks)
++แก้ว,gɛ̂ɛo,glass
++จาน,jaan,plate
++ถ้วย,tûai,cup (for cold drinks)
++ถังขยะ,tǎng kà yà,garbage bin
++ชาม,chaam,bowl
++ชุดทีวี,chút tii wii,TV set
++โต๊ะทำงาน,dtó tam ngaan,desk
++เตียง,dtiang,bed
++กระจก,grà jòk,mirror
++ฝักบัว,fàk bua,shower
++โซฟา,soo faa,sofa
++รูปภาพ,rûup pâap,picture
++นาฬิกา,naa lí gaa,clock
++โต๊ะ,dtó,table
++เก้าอี้,gâo îi,chair
++โลงศพ,loong sòp,coffin
++เกษียณอายุ,gà sǐan aa yú,retirement
++งานศพ,ngaan sòp,funeral
++ฮันนีมูน,han nii muun,honeymoon
++แหวนแต่งงาน,wɛ̌ɛn dtɛ̀ng ngaan,wedding ring
++ไข้ใจ,kâi jai,lovesickness
++การฝึกอบรมทางอาชีพ,gaan fʉ̀k òp rom taang aa chîip,vocational training
++โรงเรียนมัธยมศึกษาตอนปลาย,roong rian mát yom sʉ̀k sàat on bplaai,high school
++โรงเรียนมัธยมศึกษาตอนต้น,roong rian mát yom sʉ̀k sàat on dtôn,junior school
++ฝาแฝด,fǎa fɛ̀ɛt,twins
++โรงเรียนประถมศึกษา,roong rian bprà tǒm sʉ̀k sǎa,primary school
++โรงเรียนอนุบาล,roong rian à nú baan,kindergarten
++การเกิด,gaan gə̀ət,birth
++สูติบัตร,sǔu dtì bàt,birth certificate
++เบรกมือ,bà rèek mʉʉ,hand brake
++แบตเตอรี่,bɛ̀ɛt dtəə rîi,battery
++เครื่องยนต์,krʉ̂ang yon,motor
++ใบปัดน้ำฝน,bai bpàt náam fǒn,windscreen wiper
++จีพีเอส,jii pii èet,GPS
++ถุงลมนิรภัย,tǔng lom nin pai,airbag
++แตร,dtrɛɛ,horn
++คลัตช์,klát,clutch
++เบรก,brèek,brake
++คันเร่ง,kan rêng,throttle
++พวงมาลัย,puang maa lai,steering wheel
++น้ำมันเบนซิน,náam man been sin,petrol
++น้ำมันดีเซล,náam man dii seen,diesel
++เข็มขัดนิรภัย,kěm kàt ní rá pai,seatbelt
++ฝากระโปรงรถยนต์,fǎa grà bproong rót yon,bonnet
++ยางรถ,yaang rót,tyre
++ท้ายรถ,táai rót,rear trunk
++รางรถไฟ,raang rót fai,railtrack
++เครื่องจำหน่ายตั๋วอัตโนมัติ,krʉ̂ang jam nàai dtǔa àt noo mát,ticket vending machine
++ห้องขายตั๋ว,hɔ̂ɔng kǎai dtǔa,ticket office
++รถไฟใต้ดิน,rót fai dtâi din,subway
++รถไฟความเร็วสูง,rót fai kwaam reo sǔung,high-speed train
++หัวรถจักร,hǔa rót jàk,locomotive
++ชานชาลา,chaan chaa laa,platform
++รถราง,rót raang,tram
++รถโรงเรียน,rót roong rian,school bus
++รถตู้,rót dtûu,minibus
++ค่าโดยสาร,kâa dooi sǎan,fare
++ตารางเวลา,dtaa raang wee laa,timetable
++สนามบิน,sà nǎam bin,airport
++ขาออก,kǎa ɔ̀ɔk,departure
++ขาเข้า,kǎa kâo,arrival
++ศุลกากร,sǔn lá gaa gɔɔn,customs
++สายการบิน,sǎai gaan bin,airline
++เฮลิคอปเตอร์,hee lí kɔ̂ɔp dtəə,helicopter
++เคาน์เตอร์เช็คอิน,kao dtəə chék in,check-in desk
++กระเป๋าถือขึ้นเครื่อง,grà bpǎo tʉ̌ʉ kʉ̂n krʉ̂ang,carry-on luggage
++ชั้นหนึ่ง,chán nʉ̀ng,first class
++ชั้นประหยัด,chán bprà yàt,economy class
++ชั้นธุรกิจ,chán tú rá gìt,business class
++ทางออกฉุกเฉิน,taang ɔ̀ɔk chùk chə̌ən,emergency exit (on plane)
++ที่นั่งริมทางเดิน,tîi nâng rim taang dəən,aisle
++ที่นั่งติดหน้าต่าง,tîi nâng dtìt nâa dtàang,window (in plane)
++แถว,tɛ̌ɛo,row
++ปีกเครื่องบิน,bpìik krʉ̂ang bin,wing
++เครื่องยนต์เครื่องบิน,krʉ̂ang yon krʉ̂ang bin,engine
++ห้องนักบิน,hɔ̂ɔng nák bin,cockpit
++เสื้อชูชีพ,sʉ̂a chuu chîip,life jacket
++ตู้คอนเทนเนอร์,dtûu kɔɔn teen nəə,container
++เรือดำน้ำ,rʉa dam náam,submarine
++เรือสำราญ,rʉa sǎm raan,cruise ship
++เรือขนตู้คอนเทนเนอร์,rʉa kǒn dtûuk on teen nəə,container ship
++เรือยอชท์,rʉa yɔ̂ɔt,yacht
++เรือเฟอร์รี่,rʉa fəə rîi,ferry
++ท่าเรือ,tâa rʉa,harbour
++เรือชูชีพ,rʉa chuu chîip,lifeboat
++เรดาร์,ree daa,radar
++สมอเรือ,sà mɔ̌ɔ rʉa,anchor
++ห่วงชูชีพ,hùang chuu chîip,life buoy
++ไฟถนน,fai tà non,street light
++ทางเท้า,taang táao,pavement
++ปั๊มน้ำมัน,bpám nám man,petrol station
++เขตก่อสร้าง,kèet gɔ̀ɔ sâang,construction site
++จำกัดความเร็ว,jam gàt kwaam reo,speed limit
++ทางม้าลาย,taang máa laai,pedestrian crossing
++ถนนเดินรถทางเดียว,tǒn ná dəən rót taang diao,one-way street
++ค่าผ่านทาง,kâa pàan taang,toll
++เครื่องสูบลม,krʉ̂ang sùup lom,air pump
++โซ่,sôo,chain
++แม่แรง,mɛ̂ɛ rɛɛng,jack
++รถพ่วง,rót pûang,trailer
++รถสกู๊ตเตอร์,rót sà gúut dtəə,motor scooter
++กระเช้าไฟฟ้า,grà cháo fai fáa,cable car
++กีตาร์,gii dtaa,guitar
++กลองชุด,glɔɔng chút,drums
++คีย์บอร์ด,kii bɔ̀ɔd,keyboard (music)
++ทรัมเป็ต,tram bpèt,trumpet
++เปียโน,bpia noo,piano
++แซกโซโฟน,sɛ̂ɛk soo foon,saxophone
++ไวโอลิน,wai oo lin,violin
++คอนเสิร์ต,kɔɔn sə̀ət,concert
++โน้ตเพลง,nóot pleeng,note (music)
++อุปรากร,ùp raa gɔɔn,opera
++วงออร์เคสตรา,wong ɔɔ kêet dtraa,orchestra
++แร็ป,rɛ́p,rap
++ดนตรีคลาสสิก,don dtrii klâat sìk,classical music
++ดนตรีโฟล์ก,don dtrii fôok,folk music
++ร็อก,rɔ́k,rock (music)
++ป๊อป,bpɔ́ɔp,pop
++แจ๊ส,jɛ́ɛt,jazz
++โรงละคร,roong lá kɔɔn,theatre
++พู่กัน,pûu gan,brush (to paint)
++แซมบ้า,sɛɛm bâa,samba
++ร็อกแอนด์โรล,rɔ́k ɛɛn roon,rock 'n' roll
++เวียนนีสวอลซ์,wian nîit wɔɔn,Viennese waltz
++แทงโก,tɛɛng goo,tango
++ซัลซ่า,san sâa,salsa
++ตัวอักษร,dtua àk sɔ̌ɔn,alphabet
++นวนิยาย,ná wá ní yaai,novel
++ข้อความ,kɔ̂ɔ kwaam,text
++หัวเรื่อง,hǔa rʉ̂ang,heading
++อักขระ,àk kà rà,character
++ตัวอักษร,dtua àk sɔ̌ɔn,letter (like a b c)
++เนื้อหา,nʉ́a hǎa,content
++อัลบั้มรูปภาพ,an bâm rûup pâap,photo album
++หนังสือการ์ตูน,nǎng sʉ̌ʉ gaa dtuun,comic book
++สนามกีฬา,sà nǎam gii laa,sports ground
++พจนานุกรม,pót jà naa nú grom,dictionary
++ภาคเรียน,pâak rian,term
++สมุดบันทึก,sà mùt ban tʉ́k,notebook
++กระดานดำ,grà daan dam,blackboard
++กระเป๋านักเรียน,grà bpǎo nák rian,schoolbag
++ชุดนักเรียน,chút nák rian,school uniform
++เรขาคณิต,ree kǎa ká nít,geometry
++การเมือง,gaan mʉang,politics
++ปรัชญา,bpràt yaa,philosophy
++เศรษฐศาสตร์,sèet tà sàat,economics
++พลศึกษา,pá lá sʉ̀k sǎa,physical education
++ชีววิทยา,chii wá wít tá yaa,biology
++คณิตศาสตร์,ká nít dtà sàat,mathematics
++ภูมิศาสตร์,puu mí sàat,geography
++วรรณกรรม,wan ná gam,literature
++ภาษาอาหรับ,paa sǎa aa ràp,Arabic
++ภาษาเยอรมัน,paa sǎa yəə rá man,German
++ภาษาญี่ปุ่น,paa sǎa yîi bpùn,Japanese
++ภาษาจีนกลาง,paa sǎa jiin glaang,Mandarin
++ภาษาสเปน,paa sǎa sà bpeen,Spanish
++เคมี,kee mii,chemistry
++ฟิสิกส์,fí sìk,physics
++ไม้บรรทัด,mái ban tát,ruler
++ยางลบ,yaang lóp,rubber
++กรรไกร,gan grai,scissors
++เทปกาว,têep gaao,adhesive tape
++กาว,gaao,glue
++ปากกาลูกลื่น,bpàak gaa lûuk lʉ̂ʉn,ball pen
++คลิปหนีบกระดาษ,klíp nìip grà dàat,paperclip
++หนึ่งร้อยเปอร์เซ็นต์,nʉ̀ng rɔ́ɔi bpəə sen,100%
++ศูนย์เปอร์เซ็นต์,sǔun bpəə sen,0%
++ลูกบาศก์เมตร,lûuk bàat mét,cubic meter
++ตารางเมตร,dtaa raang mét,square meter
++ไมล์,mai,mile
++เมตร,mét,meter
++เดซิเมตร,dee sí mêet,decimeter
++เซนติเมตร,seen dtì mêet,centimeter
++มิลลิเมตร,min lí mêet,millimeter
++การบวก,gaan bùak,addition
++การลบ,gaan lóp,subtraction
++การคูณ,gaan kuun,multiplication
++การหาร,gaan hǎan,division
++เศษส่วน,sèet sùan,fraction
++ทรงกลม,song glom,sphere
++ความกว้าง,kwaam gwâang,width
++ความสูง,kwaam sǔung,height
++ปริมาตร,bpà rí mâat,volume
++เส้นโค้ง,sên kóong,curve
++มุม,mum,angle
++เส้นตรง,sên dtrong,straight line
++ทรงปิรามิด,tɔɔn ngá bpì raa mít,pyramid
++ทรงลูกบาศก์,tɔɔn ngá lûuk bàat,cube
++สี่เหลี่ยมผืนผ้า,sìi lìam pʉ̌ʉn pâa,rectangle
++สามเหลี่ยม,sǎam lìam,triangle
++รัศมี,rát sà mǐi,radius
++วัตต์,wát,watt
++แอมแปร์,ɛɛm bpɛɛ,ampere
++โวลต์,woon,volt
++แรง,rɛɛng,force
++ลิตร,lít,liter
++มิลลิลิตร,min lí lít,milliliter
++ตัน,dtan,ton
++กิโลกรัม,gì loo gram,kilogram
++กรัม,gram,gram
++แม่เหล็ก,mɛ̂ɛ lèk,magnet
++กรวย,gruai,funnel
++ห้องปฏิบัติการ,hɔ̂ɔng bpà dtì bàt gaan,laboratory
++โรงอาหาร,roong aa hǎan,canteen
++การบรรยาย,gaan ban yaai,lecture
++ทุนการศึกษา,tun gaan sʉ̀k sǎa,scholarship
++ประกาศนียบัตร,bprà gàat sà nii yá bàt,diploma
++สามจุดสี่,sǎam jùt sìi,3.4
++สามยกกำลังห้า,sǎam yók gam lang hâa,3 to the power of 5
++สี่หารด้วยสอง,sìi hǎan dûai sɔ̌ɔng,4 / 2
++หนึ่งบวกหนึ่งเท่ากับสอง,nʉ̀ng bùak nʉ̀ng tâo gàp sɔ̌ɔng,1 + 1 = 2
++มหัพภาค,má hàp pâak,full stop
++หกยกกำลังสาม,hòk yók gam lang sǎam,6³
++สี่ยกกำลังสอง,sìi yók gam lang sɔ̌ɔng,4²
++ติดต่อที่ พินฮอก ดอต คอม,dtìt dtɔ̀ɔ tîi pin hɔ̂ɔk dɔ̀ɔt kɔɔm,contact@pinhok.com
++และ,lɛ́,&
++ทับ,táp,/
++เครื่องหมายวงเล็บ,krʉ̂ang mǎa yuang lép,()
++เครื่องหมายอัฒภาค,krʉ̂ang mǎai àt pâak,semicolon
++เครื่องหมายจุลภาค,krʉ̂ang mǎai jun pâak,comma
++เครื่องหมายทวิภาค,krʉ̂ang mǎa yót wí pâak,colon
++ขีดเส้นใต้,kìit sên dtâi,underscore
++เครื่องหมายยัติภังค์,krʉ̂ang mǎai yát dtì pang,hyphen
++สามลบสอง,sǎam lóp sɔ̌ɔng,3 - 2
++เครื่องหมายอะพอสทรอฟี,krʉ̂ang mǎai à pɔɔ sòt rɔɔ fii,apostrophe
++สองคูณสาม,sɔ̌ɔng kuun sǎam,2 x 3
++หนึ่งบวกสอง,nʉ̀ng bùak sɔ̌ɔng,1 + 2
++เครื่องหมายอัศเจรีย์,krʉ̂ang mǎai àt jee rii,exclamation mark
++เครื่องหมายคำถาม,krʉ̂ang mǎai kam tǎam,question mark
++เว้นวรรค,wén wák,space
++ดิน,din,soil
++ลาวา,laa waa,lava
++ถ่านหิน,tàan hǐn,coal
++ทราย,saai,sand
++ดินเหนียว,din nǐao,clay
++จรวด,jà rùat,rocket
++ดาวเทียม,daao tiam,satellite
++กาแล็กซี,gaa lɛ́k sii,galaxy
++ดาวเคราะห์น้อย,daao krɔ́ nɔ́ɔi,asteroid
++ทวีป,tá wîip,continent
++เส้นศูนย์สูตร,sên sǔun sùut,equator
++ขั้วโลกใต้,kûa lôok dtâai,South Pole
++ขั้วโลกเหนือ,kûa lôok nʉ̌a,North Pole
++ลำธาร,lam taan,stream
++ป่าดิบชื้น,bpàa dìp chʉ́ʉn,rainforest
++ถ้ำ,tâm,cave
++น้ำตก,nám dtòk,waterfall
++ชายฝั่ง,chaai fàng,shore
++ธารน้ำแข็ง,taan nám kɛ̌ng,glacier
++แผ่นดินไหว,pɛ̀n din wǎi,earthquake
++ปล่องภูเขาไฟ,bplɔ̀ɔng puu kǎo fai,crater
++ภูเขาไฟ,puu kǎo fai,volcano
++หุบเขาลึก,hùp kǎo lʉ́k,canyon
++บรรยากาศ,ban yaa gàat,atmosphere
++ขั้วโลก,kûa lôok,pole
++สิบสององศาเซลเซียส,sìp sɔ̌ɔ ngɔɔng sǎa seen sîat,12 °C
++ศูนย์องศาเซลเซียส,sǔun ong sǎa seen sîat,0 °C
++ลบสององศาเซลเซียส,lóp sɔ̌ɔng ong sǎa seen sîat,-2 °C
++องศาฟาเรนไฮต์,ong sǎa faa reen hai,Fahrenheit
++องศาเซลเซียส,ong sǎa seen sîat,centigrade
++พายุทอร์นาโด,paa yú tɔɔ naa doo,tornado
++น้ำท่วม,náam tûam,flood
++หมอก,mɔ̀ɔk,fog
++รุ้งกินน้ำ,rúng gin náam,rainbow
++ฟ้าร้อง,fáa rɔ́ɔng,thunder
++ฟ้าแลบ,fáa lɛ̂ɛp,lightning
++พายุฝนฟ้าคะนอง,paa yú fǒn fáa ká nɔɔng,thunderstorm
++อุณหภูมิ,un hà puum,temperature
++พายุไต้ฝุ่น,paa yú dtâi fùn,typhoon
++พายุเฮอริเคน,paa yú həə rí keen,hurricane
++เมฆ,mêek,cloud
++แสงแดด,sɛ̌ɛng dɛ̀ɛt,sunshine
++ไม้ไผ่,mái pài,bamboo (plant)
++ต้นปาล์ม,dtôn bpaam,palm tree
++กิ่งไม้,gìng mái,branch
++ใบไม้,bai mái,leaf
++ราก,râak,root
++ลำต้น,lam dtôn,trunk
++กระบองเพชร,grà bɔɔng pét,cactus
++ดอกทานตะวัน,dɔ̀ɔk taan dtà wan,sunflower
++เมล็ดพันธุ์,má lét pan,seed
++เบ่งบาน,bèng baan,blossom
++ลำต้น,lam dtôn,stalk
++พลาสติก,plâat dtìk,plastic
++คาร์บอนไดออกไซด์,kaa bɔɔn dai ɔ̀ɔk sai,carbon dioxide
++ของแข็ง,kɔ̌ɔng kɛ̌ng,solid
++ของเหลว,kɔ̌ɔng lěeo,fluid
++อะตอม,à dtɔɔm,atom
++เหล็ก,lèk,iron
++ออกซิเจน,ɔ̀ɔk sí jeen,oxygen
++รองเท้าแตะแบบคีบ,rɔɔng táao dtɛ̀ bɛ̀ɛp kîip,flip-flops
++รองเท้าหนัง,rɔɔng táao nǎng,leather shoes
++รองเท้าส้นสูง,rɔɔng táao sôn sǔung,high heels
++รองเท้ากีฬา,rɔɔng táao gii laa,trainers
++กระโปรง,grà bproong,skirt
++กางเกงขาสั้น,gaang geeng kǎa sân,shorts
++ถุงน่องเต็มตัว,tǔng nɔ̂ɔng dtem dtua,pantyhose
++กางเกงในตอง,gaang geeng nai dtɔɔng,thong
++กางเกงใน,gaang geeng nai,panties
++มงกุฎ,mong gùt,crown
++รอยสัก,rɔɔi sàk,tattoo
++แว่นตากันแดด,wɛ̂ɛn dtaa gan dɛ̀ɛt,sunglasses
++ร่ม,rôm,umbrella
++ต่างหู,dtàang hǔu,earring
++สร้อยคอ,sɔ̂ɔi kɔɔ,necklace
++หมวกเบสบอล,mùak bèet bɔɔn,baseball cap
++เข็มขัด,kěm kàt,belt
++เน็กไท,nék tai,tie
++หมวกไหมพรม,mùak mǎi prom,knit cap
++ผ้าพันคอ,pâa pan kɔɔ,scarf
++ถุงมือ,tǔng mʉʉ,glove
++ชุดว่ายน้ำ,chút wâai náam,swimsuit
++บิกินี่,bì gì nîi,bikini
++กางเกงว่ายน้ำ,gaang geeng wâai náam,swim trunks
++แว่นตาว่ายน้ำ,wɛ̂ɛn dtaa wâai náam,swim goggles
++กิ๊บหนีบผม,gíp nìip pǒm,barrette
++สีน้ำตาลเข้ม,sǐi náam dtaan kêm,brunette
++สีบลอนด์,sìip lɔɔn,blond
++ศีรษะล้าน,sǐin sà láan,bald head
++ผมตรง,pǒm dtrong,straight (hair)
++ผมหยักโศก,pǒm yàk sòok,curly
++กระดุม,grà dum,button
++ซิป,síp,zipper
++แขนเสื้อ,kɛ̌ɛn sʉ̂a,sleeve
++ปกเสื้อ,bpòk sʉ̂a,collar
++โพลีเอสเตอร์,poo lii èet dtəə,polyester
++ผ้าไหม,pâa mǎi,silk
++ผ้าฝ้าย,pâa fâai,cotton
++ขนแกะ,kǒn gɛ̀,wool
++ห้องลองเสื้อผ้า,hɔ̂ɔng lɔɔng sʉ̂a pâa,changing room
++มาสก์หน้า,mâat nâa,face mask
++น้ำหอม,nám hɔ̌ɔm,perfume
++ผ้าอนามัยแบบสอด,pâa à naa mai bɛ̀ɛp sɔ̀ɔt,tampon
++กรรไกรตัดเล็บ,gan grai dtàt lép,nail scissors
++กรรไกรตัดเล็บ,gan grai dtàt lép,nail clipper
++เจลใส่ผม,jeeo sài pǒm,hair gel
++เจลอาบน้ำ,jeen àap náam,shower gel
++ถุงยางอนามัย,tǔng yaang à naa mai,condom
++เครื่องโกนหนวด,krʉ̂ang goon nùat,shaver
++มีดโกน,mîit goon,razor
++ครีมกันแดด,kriim gan dɛ̀ɛt,sunscreen
++ครีมทาหน้า,kriim taa nâa,face cream
++แปรงขัด,bprɛɛng kàt,brush (for cleaning)
++ยาทาเล็บ,yaa taa lép,nail polish
++ลิปกลอส,líp glɔ̀ɔt,lip gloss
++ตะไบเล็บ,dtà bai lép,nail file
++รองพื้น,rɔɔng pʉ́ʉn,foundation
++มาสคาร่า,mâat kaa râa,mascara
++อายแชโดว์,aai chɛɛ doo,eye shadow
++การรับประกัน,gaan ráp bprà gan,warranty
++ราคาถูก,raa kaa tùuk,bargain
++เครื่องคิดเงิน,krʉ̂ang kít ngən,cash register
++ตะกร้า,dtà grâa,basket
++ห้างสรรพสินค้า,hâang sàp pá sǐn káa,shopping mall
++ร้านขายยา,ráan kǎai yaa,pharmacy
++ตึกระฟ้า,dtʉ̀k rá fáa,skyscraper
++ปราสาท,bpraa sàat,castle
++สถานเอกอัครราชทูต,sà tǎan èek àk krá râat chá tûut,embassy
++โบสถ์ยิว,bòot yiu,synagogue
++วัด,wát,temple
++โรงงาน,roong ngaan,factory
++มัสยิด,mát sà yít,mosque
++ศาลากลางจังหวัด,sǎa lâak laang jang wàt,town hall
++ที่ทำการไปรษณีย์,tîi tam gaan bprai sà nii,post office
++น้ำพุ,náam pú,fountain
++ไนท์คลับ,nai kláp,night club
++ม้านั่ง,máa nâng,bench
++สนามกอล์ฟ,sà nǎam gɔ́ɔp,golf course
++สนามฟุตบอล,sà nǎam fút bɔɔn,football stadium
++สระว่ายน้ำ,sà wâai náam,swimming pool (building)
++สนามเทนนิส,sà naam teen nít,tennis court
++ศูนย์บริการข้อมูลการท่องเที่ยว,sǔun bɔ̀ rí gaan kɔ̂ɔ muun gaan tɔ̂ɔng tîao,tourist information
++คาสิโน,kaa sì noo,casino
++หอศิลป์,hɔ̌ɔ sǐn,art gallery
++พิพิธภัณฑ์,pí pít tá pan,museum
++อุทยานแห่งชาติ,ùt tá yaan hɛ̀ng châat,national park
++มัคคุเทศก์,mák kú têet,tourist guide
++ของที่ระลึก,kɔ̌ɔng tîi rá lʉ́k,souvenir
++ซอย,sɔɔi,alley
++เขื่อน,kʉ̀an,dam
++เหล็ก,lèk,steel
++เครน,kreen,crane
++คอนกรีต,kɔɔn grìit,concrete
++นั่งร้าน,nâng ráan,scaffolding
++อิฐ,ìt,brick
++สีทา,sǐi taa,paint
++ตะปู,dtà bpuu,nail
++ไขควง,kǎi kuang,screwdriver
++ตลับเมตร,dtà làp mét,tape measure
++คีมปากนกแก้ว,kiim bpàak nók gɛ̂ɛo,pincers
++ค้อน,kɔ́ɔn,hammer
++สไลด์น้ำ,sà lai náam,water slide
++รถไฟเหาะตีลังกา,rót fai hɔ̀ dtii lang gaa,roller coaster
++สวนน้ำ,sǔan náam,water park
++สวนสัตว์,sǔan sàt,zoo
++สนามเด็กเล่น,sà nǎam dèk lên,playground
++สไลด์,sà lai,slide
++ชิงช้า,ching cháa,swing
++กระบะทราย,grà bà saai,sandbox
++หมวกนิรภัย,mùak nin pai,helmet
++เครื่องแบบ,krʉ̂ang bɛ̀ɛp,uniform
++ไฟไหม้,fai mâi,fire (emergency)
++ทางออกฉุกเฉิน,taang ɔ̀ɔk chùk chə̌ən,emergency exit (in building)
++สัญญาณเตือนไฟไหม้,sǎn yaan dtʉan fai mâi,fire alarm
++ถังดับเพลิง,tǎng dàp pləəng,fire extinguisher
++สถานีตำรวจ,sà tǎa nii dtam rùat,police station
++รัฐ,rát,state
++ภูมิภาค,puu mí pâak,region
++เมืองหลวง,mʉang lǔang,capital
++ผู้มาเยี่ยม,pûu maa yîam,visitor
++ห้องฉุกเฉิน,hɔ̂ɔng chùk chə̌ən,emergency room
++แผนกดูแลผู้ป่วยหนัก,pɛ̌ɛ nók duu lɛɛ pûu bpùai nàk,intensive care unit
++ผู้ป่วยนอก,pûu bpùai nɔ̂ɔk,outpatient
++ห้องนั่งรอ,hɔ̂ɔng nâng rɔɔ,waiting room
++แอสไพริน,ɛ̀ɛt pai rin,aspirin
++ยานอนหลับ,yaa nɔɔn làp,sleeping pill
++วันหมดอายุ,wan mòt aa yú,expiry date
++ยาแก้ไอ,yaa gɛ̂ɛ ai,cough syrup
++ผลข้างเคียง,pǒn kâang kiang,side effect
++อินซูลิน,in suu lin,insulin
++ยาผง,yaa pǒng,powder
++แคปซูล,kɛ́ɛp suun,capsule
++วิตามิน,wí dtaa min,vitamin
++การฉีดยาเข้าเส้นเลือด,gaan chìit yaa kâo sên lʉ̂at,infusion
++ยาแก้ปวด,yaa gɛ̂ɛ bpùat,painkiller
++ยาปฏิชีวนะ,yaa bpà dtì chii wá ná,antibiotics
++ยาพ่น,yaa pôn,inhaler
++แบคทีเรีย,bɛ̀ɛk tii ria,bacterium
++ไวรัส,wai rát,virus
++หัวใจวาย,hǔa jai waai,heart attack
++โรคท้องร่วง,rôok tɔ́ɔng rûang,diarrhea
++โรคเบาหวาน,rôok bao wǎan,diabetes
++โรคหลอดเลือดสมอง,rôok lɔ̀ɔt lʉ̂at sǒm ong,stroke
++โรคหอบหืด,rôok hɔ̀ɔp hʉ̀ʉt,asthma
++โรคมะเร็ง,rôok má reng,cancer
++อาการคลื่นไส้,aa gaan klʉ̂ʉn sâi,nausea
++ไข้หวัดใหญ่,kâi wàt yài,flu
++ปวดฟัน,bpùat fan,toothache
++ผิวไหม้แดด,pǐu mâi dɛ̀ɛt,sunburn
++อาหารเป็นพิษ,aa hǎan bpen pít,poisoning
++เจ็บคอ,jèp kɔɔ,sore throat
++ไข้ละอองฟาง,kâi lá ɔɔng faang,hay fever
++ปวดท้อง,bpùat tɔ́ɔng,stomach ache
++การติดเชื้อ,gaan dtìt chʉ́a,infection
++ภูมิแพ้,puum pɛ́ɛ,allergy
++ตะคริว,dtà kriu,cramp
++เลือดกำเดาไหล,lʉ̂at gam dao lǎi,nosebleed
++ปวดหัว,bpùat hǔa,headache
++สเปรย์,sà bpree,spray
++เข็มฉีดยา,kěm chìit yaa,syringe (tool)
++เข็ม,kěm,needle
++การจัดฟัน,gaan jàt fan,dental brace
++ไม้ค้ำยันรักแร้,mái káam yan rák rɛ́ɛ,crutch
++ภาพถ่ายเอ็กซ์เรย์,pâap tàai èk ree,X-ray photograph
++เครื่องอัลตร้าซาวด์,krʉ̂ang an dtrâa saao,ultrasound machine
++พลาสเตอร์ปิดแผล,plâat dtəə bpìt plɛ̌ɛ,plaster
++ผ้าพันแผล,pâa pan plɛ̌ɛ,bandage
++เก้าอี้รถเข็น,gâo îi rót kěn,wheelchair
++การตรวจเลือด,gaan dtrùat lʉ̂at,blood test
++เฝือก,fʉ̀ak,cast
++ปรอทวัดไข้,bpà rɔ̀ɔt wát kâi,fever thermometer
++ชีพจร,chîip pá jɔɔn,pulse
++การบาดเจ็บ,gaan bàat jèp,injury
++ฉุกเฉิน,chùk chə̌ən,emergency
++การกระทบกระเทือนทางสมอง,gaan grà tóp grà tʉan taang sǒm ong,concussion
++การเย็บแผล,gaan yép plɛ̌ɛ,suture
++แผลไฟไหม้,plɛ̌ɛ fai mâi,burn
++กระดูกหัก,grà dùuk hàk,fracture
++การทำสมาธิ,gaan tam sà maa tí,meditation
++การนวด,gaan nûat,massage
++ยาเม็ดคุมกำเนิด,yaa mét kum gam nə̂ət,birth control pill
++การตรวจครรภ์,gaan dtrùat kan,pregnancy test
++ภาษี,paa sǐi,tax
++ห้องประชุม,hɔ̂ɔng bprà chum,meeting room
++นามบัตร,naam bàt,business card
++เทคโนโลยีสารสนเทศ,têek noo loo yii sǎan sǒn têet,IT
++ทรัพยากรมนุษย์,tá ráp yâak rom nút,human resources
++ฝ่ายกฎหมาย,fàai gòt mǎai,legal department
++การบัญชี,gaan ban chii,accounting
++การตลาด,gaan dtà làat,marketing
++การขาย,gaan kǎai,sales
++ตรายาง,dtraa yaang,rubber stamp
++โปรเจคเตอร์,bproo jèek dtəə,projector
++ข้อความ,kɔ̂ɔ kwaam,text message
++พัสดุ,pát sà dù,parcel
++แสตมป์,sà dtɛɛm,stamp
++ซองจดหมาย,sɔɔng jòt mǎai,envelope
++นายกรัฐมนตรี,naa yók rát tà mon dtrii,prime minister
++เภสัชกร,pee sàt chá gɔɔn,pharmacist
++นักดับเพลิง,nák dàp pləəng,firefighter
++ทันตแพทย์,tan dtà pɛ̂ɛt,dentist
++ผู้ประกอบการ,pûu bprà gɔ̀ɔp gaan,entrepreneur
++นักการเมือง,nák gaan mʉang,politician
++โปรแกรมเมอร์,bproo grɛɛm məə,programmer
++แอร์โฮสเตส,ɛɛ hôot dtèet,stewardess
++นักวิทยาศาสตร์,nák wít tá yaa sàat,scientist
++คุณครูอนุบาล,kun kruu à nú baan,kindergarten teacher
++สถาปนิก,sà tǎa bpà ník,architect
++นักบัญชี,nák ban chii,accountant
++ที่ปรึกษา,tîi bprʉ̀k sǎa,consultant
++อัยการ,ai yá gaan,prosecutor
++ผู้จัดการทั่วไป,pûu jàt gaan tûa bpai,general manager
++บอดี้การ์ด,bɔɔ dîi gàad,bodyguard
++เจ้าของบ้าน,jâo kɔ̌ɔng bâan,landlord
++ผู้ควบคุมขบวนรถไฟ,pûuk wóp kum kòp won rót fai,conductor
++บริกร,bɔ̀ rí gɔɔn,waiter
++เจ้าหน้าที่รักษาความปลอดภัย,jâo nâa tîi rák sàak waam bplɔ̀ɔt pai,security guard
++ทหาร,tá hǎan,soldier
++ชาวประมง,chaao bprà mong,fisherman
++พนักงานทำความสะอาด,pá nák ngaan tam kwaam sà àat,cleaner
++ช่างไฟฟ้า,châng fai fáa,electrician
++เกษตรกร,gà sèet dtrà gɔɔn,farmer
++พนักงานต้อนรับ,pá nák ngaan dtɔ̂ɔn ráp,receptionist
++บุรุษไปรษณีย์,bù rùt bprai sà nii,postman
++พนักงานแคชเชียร์,pá nák ngaan kɛ̂ɛt chia,cashier
++ช่างทำผม,châang tam pǒm,hairdresser
++นักเขียน,nák kǐan,author
++นักข่าว,nák kàao,journalist
++ช่างภาพ,châng pâap,photographer
++ขโมย,kà mooi,thief
++ไลฟ์การ์ด,lai gàad,lifeguard
++นักร้อง,nák rɔ́ɔng,singer
++นักดนตรี,nák don dtrii,musician
++นักแสดง,nák sà dɛɛng,actor
++ผู้สื่อข่าว,pûu sʉ̀ʉ kàao,reporter
++โค้ช,kóot,coach (sport)
++กรรมการ,gam má gaan,referee
++โฟลเดอร์,floo dəə,folder (computer)
++เบราว์เซอร์,bee raa səə,browser
++เครือข่าย,krʉa kàai,network
++สมาร์ทโฟน,sà mâat foon,smartphone
++หูฟัง,hǔu fang,earphone
++เมาส์,mao,mouse (computer)
++แป้นพิมพ์,bpɛ̂ɛn pim,keyboard (computer)
++ฮาร์ดไดรฟ์,hâad dai rá,hard drive
++ยูเอสบีสติ๊ก,yuu èet bìit dtík,USB stick
++เครื่องสแกน,krʉ̂a ngót gɛɛn,scanner
++เครื่องพิมพ์,krʉ̂ang pim,printer
++จอ,jɔɔ,screen (computer)
++แล็ปท็อป,lɛ́p tɔ́p,laptop
++ลายนิ้วมือ,laai níu mʉʉ,fingerprint
++ผู้ต้องสงสัย,pûu dtɔ̂ng sǒng sǎi,suspect
++จำเลย,jam ləəi,defendant
++การลงทุน,gaan long tun,investment
++ตลาดหลักทรัพย์,dtà làat làk sáp,stock exchange
++หุ้น,hûn,share
++เงินปันผล,ngən bpan pǒn,dividend
++ปอนด์,bpɔɔn,pound
++ยูโร,yuu roo,euro
++เยน,yeen,yen
++หยวน,yǔan,yuan
++ดอลลาร์,dɔɔn laa,dollar
++ธนบัตร,tá ná bàt,note (money)
++เหรียญ,rǐan,coin
++ดอกเบี้ย,dɔ̀ɔk bîa,interest
++เงินกู้,ngən gûu,loan
++หมายเลขบัญชี,mǎai lêek ban chii,account number
++บัญชีธนาคาร,ban chîit naa kaan,bank account
++สถิติโลก,sà tì dtì lôok,world record
++นาฬิกาจับเวลา,naa lí gaa jàp wee laa,stopwatch
++เหรียญรางวัล,rǐan raang wan,medal
++ถ้วยรางวัล,tûai raang wan,cup (trophy)
++หุ่นยนต์,hùn yon,robot
++สายเคเบิล,sǎai kee bəən,cable
++ปลั๊กเสียบ,bplák sìap,plug
++ลำโพง,lam poong,loudspeaker
++แจกัน,jɛɛ gan,vase
++ไฟแช็ก,fai chɛ́k,lighter
++ซอง,sɔɔng,package
++กระป๋อง,grà bpɔ̌ɔng,tin
++ขวดน้ำ,kùat náam,water bottle
++เทียนไข,tian kǎi,candle
++ไฟฉาย,fai chǎai,torch
++บุหรี่,bù rìi,cigarette
++ซิการ์,sí gaa,cigar
++เข็มทิศ,kěm tít,compass
++โบรกเกอร์หุ้น,boo rók gəə hûn,stockbroker
++บาร์เทนเดอร์,baa teen dəə,barkeeper
++คนสวน,kon sǔan,gardener
++ช่างเครื่อง,châng krʉ̂ang,mechanic
++ช่างไม้,châng mái,carpenter
++คนขายเนื้อ,kon kǎai nʉ́a,butcher
++นักบวช,nák bùat,priest
++พระภิกษุสงฆ์,prá pík sù sǒng,monk
++แม่ชี,mɛ̂ɛ chii,nun
++นักเต้นรำ,nák dtên ram,dancer
++ผู้กำกับภาพยนตร์,pûu gam gàp pâap yon,director (movie)
++หมอตำแย,mɔ̌ɔ dtam yɛɛ,midwife
++คนขับรถบรรทุก,kon kàp rót ban túk,lorry driver
++ช่างตัดเสื้อ,châng dtàt sʉ̂a,tailor
++บรรณารักษ์,ban naa rák,librarian
++สัตวแพทย์,sàt dtà wá pɛ̂ɛt,vet

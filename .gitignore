@@ -1,3 +1,5 @@
+.idea/
+
 __pycache__/
 __pycache__/** */
 
@@ -8,3 +10,6 @@ __pycache__/** */
 .env.production.local
 
 anki_vector_db.*
+
+instructions/
+content-sections/

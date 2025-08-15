@@ -1,146 +1,166 @@
-# Anki Vector Database Project
+# Anki Thai
 
-A Python-based system for managing Anki flashcards with vector embeddings and AI-powered enhancements.
+A comprehensive flashcard management system for Thai language learning with AI-powered enhancements, vector search, and seamless Anki integration.
 
-## Features
+## Prerequisites
 
-- **Learning Content Management**: Abstract content system with template-based approach supporting multiple export formats
-- **Fragment System**: Reusable content fragments with audio assets and quality rankings
-- **Multi-Format Export**: Export learning content to Anki, JSON (API), and HTML formats
-- **Vector Embeddings**: Generate and search card embeddings using sentence transformers
-- **AI Example Generation**: Create examples for cards using language models
-- **Text-to-Speech**: Generate audio for cards using OpenAI's TTS
-- **Card Management**: Sync cards from Anki, manage drafts, and publish to Anki
-- **Web Interface**: User-friendly admin panel for managing all operations
-- **REST API**: Full HTTP API for programmatic access
+- Python 3.8 or higher
+- Conda (Miniconda or Anaconda)
+- Anki Desktop with AnkiConnect plugin installed
+- LM Studio with Typhoon LLM model (for AI example generation)
+- OpenAI API key (optional, for text-to-speech)
 
-## Quick Start
+## Installation
 
-### Prerequisites
-This project uses **miniconda** for environment management. Make sure you have conda installed.
-
-### Setup
-
-1. **Activate the conda environment:**
-   ```bash
-   conda activate anki-thai
-   ```
-
-2. **Install dependencies (if not already done):**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Test the system:**
-   ```bash
-   python test_new_architecture.py
-   ```
-
-4. **Start the server:**
-   ```bash
-   python api.py
-   # OR
-   python -m uvicorn api:app --reload --port 8000
-   ```
-
-5. **Access the web interface:**
-   Open `http://localhost:8000/admin` in your browser
-
-## Web Interface
-
-The web interface provides an intuitive way to:
-- **Learning Content Management**: Create, edit, and organize abstract learning content (`/admin/learning-content`)
-- **Fragment Management**: Manage reusable content fragments and audio assets (`/admin/fragments`)
-- **Multi-Format Export**: Export content to Anki cards, API JSON, or standalone HTML
-- Generate AI-powered examples for your cards
-- Manage vector embeddings
-- Create text-to-speech audio
-- Publish draft cards to Anki
-- Monitor processing progress in real-time
-
-### Key Admin Interfaces:
-- **Dashboard**: `http://localhost:8000/admin` - Main admin panel
-- **Learning Content**: `http://localhost:8000/admin/learning-content` - Content management
-- **Fragments**: `http://localhost:8000/admin/fragments` - Fragment system management
-
-See [Web Interface Guide](docs/web-interface-guide.md) for detailed usage instructions.
-
-## Command Line Interface
-
-For advanced users, CLI tools are available:
-
-- `python embedding_cli.py` - Manage vector embeddings
-- `python example_generator_cli.py` - Generate examples via CLI
-- `python tts_cli.py` - Generate text-to-speech audio
-- `python publish_cli.py` - Publish draft cards to Anki
-
-## API Documentation
-
-When the server is running, visit `http://localhost:8000/docs` for interactive API documentation.
-
-## Configuration
-
-Copy `env.example` to `.env` and configure your settings:
+### 1. Clone the Repository
 
 ```bash
-# API Configuration
-API_HOST=0.0.0.0
-API_PORT=8000
-
-# Database
-DATABASE_URL=sqlite:///anki_vector_db.db
-
-# OpenAI (for example generation and TTS)
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Embedding Model
-EMBEDDING_MODEL=all-MiniLM-L6-v2
+git clone <repository-url>
+cd anki-thai
 ```
 
-## Architecture
+### 2. Set Up Conda Environment
 
-The system follows a layered architecture:
+```bash
+# Create and activate the conda environment
+conda create -n anki-thai python=3.8
+conda activate anki-thai
+```
 
-- **Web Interface**: Bootstrap-based admin panel with real-time updates
-- **API Layer**: FastAPI with automatic OpenAPI documentation
-- **Service Layer**: Business logic for embeddings, examples, and TTS
-- **Data Layer**: SQLite with vector support and Anki integration
+### 3. Install Dependencies
 
-## Documentation
+```bash
+pip install -r requirements.txt
+```
 
-- [Architecture Overview](docs/architecture-overview.md)
-- [Web Interface Guide](docs/web-interface-guide.md)
-- [Card Sync Flow](docs/card-sync-flow.md)
-- [Embedding Generation Flow](docs/embedding-generation-flow.md)
-- [Vector Search Flow](docs/vector-search-flow.md)
+### 4. Configure Environment Variables
 
-## Recent Updates
+```bash
+# Copy the example environment file
+cp env.example .env
 
-### Web Interface (Latest)
-- ✅ **Example Generation Web Interface**: Full-featured web UI for AI example generation
-- ✅ **Real-time Progress Tracking**: Live progress updates with polling
-- ✅ **Template Preview**: Preview generated examples before processing
-- ✅ **Dry Run Mode**: Test templates without saving to database
-- ✅ **Parallel Processing Control**: User-configurable parallel vs sequential processing
-- ✅ **Smart Deck Selection**: Dropdown with available decks for easy selection
-- ✅ **Card ID Testing**: Process specific cards by ID for precise testing
-- ✅ **Error Handling**: Detailed error reporting and recovery options
+# Edit .env with your configuration
+```
 
-### Previous Updates
-- ✅ Vector embedding generation and search
-- ✅ OpenAI integration for examples and TTS
-- ✅ Anki card synchronization
-- ✅ CLI tools for all operations
-- ✅ REST API with full documentation
+Required configuration in `.env`:
+- `DATABASE_URL`: SQLite database path (default: `sqlite:///anki_vector_db.db`)
+- `LM_STUDIO_API_BASE`: LM Studio API endpoint (default: `http://127.0.0.1:1234/v1`)
+- `LOCAL_MODEL_THAI`: Model name for Thai content (default: `lm_studio/typhoon2.1-gemma3-4b-mlx`)
+- `OPENAI_API_KEY`: Your OpenAI API key (optional, for TTS features)
 
-## Contributing
+## External Services Setup
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+### 1. Anki Desktop with AnkiConnect
+
+1. Install Anki Desktop from https://apps.ankiweb.net/
+2. Install the AnkiConnect plugin:
+   - Open Anki → Tools → Add-ons → Get Add-ons
+   - Enter code: `2055492159`
+   - Restart Anki
+3. Ensure Anki is running when using this application (AnkiConnect runs on port 8765)
+
+### 2. LM Studio Setup
+
+1. Download and install LM Studio from https://lmstudio.ai/
+2. Download the Typhoon model:
+   - Open LM Studio
+   - Search for "typhoon2.1-gemma3-4b" or similar Thai-capable model
+   - Download and load the model
+3. Start the local server:
+   - Go to Server tab in LM Studio
+   - Click "Start Server" (runs on port 1234 by default)
+
+### 3. Database Initialization
+
+The SQLite database with vector extensions will be created automatically on first run. No manual setup required.
+
+## Running the Application
+
+### Start the FastAPI Server
+
+```bash
+# Activate the conda environment
+conda activate anki-thai
+
+# Start the server
+python main.py
+
+# Or use uvicorn directly
+uvicorn main:app --reload --port 8000
+```
+
+### Access Points
+
+- **Web Interface**: http://localhost:8000/admin
+- **API Documentation**: http://localhost:8000/docs
+- **Health Check**: http://localhost:8000/health
+
+## Key Features
+
+- **Learning Content Management**: Create and manage abstract learning content with Thai language support
+- **Fragment System**: Reusable content fragments (meanings, pronunciation, examples, tips)
+- **AI-Powered Generation**: Generate examples using local LLM (Typhoon) or OpenAI
+- **Vector Search**: Semantic search using sentence-transformers embeddings
+- **Audio Generation**: Text-to-speech synthesis for pronunciation
+- **Anki Integration**: Seamless synchronization with Anki Desktop
+- **Multiple Export Formats**: Export to Anki, JSON, or HTML
+- **Web Admin Interface**: User-friendly dashboard for all operations
+
+## Project Structure
+
+```
+anki-thai/
+├── api/                # FastAPI routers
+├── services/           # Business logic services
+├── models/             # Database models and schemas
+├── workflows/          # High-level business workflows
+├── templates/          # HTML and Jinja2 templates
+├── static/             # CSS and JavaScript files
+├── cli/                # Command-line tools
+├── database/           # Database management
+└── main.py             # Application entry point
+```
+
+## Development
+
+### Type Checking
+
+```bash
+# Run type checking
+mypy .
+pyright .
+```
+
+### Testing Workflows
+
+```bash
+# Test fragment processing
+python test.py fragments
+
+# Test content processing
+python test.py contents
+
+# Test Anki upload
+python test.py upload
+```
+
+## CLI Tools
+
+Additional command-line tools are available for advanced operations:
+
+```bash
+python cli/embedding_cli.py        # Generate embeddings
+python cli/example_generator_cli.py # Generate AI examples
+python cli/publish_cli.py          # Publish to Anki
+```
+
+## Troubleshooting
+
+1. **AnkiConnect Connection Error**: Ensure Anki Desktop is running with the AnkiConnect plugin installed
+2. **LM Studio Connection Error**: Verify LM Studio server is running on port 1234
+3. **Database Lock Error**: Close any other connections to the SQLite database
+4. **Import Errors**: Ensure the conda environment is activated and all dependencies are installed
 
 ## License
 
-MIT License - see LICENSE file for details. 
+MIT License
