@@ -134,32 +134,15 @@ pyright .
 ### Testing Workflows
 
 ```bash
-# Test fragment processing
-python test.py fragments
-
-# Test content processing
+# Generate examples ( aka content_fragments ) for learning_contents
 python test.py contents
 
+# Generate voice for content_fragments ( aka examples )
+python test.py fragments
+
 # Test Anki upload
-python test.py upload
+python test.py anki
 ```
-
-## CLI Tools
-
-Additional command-line tools are available for advanced operations:
-
-```bash
-python cli/embedding_cli.py        # Generate embeddings
-python cli/example_generator_cli.py # Generate AI examples
-python cli/publish_cli.py          # Publish to Anki
-```
-
-## Troubleshooting
-
-1. **AnkiConnect Connection Error**: Ensure Anki Desktop is running with the AnkiConnect plugin installed
-2. **LM Studio Connection Error**: Verify LM Studio server is running on port 1234
-3. **Database Lock Error**: Close any other connections to the SQLite database
-4. **Import Errors**: Ensure the conda environment is activated and all dependencies are installed
 
 ## License
 

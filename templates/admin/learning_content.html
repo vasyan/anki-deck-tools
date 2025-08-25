@@ -236,8 +236,43 @@
         let currentPage = 1;
         let currentFilters = {};
 
+        // Get page from URL parameters
+        function getPageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('page')) || 1;
+        }
+
+        // Update URL with current state
+        function updateURL() {
+            const params = new URLSearchParams();
+            params.set('page', currentPage);
+            
+            if (currentFilters.content_type) params.set('content_type', currentFilters.content_type);
+            if (currentFilters.language) params.set('language', currentFilters.language);
+            if (currentFilters.search) params.set('search', currentFilters.search);
+            
+            const newUrl = window.location.pathname + '?' + params.toString();
+            window.history.pushState({}, '', newUrl);
+        }
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
+            // Load state from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            currentPage = getPageFromURL();
+            
+            // Set filters from URL
+            currentFilters = {
+                content_type: urlParams.get('content_type') || '',
+                language: urlParams.get('language') || '',
+                search: urlParams.get('search') || ''
+            };
+            
+            // Apply filters to UI
+            if (currentFilters.content_type) document.getElementById('contentTypeFilter').value = currentFilters.content_type;
+            if (currentFilters.language) document.getElementById('languageFilter').value = currentFilters.language;
+            if (currentFilters.search) document.getElementById('searchInput').value = currentFilters.search;
+            
             loadStats();
             loadContent();
 
@@ -250,6 +285,18 @@
                 if (e.key === 'Enter') {
                     handleSearch();
                 }
+            });
+            
+            // Handle browser back/forward
+            window.addEventListener('popstate', function() {
+                currentPage = getPageFromURL();
+                const urlParams = new URLSearchParams(window.location.search);
+                currentFilters = {
+                    content_type: urlParams.get('content_type') || '',
+                    language: urlParams.get('language') || '',
+                    search: urlParams.get('search') || ''
+                };
+                loadContent();
             });
         });
 
@@ -398,6 +445,7 @@
                 language: document.getElementById('languageFilter').value,
                 search: document.getElementById('searchInput').value
             };
+            updateURL();
             loadContent();
         }
 
@@ -532,33 +580,101 @@
             document.getElementById('contentList').innerHTML = html;
         }
 
-        // Display pagination
+        // Display pagination with smart page number display
         function displayPagination(pagination) {
             let html = '';
-
+            const totalPages = pagination.total_pages;
+            const current = currentPage;
+            
+            // Previous button
             if (pagination.has_prev) {
-                html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${current - 1}); return false;">Previous</a></li>`;
+            } else {
+                html += `<li class="page-item disabled"><span class="page-link">Previous</span></li>`;
             }
-
-            for (let i = 1; i <= pagination.total_pages; i++) {
-                if (i === currentPage) {
-                    html += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+            
+            // Generate smart page numbers
+            const pageNumbers = getSmartPageNumbers(current, totalPages);
+            
+            for (let i = 0; i < pageNumbers.length; i++) {
+                const pageNum = pageNumbers[i];
+                
+                if (pageNum === '...') {
+                    html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                } else if (pageNum === current) {
+                    html += `<li class="page-item active"><span class="page-link">${pageNum}</span></li>`;
                 } else {
-                    html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+                    html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${pageNum}); return false;">${pageNum}</a></li>`;
                 }
             }
-
+            
+            // Next button
             if (pagination.has_next) {
-                html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`;
+                html += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${current + 1}); return false;">Next</a></li>`;
+            } else {
+                html += `<li class="page-item disabled"><span class="page-link">Next</span></li>`;
             }
-
+            
             document.getElementById('pagination').innerHTML = html;
+        }
+        
+        // Generate smart page numbers (shows first, last, current and nearby pages)
+        function getSmartPageNumbers(current, total) {
+            if (total <= 7) {
+                // Show all pages if 7 or fewer
+                return Array.from({length: total}, (_, i) => i + 1);
+            }
+            
+            const pages = [];
+            const showAroundCurrent = 2; // Show 2 pages on each side of current
+            
+            // Always show first page
+            pages.push(1);
+            
+            // Calculate range around current page
+            let start = Math.max(2, current - showAroundCurrent);
+            let end = Math.min(total - 1, current + showAroundCurrent);
+            
+            // Adjust if we're near the beginning
+            if (current <= 4) {
+                end = Math.min(5, total - 1);
+            }
+            
+            // Adjust if we're near the end
+            if (current >= total - 3) {
+                start = Math.max(2, total - 4);
+            }
+            
+            // Add ellipsis if needed before range
+            if (start > 2) {
+                pages.push('...');
+            }
+            
+            // Add range around current
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            
+            // Add ellipsis if needed after range
+            if (end < total - 1) {
+                pages.push('...');
+            }
+            
+            // Always show last page if more than 1 page
+            if (total > 1) {
+                pages.push(total);
+            }
+            
+            return pages;
         }
 
         // Change page
         function changePage(page) {
             currentPage = page;
+            updateURL();
             loadContent();
+            // Scroll to top of content
+            document.getElementById('contentList').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // Show/hide loading
