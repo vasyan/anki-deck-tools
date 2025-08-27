@@ -184,6 +184,27 @@ class LearningContentService:
                          .group_by(LearningContent.id)\
                          .having(func.count(ContentFragment.id) <= filter_data['max_fragments_count'])
 
+        if 'has_lack_of_good_examples' in filter_data and filter_data['has_lack_of_good_examples']:
+            # Subquery to find learning_content_ids with fewer than 3 good examples (rank_score >= 3)
+            from models.database import Ranking
+            from sqlalchemy import select
+            
+            # Create subquery that counts fragments with good rankings (>= 3) for each learning_content
+            good_examples_subq = select(
+                ContentFragment.learning_content_id,
+                func.count(Ranking.id).label('good_count')
+            ).select_from(ContentFragment)\
+             .outerjoin(Ranking, Ranking.fragment_id == ContentFragment.id)\
+             .where(Ranking.rank_score >= 3)\
+             .group_by(ContentFragment.learning_content_id)\
+             .having(func.count(Ranking.id) >= 3)\
+             .subquery()
+            
+            # Filter to exclude learning_content that has 3 or more good examples
+            query = query.filter(~LearningContent.id.in_(
+                select(good_examples_subq.c.learning_content_id)
+            ))
+
         if 'cursor' in filter_data:
             query = query.filter(LearningContent.id > filter_data['cursor'])
 
@@ -284,17 +305,17 @@ class LearningContentService:
         3. Content with lowest percentage of rated fragments
         4. Content with oldest last_review_at
         5. Lowest ID as fallback
-        
+
         Also updates the selected content's last_review_at timestamp.
         """
         with self.db_manager.get_session() as session:
             # Calculate threshold for recent reviews (5 minutes ago)
             review_threshold = datetime.now(UTC) - timedelta(minutes=5)
-            
+
             # Complex query to find the best content for review
             result = session.execute(text("""
                 WITH fragment_stats AS (
-                    SELECT 
+                    SELECT
                         lc.id,
                         lc.title,
                         lc.content_type,
@@ -313,28 +334,28 @@ class LearningContentService:
                     FROM learning_content lc
                     LEFT JOIN content_fragments cf ON lc.id = cf.learning_content_id
                     LEFT JOIN rankings r ON cf.id = r.fragment_id
-                    WHERE lc.last_review_at IS NULL 
+                    WHERE lc.last_review_at IS NULL
                        OR lc.last_review_at < :review_threshold
                     GROUP BY lc.id
                 )
                 SELECT *,
-                    CASE 
+                    CASE
                         WHEN total_fragments = 0 THEN 999  -- Content with no fragments gets lowest priority
                         WHEN rated_fragments = 0 THEN 0     -- Highest priority: has fragments but none rated
                         ELSE CAST(rated_fragments AS FLOAT) / total_fragments
                     END as rating_percentage
                 FROM fragment_stats
                 WHERE total_fragments > 0  -- Must have at least one fragment
-                ORDER BY 
+                ORDER BY
                     rating_percentage ASC,      -- Prioritize lower percentage of rated fragments
                     last_review_at ASC NULLS FIRST,  -- Then oldest reviewed (NULL first)
                     id ASC                      -- Finally by ID
                 LIMIT 1
             """), {"review_threshold": review_threshold}).fetchone()
-            
+
             if not result:
                 return None
-            
+
             # Convert row to dict for LearningContent object creation
             import json
             content_dict = {
@@ -352,13 +373,13 @@ class LearningContentService:
                 'updated_at': result[11],
                 'last_review_at': result[12]
             }
-            
+
             # Update the last_review_at timestamp for this content
             session.execute(
                 text("UPDATE learning_content SET last_review_at = :now WHERE id = :id"),
                 {"now": datetime.now(UTC), "id": content_dict['id']}
             )
             session.commit()
-            
+
             # Return as schema object
             return LearningContentRowSchema(**content_dict)

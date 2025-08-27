@@ -235,11 +235,12 @@ class AnkiBuilder:
         # return
         contents = self.lc_service.find_content(filters={
             # 'has_fragments': False
-            'max_fragments_count': 3,
+            # 'max_fragments_count': 3,
             # 'cursor': 270,
+            'has_lack_of_good_examples': True
         },
         page=1,
-        page_size=100
+        page_size=50
         )['content']
         ids = [content['id'] for content in contents]
         # ids = range(270, 350)
