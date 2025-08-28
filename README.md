@@ -1,6 +1,6 @@
 # Anki Thai
 
-A comprehensive flashcard management system for Thai language learning with AI-powered enhancements, vector search, and seamless Anki integration.
+A comprehensive flashcard management system for Thai language learning with AI-powered enhancements
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ cd anki-thai
 
 ```bash
 # Create and activate the conda environment
-conda create -n anki-thai python=3.8
+conda create -n anki-thai python=3.13.4
 conda activate anki-thai
 ```
 
@@ -46,7 +46,7 @@ Required configuration in `.env`:
 - `DATABASE_URL`: SQLite database path (default: `sqlite:///anki_vector_db.db`)
 - `LM_STUDIO_API_BASE`: LM Studio API endpoint (default: `http://127.0.0.1:1234/v1`)
 - `LOCAL_MODEL_THAI`: Model name for Thai content (default: `lm_studio/typhoon2.1-gemma3-4b-mlx`)
-- `OPENAI_API_KEY`: Your OpenAI API key (optional, for TTS features)
+- `OPENAI_API_KEY`: Your OpenAI API key ( actually it is optional for TTS features )
 
 ## External Services Setup
 
@@ -74,6 +74,8 @@ Required configuration in `.env`:
 
 The SQLite database with vector extensions will be created automatically on first run. No manual setup required.
 
+For quick setup with sample data, see the [Seed Data Guide](seed_data.md).
+
 ## Running the Application
 
 ### Start the FastAPI Server
@@ -97,14 +99,11 @@ uvicorn main:app --reload --port 8000
 
 ## Key Features
 
-- **Learning Content Management**: Create and manage abstract learning content with Thai language support
+- **Web Admin Interface**: Dashboard for generated content review process
 - **Fragment System**: Reusable content fragments (meanings, pronunciation, examples, tips)
 - **AI-Powered Generation**: Generate examples using local LLM (Typhoon) or OpenAI
-- **Vector Search**: Semantic search using sentence-transformers embeddings
 - **Audio Generation**: Text-to-speech synthesis for pronunciation
 - **Anki Integration**: Seamless synchronization with Anki Desktop
-- **Multiple Export Formats**: Export to Anki, JSON, or HTML
-- **Web Admin Interface**: User-friendly dashboard for all operations
 
 ## Project Structure
 
@@ -113,35 +112,28 @@ anki-thai/
 ├── api/                # FastAPI routers
 ├── services/           # Business logic services
 ├── models/             # Database models and schemas
-├── workflows/          # High-level business workflows
+├── workflows/          # High-level workflows to deal with generation/sync
 ├── templates/          # HTML and Jinja2 templates
-├── static/             # CSS and JavaScript files
-├── cli/                # Command-line tools
+├── cli/                # DEPRECATED! Command-line tools
 ├── database/           # Database management
 └── main.py             # Application entry point
 ```
 
-## Development
-
-### Type Checking
-
-```bash
-# Run type checking
-mypy .
-pyright .
-```
-
-### Testing Workflows
+### Running worflows
+Currently there is no flexible way to adjust requirements beside of changing the source code. However, mostly it means simple change selection filter/limit/etc
 
 ```bash
 # Generate examples ( aka content_fragments ) for learning_contents
-python test.py contents
+# IMPORTANT! you have to tweak the source code right in the `anki_builder.py` method `process_contents`
+python run.py contents
 
 # Generate voice for content_fragments ( aka examples )
-python test.py fragments
+# IMPORTANT! you have to tweak the source code right in the `anki_builder.py` method `process_fragments`
+python run.py fragments
 
 # Test Anki upload
-python test.py anki
+# IMPORTANT! you have to tweak the source code right in the `anki_builder.py` method `sync_to_anki`
+python run.py anki
 ```
 
 ## License
