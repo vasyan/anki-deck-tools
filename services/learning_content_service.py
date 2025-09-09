@@ -188,7 +188,7 @@ class LearningContentService:
             # Subquery to find learning_content_ids with fewer than 3 good examples (rank_score >= 3)
             from models.database import Ranking
             from sqlalchemy import select
-            
+
             # Create subquery that counts fragments with good rankings (>= 3) for each learning_content
             good_examples_subq = select(
                 ContentFragment.learning_content_id,
@@ -199,11 +199,17 @@ class LearningContentService:
              .group_by(ContentFragment.learning_content_id)\
              .having(func.count(Ranking.id) >= 3)\
              .subquery()
-            
+
             # Filter to exclude learning_content that has 3 or more good examples
             query = query.filter(~LearningContent.id.in_(
                 select(good_examples_subq.c.learning_content_id)
             ))
+
+        if 'has_target_learning_fragment' in filter_data:
+            if filter_data['has_target_learning_fragment']:
+                query = query.filter(LearningContent.fragments.any(ContentFragment.fragment_type == 'target_learning_item'))
+            else:
+                query = query.filter(~LearningContent.fragments.any(ContentFragment.fragment_type == 'target_learning_item'))
 
         if 'cursor' in filter_data:
             query = query.filter(LearningContent.id > filter_data['cursor'])

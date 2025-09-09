@@ -35,7 +35,7 @@ class TextToSpeechService:
 		audio_format = audio_format or self.audio_format
 		voice = voice or self.voice
 		instructions = instructions or self.instructions
-		logger.info(f"Using instructions: {instructions}")
+		# logger.info(f"Using instructions: {instructions}")
 		try:
 			response = speech(
 				model=model,

@@ -222,6 +222,20 @@ class AnkiBuilder:
             logger.error(traceback.format_exc())
             return
 
+    def process_content_and_populate_with_target_learning_fragment(self):
+        contents = self.lc_service.find_content(filters={
+            'has_target_learning_fragment': False
+        },
+        page=1,
+        page_size=50
+        )['content']
+        ids = [content['id'] for content in contents]
+        print(f"ids: {ids}")
+        # for i in ids:
+        #     self.populate_content_with_target_learning_fragment(i)
+
+        print(f"Finished populating content with target learning fragment")
+
     def process_contents(self):
         # for i in range(65, 80):
         #     self.populate_content_with_example(i)
@@ -260,8 +274,9 @@ class AnkiBuilder:
                     logger.error(f"Error processing fragment {fragment_id}: {e}")
 
         fragments_withouth_assets = self.fragment_service.find_fragments(ContentFragmentSearchRow(
+            fragment_type='target_learning_item',
             has_assets=False,
-            limit=200
+            limit=100
         ))
         ids = [fragment['id'] for fragment in fragments_withouth_assets]
 
@@ -275,22 +290,34 @@ class AnkiBuilder:
         # Wait for all tasks to complete
         await asyncio.gather(*tasks, return_exceptions=True)
 
-    async def sync_to_anki(self):
-        logger.info(f"syncing to anki")
+    async def sync_to_anki(self, filters: Dict[str, Any] | None = None, page_size: int = 50) -> Dict[str, Any]:
+        logger.info(f"syncing to anki with filters: {filters}")
 
-        contents = self.lc_service.find_content(page_size=50, filters={
-            # 'text_search': 'doctor'
-        })
+        contents = self.lc_service.find_content(page_size=page_size, filters=filters or {})
 
         ids = [content["id"]  for content in contents["content"]]
-        # ids = [11]
 
         logger.info(f"syncing to anki: {len(ids)} contents")
 
-        # return
+        success_count = 0
+        error_count = 0
+        errors = []
 
         for i in ids:
-            await self.process_sync(i)
+            try:
+                await self.process_sync(i)
+                success_count += 1
+            except Exception as e:
+                error_count += 1
+                errors.append({"id": i, "error": str(e)})
+                logger.error(f"Error syncing content {i}: {e}")
+
+        return {
+            "processed_count": len(ids),
+            "success_count": success_count,
+            "error_count": error_count,
+            "errors": errors
+        }
 
     def clean_json_like_string(self, raw_text: str) -> str:
         text = raw_text.replace("```json", "")

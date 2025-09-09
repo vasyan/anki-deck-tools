@@ -130,6 +130,7 @@ class LearningContentFilter(BaseModel):
     min_fragments_count: Optional[int] = None
     max_fragments_count: Optional[int] = None
     has_lack_of_good_examples: Optional[bool] = None
+    has_target_learning_fragment: Optional[bool] = None
     cursor: Optional[int] = None
     model_config = ConfigDict(extra='ignore')
 
