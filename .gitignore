@@ -11,5 +11,4 @@ __pycache__/** */
 
 anki_vector_db.*
 
-instructions/
 content-sections/
