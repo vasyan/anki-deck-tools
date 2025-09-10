@@ -6,7 +6,9 @@
     <li>
       <div>
         <span class="text-thai">{{ fragment.native_text }}</span>
-        [sound:asset_{{fragment.assets[0].id}}.mp3]
+        {% if fragment.assets and fragment.assets[0] %}
+          [sound:asset_{{fragment.assets[0].id}}.mp3]
+        {% endif %}
       </div>
       <div>
         <span class="text-ipa">[{{ fragment.ipa }}]</span>

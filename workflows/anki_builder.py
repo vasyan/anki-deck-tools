@@ -23,7 +23,7 @@ from services.fragment_asset_manager import FragmentAssetManager
 from services.llm_service import LLMService
 import asyncio
 from config import settings
-from utils.logging import log_json
+# from utils.logging import log_json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -263,7 +263,7 @@ class AnkiBuilder:
             self.populate_content_with_example(i)
 
     async def process_fragments(self):
-        semaphore = asyncio.Semaphore(5)  # Limit to 5 concurrent operations
+        semaphore = asyncio.Semaphore(5)
 
         async def process_single_fragment(fragment_id: int):
             async with semaphore:
@@ -284,7 +284,6 @@ class AnkiBuilder:
 
         tasks = [process_single_fragment(i) for i in ids]
 
-        # # Create tasks for all fragments
         # tasks = [process_single_fragment(i) for i in range(47, 60)]
 
         # Wait for all tasks to complete
@@ -298,6 +297,9 @@ class AnkiBuilder:
         ids = [content["id"]  for content in contents["content"]]
 
         logger.info(f"syncing to anki: {len(ids)} contents")
+        logger.info(f"ids: {ids}")
+
+        # return
 
         success_count = 0
         error_count = 0
@@ -311,6 +313,10 @@ class AnkiBuilder:
                 error_count += 1
                 errors.append({"id": i, "error": str(e)})
                 logger.error(f"Error syncing content {i}: {e}")
+
+        print(f"success_count: {success_count}")
+        print(f"error_count: {error_count}")
+        print(f"errors: {errors}")
 
         return {
             "processed_count": len(ids),

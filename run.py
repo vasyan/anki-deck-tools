@@ -29,8 +29,10 @@ async def main():
             builder.process_contents()
         elif args.mode == 'fragments':
             await builder.process_fragments()
+        elif args.mode == 'contents_and_target_learning_fragment':
+            builder.process_content_and_populate_with_target_learning_fragment()
         elif args.mode == 'anki':
-            await builder.sync_to_anki()
+            await builder.sync_to_anki(filters={}, page_size=100)
         else:
             raise ValueError(f"Invalid mode: {args.mode}")
 

@@ -1,7 +1,7 @@
 <span class="text-thai">{{ native_text }}</span>
 [<span class="text-ipa">{{ ipa }}</span>]
 {% for fragment in fragments %}
-    {% if fragment.fragment_type == 'target_learning_item' %}
+    {% if fragment.fragment_type == 'target_learning_item' and fragment.assets and fragment.assets[0] %}
         [sound:asset_{{fragment.assets[0].id}}.mp3]
     {% endif %}
 {% endfor %}
